@@ -1,4 +1,4 @@
-package com.sportsiqbackend.Authentication
+package com.sportsiq.Authentication
 
 import org.springframework.stereotype.Service
 

@@ -1,4 +1,4 @@
-package com.sportsiqbackend.Authentication
+package com.sportsiq.Authentication
 
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest

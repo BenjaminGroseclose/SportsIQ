@@ -1,4 +1,4 @@
-package com.sportsiqbackend.Authentication
+package com.sportsiq.Authentication
 
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.GrantedAuthority
