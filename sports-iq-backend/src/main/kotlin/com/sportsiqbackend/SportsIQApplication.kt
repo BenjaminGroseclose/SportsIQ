@@ -4,8 +4,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class SportsIqBackendApplication
+class SportsIQApplication
 
 fun main(args: Array<String>) {
-    runApplication<SportsIqBackendApplication>(*args)
+    runApplication<SportsIQApplication>(*args)
 }
