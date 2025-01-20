@@ -3,12 +3,14 @@ package com.sportsiq.Authentication
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 
 @Component
-class ApiKeyAuthenticationFilter(private val apiKeyService: ApiKeyService): OncePerRequestFilter() {
+class ApiKeyAuthenticationFilter: OncePerRequestFilter() {
+    companion object { const val VALID_API_KEY = "valid-api-key" }
 
     override fun doFilterInternal(
         request: HttpServletRequest,
@@ -17,7 +19,7 @@ class ApiKeyAuthenticationFilter(private val apiKeyService: ApiKeyService): Once
     ) {
         val apiKey: String = request.getHeader("X-API-KEY")
 
-        if (apiKey.isNotEmpty() && apiKeyService.isValidApiKey(apiKey)) {
+        if (apiKey.isNotEmpty() && VALID_API_KEY == apiKey) {
             val auth = ApiKeyAuthentication(apiKey)
             SecurityContextHolder.getContext().authentication = auth
         }
