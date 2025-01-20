@@ -1,1 +1,1 @@
-rootProject.name = "sports-iq-backend"
+rootProject.name = "sports-iq"
