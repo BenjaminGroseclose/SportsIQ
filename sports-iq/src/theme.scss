@@ -1,11 +1,15 @@
 @use "@angular/material" as mat;
-
+@use "./theme-colors" as my-theme;
 html {
-  color-scheme: light dark;
+  color-scheme: dark;
   @include mat.theme(
     (
-      color: mat.$spring-green-palette,
-      typography: Roboto,
+      color: (
+        primary: my-theme.$primary-palette,
+        tertiary: my-theme.$tertiary-palette,
+        theme-type: dark,
+      ),
+      typography: Poppins,
       density: 0,
     )
   );
