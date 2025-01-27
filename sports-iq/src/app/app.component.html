@@ -1,10 +1,22 @@
 <mat-toolbar>
-  <img src="assets/logo.png" />
-  <span>Sports IQ</span>
-  <button mat-button>Data</button>
-  <button mat-button>Data2</button>
+  <img height="50" src="logo.png" />
+  <button mat-button [matMenuTriggerFor]="statsMenu">Stats</button>
+  <mat-menu #statsMenu="matMenu">
+    <button mat-menu-item [routerLink]="['stats', 'nba']">NBA</button>
+    <button mat-menu-item [routerLink]="['ranking', 'nfl']">NFL</button>
+    <button mat-menu-item [routerLink]="['ranking', 'mlb']">MLB</button>
+  </mat-menu>
+  <button mat-button>Fantasy Center</button>
+  <button mat-button [matMenuTriggerFor]="rankingMenu">
+    Sports IQ - Rankings
+  </button>
+  <mat-menu #rankingMenu="matMenu">
+    <button mat-menu-item [routerLink]="['ranking', 'nba']">NBA</button>
+    <button mat-menu-item [routerLink]="['ranking', 'nfl']">NFL</button>
+    <button mat-menu-item [routerLink]="['ranking', 'mlb']">MLB</button>
+  </mat-menu>
+  <button mat-button>AI</button>
 </mat-toolbar>
 <div class="router-outlet">
-  <button mat-flat-button>Test</button>
   <router-outlet></router-outlet>
 </div>

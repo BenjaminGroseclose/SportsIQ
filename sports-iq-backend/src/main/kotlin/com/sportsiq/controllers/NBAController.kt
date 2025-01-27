@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("nba")
+@RequestMapping("stats/nba")
 class NBAController(@Autowired private val nbaService: NBAService) {
 
     @GetMapping("players")

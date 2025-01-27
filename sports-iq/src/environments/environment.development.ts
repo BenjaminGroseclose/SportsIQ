@@ -1,3 +1,4 @@
 export const environment = {
-  apiKey: 'TODO',
+  apiKey: 'valid-api-key',
+  baseUrl: 'http://localhost:8081',
 };

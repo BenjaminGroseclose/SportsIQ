@@ -1,0 +1,32 @@
+export interface NBAPlayer {
+  id?: string;
+  player?: string;
+  position?: string;
+  age?: number;
+  team?: string;
+  games?: number;
+  gameStarts?: number;
+  minutesPerGame?: number;
+  fieldGoals?: number;
+  fieldGoalAttempts?: number;
+  fieldGoalPercent?: number;
+  threePoints?: number;
+  threePointAttempts?: number;
+  threePointPercent?: number;
+  twoPoints?: number;
+  twoPointAttempts?: number;
+  twoPointPercent?: number;
+  eFieldGoalPercent?: number;
+  freeThrow?: number;
+  freeThrowAttempts?: number;
+  offensiveRebounds?: number;
+  defensiveRebounds?: number;
+  totalRebounds?: number;
+  assists?: number;
+  steals?: number;
+  blocks?: number;
+  turnovers?: number;
+  personalFouls?: number;
+  pointsPerGame?: number;
+  year?: string;
+}
