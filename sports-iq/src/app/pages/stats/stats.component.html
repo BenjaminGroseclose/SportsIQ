@@ -1,3 +1,30 @@
-<div class="header">
-  <span class="title">{{ sport | uppercase }}</span>
-</div>
+<si-sidenav [sport]="sport">
+	<div id="stats">
+		<div class="header">
+			<h2>{{ sport | uppercase }} Stats</h2>
+			<span class="spacer"></span>
+			<mat-form-field appearance="outline">
+				<mat-label>Type</mat-label>
+				<mat-select [value]="type()" (selectionChange)="type.set($event.value)">
+					<mat-option value="teams">Teams</mat-option>
+					<mat-option value="players">Players</mat-option>
+				</mat-select>
+			</mat-form-field>
+			<mat-form-field appearance="outline">
+				<mat-label>Year</mat-label>
+				<mat-select [value]="year()" (selectionChange)="year.set($event.value)">
+					<mat-option [value]="-1">All</mat-option>
+				</mat-select>
+			</mat-form-field>
+		</div>
+
+		@if (loading()) {
+			<mat-spinner></mat-spinner>
+		} @else {
+			<table mat-table class="mat-elevation-z8">
+				<tr mat-header-row *matHeaderRowDef="displayedColumns()"></tr>
+				<tr mat-row *matRowDef="let row; columns: displayedColumns()"></tr>
+			</table>
+		}
+	</div>
+</si-sidenav>

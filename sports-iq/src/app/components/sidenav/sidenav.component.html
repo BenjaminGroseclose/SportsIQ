@@ -1,0 +1,28 @@
+<mat-drawer-container [hasBackdrop]="true">
+	<mat-drawer mode="over" #drawer>
+		<h2>{{ sport() | uppercase }}</h2>
+		<mat-nav-list>
+			<mat-list-item [routerLink]="[sport, 'stats']">
+				<mat-icon matListItemIcon>analytics</mat-icon>
+				<div matListItemTitle>Stats</div>
+			</mat-list-item>
+			<mat-list-item [routerLink]="[sport, 'ranking']">
+				<mat-icon matListItemIcon>emoji_events</mat-icon>
+				<div matListItemTitle>Rankings</div>
+			</mat-list-item>
+			<mat-list-item [routerLink]="[sport, 'fantasy']">
+				<mat-icon matListItemIcon>shield</mat-icon>
+				<div matListItemTitle>Fantasy</div>
+			</mat-list-item>
+			<mat-list-item [routerLink]="[sport, 'ai']">
+				<mat-icon svgIcon="network_intelligence" matListItemIcon></mat-icon>
+				<div matListItemTitle>AI</div>
+			</mat-list-item>
+		</mat-nav-list>
+		<mat-divider></mat-divider>
+	</mat-drawer>
+	<mat-drawer-content>
+		<button id="menu-button" mat-icon-button (click)="drawer.toggle()"><mat-icon>menu</mat-icon></button>
+		<ng-content></ng-content>
+	</mat-drawer-content>
+</mat-drawer-container>

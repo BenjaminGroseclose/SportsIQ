@@ -1,15 +1,11 @@
-@import "si-colors";
+@use "si-colors" as *;
 
 :host {
-  .router-outlet {
-    margin: 0 24px;
-  }
+	mat-toolbar {
+		border-bottom: 1px solid $siTeal;
+	}
 
-  mat-toolbar {
-    border-bottom: 1px solid $siTeal;
-  }
-
-  img {
-    margin: auto 0;
-  }
+	img {
+		cursor: pointer;
+	}
 }

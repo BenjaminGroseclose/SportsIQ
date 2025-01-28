@@ -10,12 +10,12 @@ export const routes: Routes = [
     component: LandingComponent,
   },
   {
-    path: 'stats/:sport',
+    path: ':sport/stats',
     title: 'Sports IQ - Stats',
     component: StatsComponent,
   },
   {
-    path: 'ranking/:sport',
+    path: ':sport/ranking',
     title: 'Sports IQ - Stats',
     component: RankingComponent,
   },
