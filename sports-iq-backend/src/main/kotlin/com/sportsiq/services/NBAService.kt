@@ -8,6 +8,6 @@ import org.springframework.stereotype.Service
 @Service
 class NBAService(@Autowired private val nbaPlayerRepository: NBAPlayerRepository) {
     fun getPlayers(year: Number): List<NBAPlayer> {
-        return nbaPlayerRepository.findAll().filter { x -> x.year == year }
+        return nbaPlayerRepository.findAll().filter { x: NBAPlayer -> x.year == year }
     }
 }

@@ -1,4 +1,4 @@
-export interface NBAPlayer {
+export interface INBAPlayer {
   id?: string;
   player?: string;
   position?: string;

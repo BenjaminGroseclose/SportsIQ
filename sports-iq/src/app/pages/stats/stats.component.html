@@ -1,7 +1,7 @@
-<si-sidenav [sport]="sport">
+<si-sidenav [sport]="sport()">
 	<div id="stats">
 		<div class="header">
-			<h2>{{ sport | uppercase }} Stats</h2>
+			<h2>{{ sport() | uppercase }} Stats</h2>
 			<span class="spacer"></span>
 			<mat-form-field appearance="outline">
 				<mat-label>Type</mat-label>
@@ -10,15 +10,27 @@
 					<mat-option value="players">Players</mat-option>
 				</mat-select>
 			</mat-form-field>
+			@if (type() === 'players') {
+			<mat-form-field appearance="outline">
+				<mat-label>Positions</mat-label>
+				<mat-select [value]="position()" (selectionChange)="position.set($event.value)">
+					<mat-option value="all">All</mat-option>
+				</mat-select>
+			</mat-form-field>
+		}
+
 			<mat-form-field appearance="outline">
 				<mat-label>Year</mat-label>
 				<mat-select [value]="year()" (selectionChange)="year.set($event.value)">
 					<mat-option [value]="-1">All</mat-option>
+					@for (year of yearsResource.value(); track $index) {
+						<mat-option [value]="year">{{ year }}</mat-option>
+					}
 				</mat-select>
 			</mat-form-field>
 		</div>
 
-		@if (loading()) {
+		@if (statsResource.isLoading()) {
 			<mat-spinner></mat-spinner>
 		} @else {
 			<table mat-table class="mat-elevation-z8">

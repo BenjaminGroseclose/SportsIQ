@@ -1,10 +1,10 @@
 import { CommonModule } from "@angular/common";
-import { Component, input, Input } from "@angular/core";
+import { Component, inject, input, Input } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
 import { MatSidenavModule } from "@angular/material/sidenav";
 import { MatListModule } from "@angular/material/list";
-import { RouterModule } from "@angular/router";
+import { Router, RouterModule } from "@angular/router";
 import { MatDividerModule } from "@angular/material/divider";
 
 @Component({
@@ -14,5 +14,12 @@ import { MatDividerModule } from "@angular/material/divider";
 	styleUrl: "./sidenav.component.scss"
 })
 export class SidenavComponent {
+	router = inject(Router);
+
 	sport = input.required<string>();
+
+	navigate(path: string[]) {
+		console.log(path)
+		this.router.navigate([this.sport(), ...path]);
+	}
 }

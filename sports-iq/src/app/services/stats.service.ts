@@ -9,7 +9,11 @@ export class StatsService extends HttpService {
     super(httpBase, 'stats');
   }
 
-  getPlayers<T>(sport: string): Observable<T[]> {
-    return this.get<T[]>(`${sport}/players`).pipe(take(1));
+  getPlayers<T>(sport: string, year: number): Observable<T[]> {
+    return this.get<T[]>(`${sport}/players/${year}`).pipe(take(1));
   }
+
+	getYears(sport: string): Observable<number[]> {
+		return this.get<number[]>(`${sport}/years`).pipe(take(1))
+	}
 }

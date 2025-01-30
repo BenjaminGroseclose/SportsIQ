@@ -17,8 +17,8 @@ class NBAController(@Autowired private val nbaService: NBAService) {
         return nbaService.getPlayers(year);
     }
 
-    @GetMapping("players/years")
-    fun getPlayerYears(): List<Int> {
+    @GetMapping("years")
+    fun getYears(): List<Int> {
         val retval = mutableListOf<Int>()
 
         for (i in 1991..2025) {

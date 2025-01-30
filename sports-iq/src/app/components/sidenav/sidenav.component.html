@@ -2,19 +2,19 @@
 	<mat-drawer mode="over" #drawer>
 		<h2>{{ sport() | uppercase }}</h2>
 		<mat-nav-list>
-			<mat-list-item [routerLink]="[sport, 'stats']">
+			<mat-list-item (click)="navigate(['stats'])">
 				<mat-icon matListItemIcon>analytics</mat-icon>
 				<div matListItemTitle>Stats</div>
 			</mat-list-item>
-			<mat-list-item [routerLink]="[sport, 'ranking']">
+			<mat-list-item (click)="navigate(['ranking'])">
 				<mat-icon matListItemIcon>emoji_events</mat-icon>
 				<div matListItemTitle>Rankings</div>
 			</mat-list-item>
-			<mat-list-item [routerLink]="[sport, 'fantasy']">
+			<mat-list-item (click)="navigate(['fantasy'])">
 				<mat-icon matListItemIcon>shield</mat-icon>
 				<div matListItemTitle>Fantasy</div>
 			</mat-list-item>
-			<mat-list-item [routerLink]="[sport, 'ai']">
+			<mat-list-item (click)="navigate(['ai'])">
 				<mat-icon svgIcon="network_intelligence" matListItemIcon></mat-icon>
 				<div matListItemTitle>AI</div>
 			</mat-list-item>

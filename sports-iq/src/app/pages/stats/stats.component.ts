@@ -1,12 +1,20 @@
 import { CommonModule } from "@angular/common";
-import { Component, Input, OnInit, signal } from "@angular/core";
+import { Component, computed, input, Input, signal } from "@angular/core";
 import { StatsService } from "../../services/stats.service";
 import { SidenavComponent } from "../../components/sidenav/sidenav.component";
 import { MatSelectModule } from "@angular/material/select";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatTableModule } from "@angular/material/table";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
-import { combineLatest } from "rxjs";
+import { Observable, of } from "rxjs";
+import { INBAPlayer } from "../../models/nba-player.model";
+import { rxResource } from '@angular/core/rxjs-interop';
+
+interface IRequest {
+	sport: string;
+	type: string;
+	year: number
+}
 
 @Component({
 	selector: "si-stats",
@@ -15,19 +23,41 @@ import { combineLatest } from "rxjs";
 	styleUrl: "./stats.component.scss",
 	providers: [StatsService]
 })
-export class StatsComponent implements OnInit {
-	@Input() sport = "";
+export class StatsComponent {
+	 sport = input.required<string>()
 
 	type = signal<string>("players");
-	year = signal<number>(-1);
-	loading = signal<boolean>(true);
-	displayedColumns = signal<string[]>([]);
+	year = signal<number>(2024); // TODO: Get current year
+	position = signal<string>("all");
+	displayedColumns = computed<string[]>(() => { 
+		const data = this.statsResource.value() ?? [];
+		console.log(data);
 
-	constructor(private statsService: StatsService) {
-		console.log(this.sport);
-	}
+		if (data.length === 0) {
+			return []
+		}
 
-	ngOnInit(): void {
-		// combineLatest([toObservable()])
+
+		return Object.keys(data[0]) 
+	});
+
+	statsResource = rxResource({
+		request: (): IRequest => { return { sport: this.sport(), type: this.type(), year: this.year() } },
+		loader:({ request }) => this.fetchStats(request)
+	})
+
+	yearsResource = rxResource({
+		request: (): string => { return this.sport() },
+		loader:({ request }) => this.statsService.getYears(request)
+	})
+
+	constructor(private statsService: StatsService) { }
+
+	fetchStats(request: IRequest): Observable<any[]> {
+		if (request.type === 'players') {
+			return this.statsService.getPlayers<INBAPlayer>(request.sport, request.year)
+		}
+
+		return of([])
 	}
 }
