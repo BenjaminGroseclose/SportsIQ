@@ -17,7 +17,7 @@ data class NBAPlayer(
     @Field("minutes-per-game") val minutesPerGame: Double?,
     @Field("field-goals") val fieldGoals: Double?,
     @Field("field-goal-attempts") val fieldGoalAttempts: Double?,
-    @Field("field-goal-percent") val fieldGoalPercent: Double?,
+    @Field("field-point-percent") val fieldGoalPercent: Double?,
     @Field("three-points") val threePoints: Double?,
     @Field("three-point-attempts") val threePointAttempts: Double?,
     @Field("three-point-percent") val threePointPercent: Double?,
@@ -36,6 +36,6 @@ data class NBAPlayer(
     val turnovers: Double?,
     @Field("personal-fouls") val personalFouls: Double?,
     @Field("points-per-game") val pointsPerGame: Double?,
-    val year: String?
+    val year: Number?
 ) {
 }
