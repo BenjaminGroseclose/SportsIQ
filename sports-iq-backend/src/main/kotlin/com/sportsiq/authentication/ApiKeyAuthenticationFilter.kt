@@ -16,9 +16,14 @@ class ApiKeyAuthenticationFilter: OncePerRequestFilter() {
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
-        val apiKey: String = request.getHeader("X-API-KEY")
+        if (request.method == "OPTIONS") {
+            filterChain.doFilter(request, response)
+            return;
+        }
 
-        if (apiKey.isNotEmpty() && VALID_API_KEY == apiKey) {
+        val apiKey: String? = request.getHeader("X-API-KEY")
+
+        if (!apiKey.isNullOrEmpty() && VALID_API_KEY == apiKey) {
             val auth = ApiKeyAuthentication(apiKey)
             SecurityContextHolder.getContext().authentication = auth
         }
