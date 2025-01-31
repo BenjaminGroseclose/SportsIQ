@@ -22,6 +22,6 @@ class NBAController(@Autowired private val nbaService: NBAService) {
             retval.add(i)
         }
 
-        return retval
+        return retval.sortedByDescending { it }
     }
 }

@@ -10,14 +10,17 @@
 					<mat-option value="players">Players</mat-option>
 				</mat-select>
 			</mat-form-field>
-			@if (type() === 'players') {
-			<mat-form-field appearance="outline">
-				<mat-label>Positions</mat-label>
-				<mat-select [value]="position()" (selectionChange)="position.set($event.value)">
-					<mat-option value="all">All</mat-option>
-				</mat-select>
-			</mat-form-field>
-		}
+			@if (type() === "players" && yearsResource.status() === 4) {
+				<mat-form-field appearance="outline">
+					<mat-label>Positions</mat-label>
+					<mat-select [value]="position()" (selectionChange)="position.set($event.value)">
+						<mat-option [value]="-1">All</mat-option>
+						@for (year of yearsResource.value(); track $index) {
+							<mat-option [value]="year">{{ year }}</mat-option>
+						}
+					</mat-select>
+				</mat-form-field>
+			}
 
 			<mat-form-field appearance="outline">
 				<mat-label>Year</mat-label>
@@ -32,11 +35,20 @@
 
 		@if (statsResource.isLoading()) {
 			<mat-spinner></mat-spinner>
-		} @else {
-			<table mat-table class="mat-elevation-z8">
-				<tr mat-header-row *matHeaderRowDef="displayedColumns()"></tr>
-				<tr mat-row *matRowDef="let row; columns: displayedColumns()"></tr>
-			</table>
+		} @else if (statsResource.status() === 4) {
+			<div class="content">
+				<table mat-table [dataSource]="statsResource.value() ?? []" recycleRows class="mat-elevation-z8">
+					@for (column of displayedColumns(); track column) {
+						<ng-container matColumnDef="{{ column }}">
+							<th mat-header-cell *matHeaderCellDef>{{ column }}</th>
+							<td mat-cell *matCellDef="let element">{{ element[column] }}</td>
+						</ng-container>
+					}
+
+					<tr mat-header-row *matHeaderRowDef="displayedColumns()"></tr>
+					<tr mat-row *matRowDef="let row; columns: displayedColumns()"></tr>
+				</table>
+			</div>
 		}
 	</div>
 </si-sidenav>
