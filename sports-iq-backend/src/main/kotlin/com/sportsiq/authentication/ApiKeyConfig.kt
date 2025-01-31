@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import org.springframework.web.cors.CorsUtils
 
 @Configuration
 @EnableWebSecurity
@@ -17,7 +18,10 @@ class ApiKeyConfig {
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         http.csrf({ csrf -> csrf.disable() })
             .authorizeHttpRequests({
-                x -> x.requestMatchers("/**").authenticated()
+                request -> request.requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
+            })
+            .authorizeHttpRequests({
+                request -> request.requestMatchers("/**").authenticated()
             })
             .httpBasic(Customizer.withDefaults())
             .sessionManagement({ session -> session.sessionCreationPolicy((SessionCreationPolicy.STATELESS)) })
