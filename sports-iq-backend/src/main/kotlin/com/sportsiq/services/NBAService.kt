@@ -11,8 +11,8 @@ class NBAService(@Autowired private val nbaPlayerRepository: NBAPlayerRepository
         val players = nbaPlayerRepository.findAll()
 
         return when (year) {
-            -1 -> players
-            else -> players.filter { x: NBAPlayer -> x.year == year }
+            -1 -> players.sortedByDescending { it.pointsPerGame }
+            else -> players.filter { x: NBAPlayer -> x.year == year }.sortedByDescending { it.pointsPerGame }
         }
     }
 }

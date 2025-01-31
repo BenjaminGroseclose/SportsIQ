@@ -7,11 +7,13 @@ import { provideHttpClient, withFetch } from "@angular/common/http";
 import { environment } from "../environments/environment";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 
+// console.log(environment)
+
 export const appConfig: ApplicationConfig = {
 	providers: [
 		provideZoneChangeDetection({ eventCoalescing: true }),
 		provideRouter(routes, withComponentInputBinding()),
-		environment.env === "dev" ? [] : provideClientHydration(withEventReplay()),
+		// environment.env === "dev" ? [] : provideClientHydration(withEventReplay()),
 		provideAnimationsAsync(),
 		provideHttpClient(withFetch()),
 		{
