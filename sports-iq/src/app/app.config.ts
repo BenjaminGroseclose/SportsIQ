@@ -13,7 +13,7 @@ export const appConfig: ApplicationConfig = {
 	providers: [
 		provideZoneChangeDetection({ eventCoalescing: true }),
 		provideRouter(routes, withComponentInputBinding()),
-		// environment.env === "dev" ? [] : provideClientHydration(withEventReplay()),
+		// provideClientHydration(withEventReplay()),
 		provideAnimationsAsync(),
 		provideHttpClient(withFetch()),
 		{

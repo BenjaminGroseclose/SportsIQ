@@ -1,1 +1,23 @@
-<p>stats-filter works!</p>
+<mat-drawer-container [hasBackdrop]="true">
+	<mat-drawer mode="over" position="end" #drawer>
+		<h2>{{ title() }} Filters</h2>
+
+		<div class="filters">
+			@for (column of columns(); track $index) {
+				<div class="filter">
+					<span>{{ column }}</span>
+					<mat-form-field appearance="outline">
+						<input matInput type="text" />
+					</mat-form-field>
+				</div>
+			}
+		</div>
+	</mat-drawer>
+	<mat-drawer-content>
+		<div class="filter-header">
+			<div></div>
+			<button mat-stroked-button (click)="drawer.toggle()">Filters</button>
+		</div>
+		<ng-content></ng-content>
+	</mat-drawer-content>
+</mat-drawer-container>

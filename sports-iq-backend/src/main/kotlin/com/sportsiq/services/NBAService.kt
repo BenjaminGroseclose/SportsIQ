@@ -10,7 +10,7 @@ class NBAService(@Autowired private val nbaPlayerRepository: NBAPlayerRepository
     fun getPlayers(year: Number): List<NBAPlayer> {
         return when (year) {
             -1 -> nbaPlayerRepository.findAll().sortedByDescending { it.pointsPerGame }
-            else -> nbaPlayerRepository.findAllByYear(year).sortedByDescending { it.pointsPerGame }.take(10)
+            else -> nbaPlayerRepository.findAllByYear(year).sortedByDescending { it.pointsPerGame }
         }
     }
 }

@@ -7,10 +7,11 @@ import { MatTableDataSource, MatTableModule } from "@angular/material/table";
 import { StatsService } from "../../../services/stats.service";
 import { INBAPlayer } from "../../../models";
 import { of } from "rxjs";
+import { StatsFilterComponent } from "../stats-filter/stats-filter.component";
 
 @Component({
 	selector: "si-nba-player-table",
-	imports: [CommonModule, MatTableModule, MatProgressSpinnerModule, MatPaginatorModule],
+	imports: [CommonModule, MatTableModule, MatProgressSpinnerModule, MatPaginatorModule, StatsFilterComponent],
 	templateUrl: "./nba-player-table.component.html",
 	styleUrl: "./nba-player-table.component.scss"
 })

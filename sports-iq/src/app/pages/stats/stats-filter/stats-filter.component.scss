@@ -1,0 +1,21 @@
+h2 {
+	margin: 8px auto;
+	width: fit-content;
+}
+
+.filter-header {
+	display: flex;
+	justify-content: space-between;
+}
+
+.filters {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	margin: 0 16px;
+
+	.filter {
+		display: flex;
+		justify-content: space-between;
+	}
+}
