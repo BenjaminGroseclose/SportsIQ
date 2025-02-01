@@ -1,25 +1,25 @@
-import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, computed, inject, input, signal, ViewChild } from '@angular/core';
-import { rxResource } from '@angular/core/rxjs-interop';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { StatsService } from '../../../services/stats.service';
-import { INBAPlayer } from '../../../models';
-import { of } from 'rxjs';
+import { CommonModule } from "@angular/common";
+import { AfterViewInit, Component, computed, inject, input, signal, ViewChild } from "@angular/core";
+import { rxResource } from "@angular/core/rxjs-interop";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
+import { MatTableDataSource, MatTableModule } from "@angular/material/table";
+import { StatsService } from "../../../services/stats.service";
+import { INBAPlayer } from "../../../models";
+import { of } from "rxjs";
 
 @Component({
-  selector: 'si-nba-player-table',
-  imports: [CommonModule, MatTableModule, MatProgressSpinnerModule, MatPaginatorModule],
-  templateUrl: './nba-player-table.component.html',
-  styleUrl: './nba-player-table.component.scss'
+	selector: "si-nba-player-table",
+	imports: [CommonModule, MatTableModule, MatProgressSpinnerModule, MatPaginatorModule],
+	templateUrl: "./nba-player-table.component.html",
+	styleUrl: "./nba-player-table.component.scss"
 })
 export class NBAPlayerTableComponent implements AfterViewInit {
-	statsService = inject(StatsService)
+	statsService = inject(StatsService);
 
 	@ViewChild(MatPaginator) paginator: MatPaginator = <MatPaginator>{};
 
-	year = input.required<number | null>()
+	year = input.required<number>();
 	position = signal<string>("all");
 	viewInit = signal<boolean>(false);
 
@@ -34,14 +34,14 @@ export class NBAPlayerTableComponent implements AfterViewInit {
 		dataSource.paginator = this.paginator;
 
 		return dataSource;
-	})
+	});
 
 	displayColumns = [
 		"Name",
 		"Position",
 		"Age",
 		"Team",
-		"G / GS",
+		"Games",
 		"Points",
 		"FG%",
 		"3P%",
@@ -56,12 +56,14 @@ export class NBAPlayerTableComponent implements AfterViewInit {
 		"PF"
 	];
 
-  ngAfterViewInit() {
-    this.viewInit.set(true);
-  }
+	ngAfterViewInit() {
+		this.viewInit.set(true);
+	}
 
 	statsResource = rxResource<INBAPlayer[], number | null>({
-		request: () => { return  this.year(); },
-		loader: ({ request }) => request == null ? of([]) : this.statsService.getPlayers<INBAPlayer>('nba', request)
+		request: () => {
+			return this.year();
+		},
+		loader: ({ request }) => (request == null ? of([]) : this.statsService.getPlayers<INBAPlayer>("nba", request))
 	});
 }

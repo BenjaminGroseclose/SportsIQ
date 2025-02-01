@@ -19,25 +19,27 @@ import { take } from "rxjs";
 export class StatsComponent {
 	sport = input.required<string>();
 
-	statsService = inject(StatsService)
+	statsService = inject(StatsService);
 
-	type = signal<'players' | 'teams'>("players");
-	year = signal<number | null>(null);
+	type = signal<"players" | "teams">("players");
+	year = signal<number>(2025); // TODO: Get current year programatically
 
 	tableType = computed<StatsTableType>(() => {
 		const type = this.type();
 
 		switch (this.sport()) {
-			case 'nba':
-				return type === 'players' ? StatsTableType.NBA_Player : StatsTableType.NBA_Team
+			case "nba":
+				return type === "players" ? StatsTableType.NBA_Player : StatsTableType.NBA_Team;
 
 			default:
-				return StatsTableType.Unknown
+				return StatsTableType.Unknown;
 		}
-	})
+	});
 
 	yearsResource = rxResource<number[], string>({
-		request: () => { return this.sport(); },
+		request: () => {
+			return this.sport();
+		},
 		loader: ({ request }) => this.statsService.getYears(request).pipe(take(1))
 	});
 }

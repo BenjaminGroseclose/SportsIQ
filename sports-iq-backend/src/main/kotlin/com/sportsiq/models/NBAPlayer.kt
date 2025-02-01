@@ -12,7 +12,7 @@ data class NBAPlayer(
     val position: String?,
     val age: Int?,
     val team: String?,
-    val games: Int?,
+    val game: Int?,
     @Field("game-starts") val gameStarts: Int?,
     @Field("minutes-per-game") val minutesPerGame: Double?,
     @Field("field-goals") val fieldGoals: Double?,
@@ -33,7 +33,7 @@ data class NBAPlayer(
     val assists: Double?,
     val steals: Double?,
     val blocks: Double?,
-    val turnovers: Double?,
+    val turnover: Double?,
     @Field("personal-fouls") val personalFouls: Double?,
     @Field("points-per-game") val pointsPerGame: Double?,
     val year: Number?
