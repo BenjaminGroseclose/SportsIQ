@@ -1,7 +1,7 @@
 @if (statsResource.isLoading()) {
 	<mat-spinner class="center-spinner"></mat-spinner>
 } @else {
-	<si-stats-filter title="NBA Players" [columns]="displayColumns">
+	<si-stats-filter title="NBA Players" [columns]="filterColumns()" (updateFilter)="updateFilterColumn($event)">
 		<table mat-table [dataSource]="dataSource() ?? []" recycleRows class="mat-elevation-z8">
 			<ng-container matColumnDef="Name">
 				<th mat-header-cell *matHeaderCellDef>Name</th>
@@ -35,7 +35,9 @@
 
 			<ng-container matColumnDef="FG%">
 				<th mat-header-cell *matHeaderCellDef>FG%</th>
-				<td mat-cell *matCellDef="let element">{{ element.fieldGoalPercent | percent: "1.1-1" }}</td>
+				<td mat-cell *matCellDef="let element" [matTooltip]="element.fieldGoals + '/' + element.fieldGoalAttempts">
+					{{ element.fieldGoalPercent | percent: "1.1-1" }}
+				</td>
 			</ng-container>
 
 			<ng-container matColumnDef="3P%">
@@ -94,4 +96,4 @@
 	</si-stats-filter>
 }
 
-<mat-paginator [pageSizeOptions]="[15, 25, 50]" showFirstLastButtons aria-label="Select page of NBA data"></mat-paginator>
+<mat-paginator [pageSizeOptions]="[25, 50, 100]" showFirstLastButtons aria-label="Select page of NBA data"></mat-paginator>
