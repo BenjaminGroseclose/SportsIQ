@@ -1,4 +1,11 @@
 :host {
+	.additional-filters {
+		display: flex;
+		gap: 8px;
+		justify-content: right;
+		margin-bottom: 16px;
+	}
+
 	.center-spinner {
 		margin: 32px auto;
 	}

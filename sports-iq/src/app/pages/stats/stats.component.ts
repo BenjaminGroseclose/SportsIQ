@@ -8,10 +8,11 @@ import { NBAPlayerTableComponent } from "./nba-player-table/nba-player-table.com
 import { StatsTableType } from "../../models";
 import { rxResource } from "@angular/core/rxjs-interop";
 import { take } from "rxjs";
+import { NBATeamTableComponent } from "./nba-team-table/nba-team-table.component";
 
 @Component({
 	selector: "si-stats",
-	imports: [CommonModule, SidenavComponent, MatSelectModule, MatFormFieldModule, NBAPlayerTableComponent],
+	imports: [CommonModule, SidenavComponent, MatSelectModule, MatFormFieldModule, NBAPlayerTableComponent, NBATeamTableComponent],
 	templateUrl: "./stats.component.html",
 	styleUrl: "./stats.component.scss",
 	providers: [StatsService]
@@ -22,7 +23,7 @@ export class StatsComponent {
 	statsService = inject(StatsService);
 
 	type = signal<"players" | "teams">("players");
-	year = signal<number>(2025); // TODO: Get current year programatically
+	year = signal<number[]>([2025]); // TODO: Get current year programatically
 
 	tableType = computed<StatsTableType>(() => {
 		const type = this.type();

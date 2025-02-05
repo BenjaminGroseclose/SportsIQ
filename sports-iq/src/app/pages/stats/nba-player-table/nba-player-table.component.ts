@@ -6,13 +6,24 @@ import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
 import { MatTableDataSource, MatTableModule } from "@angular/material/table";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { StatsService } from "../../../services/stats.service";
-import { INBAPlayer } from "../../../models";
+import { NBAPlayer } from "../../../models";
 import { of } from "rxjs";
 import { StatsFilterComponent } from "../stats-filter/stats-filter.component";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatSelectModule } from "@angular/material/select";
 
 @Component({
 	selector: "si-nba-player-table",
-	imports: [CommonModule, MatTableModule, MatProgressSpinnerModule, MatPaginatorModule, StatsFilterComponent, MatTooltipModule],
+	imports: [
+		CommonModule,
+		MatTableModule,
+		MatProgressSpinnerModule,
+		MatPaginatorModule,
+		StatsFilterComponent,
+		MatTooltipModule,
+		MatFormFieldModule,
+		MatSelectModule
+	],
 	templateUrl: "./nba-player-table.component.html",
 	styleUrl: "./nba-player-table.component.scss"
 })
@@ -21,8 +32,9 @@ export class NBAPlayerTableComponent implements AfterViewInit {
 
 	@ViewChild(MatPaginator) paginator: MatPaginator = <MatPaginator>{};
 
-	year = input.required<number>();
-	position = signal<string>("all");
+	years = input.required<number[]>();
+
+	position = signal<string[]>([]);
 	viewInit = signal<boolean>(false);
 	filterColumns = signal<Map<string, number>>(
 		new Map([
@@ -42,19 +54,25 @@ export class NBAPlayerTableComponent implements AfterViewInit {
 		])
 	);
 
-	dataSource = computed<MatTableDataSource<INBAPlayer, MatPaginator> | null>(() => {
+	dataSource = computed<MatTableDataSource<NBAPlayer, MatPaginator> | null>(() => {
 		if (this.statsResource.status() !== 4 || !this.viewInit()) {
 			return null;
 		}
 
-		this.statsResource.value();
+		let stats = this.statsResource.value();
+		const position = this.position();
 
-		const dataSource = new MatTableDataSource<INBAPlayer>(this.statsResource.value());
+		if (position != null && position.length > 0) {
+			stats = stats?.filter((x) => x.position != null && position.includes(x.position));
+		}
+
+		const dataSource = new MatTableDataSource<NBAPlayer>(stats);
 		dataSource.paginator = this.paginator;
 
 		return dataSource;
 	});
 
+	positions = ["PG", "SG", "SF", "PF", "C"];
 	displayColumns = [
 		"Name",
 		"Position",
@@ -75,11 +93,11 @@ export class NBAPlayerTableComponent implements AfterViewInit {
 		"PF"
 	];
 
-	statsResource = rxResource<INBAPlayer[], number | null>({
+	statsResource = rxResource<NBAPlayer[], number[]>({
 		request: () => {
-			return this.year();
+			return this.years();
 		},
-		loader: ({ request }) => (request == null ? of([]) : this.statsService.getPlayers<INBAPlayer>("nba", request))
+		loader: ({ request }) => (request == null ? of([]) : this.statsService.getPlayers<NBAPlayer>("nba", request))
 	});
 
 	ngAfterViewInit() {

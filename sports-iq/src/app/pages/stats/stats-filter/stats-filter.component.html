@@ -1,7 +1,7 @@
 <mat-drawer-container [hasBackdrop]="true">
 	<mat-drawer mode="over" position="end" #drawer>
 		<h2>
-			{{ title() }} Filters
+			{{ title() }} Weights
 			<mat-icon
 				matTooltip="Adjust filters 'weights' to rank players / teams as you see fit. Increasing column's number weights that stat more important
 			while lowerly will decrease it's importance in the overall rankings"
@@ -32,7 +32,7 @@
 	<mat-drawer-content>
 		<div class="filter-header">
 			<div></div>
-			<button mat-stroked-button (click)="drawer.toggle()">Filters</button>
+			<button mat-stroked-button (click)="drawer.toggle()">Weighting</button>
 		</div>
 		<ng-content></ng-content>
 	</mat-drawer-content>

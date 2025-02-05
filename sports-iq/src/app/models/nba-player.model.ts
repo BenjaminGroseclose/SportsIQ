@@ -1,10 +1,10 @@
-export interface INBAPlayer {
-	id?: string;
+export interface NBAPlayer {
+	id?: any;
 	player?: string;
 	position?: string;
 	age?: number;
 	team?: string;
-	game?: number;
+	games?: number;
 	gameStarts?: number;
 	minutesPerGame?: number;
 	fieldGoals?: number;

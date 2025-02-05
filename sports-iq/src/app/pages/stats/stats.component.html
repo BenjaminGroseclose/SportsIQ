@@ -12,8 +12,7 @@
 			</mat-form-field>
 			<mat-form-field appearance="outline">
 				<mat-label>Year</mat-label>
-				<mat-select [value]="year()" (selectionChange)="year.set($event.value)" placeholder="Select a Year">
-					<mat-option [value]="-1">All</mat-option>
+				<mat-select [value]="year()" (selectionChange)="year.set($event.value)" placeholder="Select a Year" multiple>
 					@for (year of yearsResource.value(); track $index) {
 						<mat-option [value]="year">{{ year }}</mat-option>
 					}
@@ -24,10 +23,11 @@
 		<div class="content">
 			@switch (tableType()) {
 				@case (0) {
-					<si-nba-player-table [year]="year()"></si-nba-player-table>
+					<si-nba-player-table [years]="year()"></si-nba-player-table>
 				}
-
-
+				@case (1) {
+					<si-nba-team-table [years]="year()"></si-nba-team-table>
+				}
 			}
 		</div>
 	</div>
