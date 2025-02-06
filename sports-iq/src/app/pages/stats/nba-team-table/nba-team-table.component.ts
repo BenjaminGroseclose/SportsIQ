@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { AfterViewInit, Component, computed, inject, input, signal, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, computed, inject, input, signal } from "@angular/core";
 import { StatsService } from "../../../services";
 import { rxResource } from "@angular/core/rxjs-interop";
 import { NBATeam } from "../../../models";
@@ -7,11 +7,11 @@ import { of } from "rxjs";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatTableDataSource, MatTableModule } from "@angular/material/table";
 import { StatsFilterComponent } from "../stats-filter/stats-filter.component";
-import { MatPaginator } from "@angular/material/paginator";
+import { MatTooltipModule } from "@angular/material/tooltip";
 
 @Component({
 	selector: "si-nba-team-table",
-	imports: [CommonModule, MatProgressSpinnerModule, MatTableModule, StatsFilterComponent],
+	imports: [CommonModule, MatProgressSpinnerModule, MatTableModule, StatsFilterComponent, MatTooltipModule],
 	templateUrl: "./nba-team-table.component.html",
 	styleUrl: "./nba-team-table.component.scss"
 })
@@ -27,6 +27,12 @@ export class NBATeamTableComponent implements AfterViewInit {
 		}
 
 		let stats = this.statsResource.value();
+
+		if (stats == null) {
+			return null;
+		}
+
+		console.log(stats[0]);
 
 		return new MatTableDataSource<NBATeam>(stats);
 	});
@@ -50,6 +56,7 @@ export class NBATeamTableComponent implements AfterViewInit {
 	);
 
 	displayColumns = [
+		"Rank",
 		"Team",
 		"Record",
 		"Expected Record",
@@ -62,14 +69,15 @@ export class NBATeamTableComponent implements AfterViewInit {
 		"Pace",
 		"Free Throw Rate",
 		"Three point Rate",
+		"True Shooting %",
 		"eFG%",
-		"Turnover%",
-		"OREB %",
-		"Free Throws Per Field Goal",
+		"TO%",
+		"ORB%",
+		"FT/FG",
 		"Defensive eFG%",
-		"Defensive Turnover%",
-		"Defensive OREB %",
-		"DefensiveFree Throws Per Field Goal"
+		"Defensive TO%",
+		"DRB%",
+		"Defensive FT/FG"
 	];
 
 	statsResource = rxResource<NBATeam[], number[]>({

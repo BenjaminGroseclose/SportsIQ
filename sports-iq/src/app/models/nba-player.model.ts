@@ -19,6 +19,7 @@ export interface NBAPlayer {
 	efieldGoalPercent?: number;
 	freeThrow?: number;
 	freeThrowAttempts?: number;
+	freeThrowPercent?: number;
 	offensiveRebounds?: number;
 	defensiveRebounds?: number;
 	totalRebounds?: number;
@@ -28,5 +29,5 @@ export interface NBAPlayer {
 	turnover?: number;
 	personalFouls?: number;
 	pointsPerGame?: number;
-	year?: string;
+	year?: number;
 }

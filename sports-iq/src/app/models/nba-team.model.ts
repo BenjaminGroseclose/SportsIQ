@@ -4,7 +4,7 @@ export interface NBATeam {
 	wins?: number | null;
 	loses?: number | null;
 	expectedWins?: number | null;
-	expectedLosses?: number | null;
+	expectedLoses?: number | null;
 	marginOfVictory?: number | null;
 	strengthOfSchedule?: number | null;
 	simpleRatingSystem?: number | null;
@@ -15,7 +15,7 @@ export interface NBATeam {
 	freeThrowRate?: number | null;
 	threePointRate?: number | null;
 	trueShootingPercent?: number | null;
-	eFieldGoalPercent?: number | null;
+	efieldGoalPercent?: number | null;
 	turnoverPercent?: number | null;
 	offensiveReboundPercent?: number | null;
 	freeThrowPerFieldGoal?: number | null;

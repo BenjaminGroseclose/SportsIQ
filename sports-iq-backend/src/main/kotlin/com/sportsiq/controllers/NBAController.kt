@@ -30,4 +30,9 @@ class NBAController(@Autowired private val nbaService: NBAService) {
 
         return retval.sortedByDescending { it }
     }
+
+    @GetMapping("positions")
+    fun getPositions(): List<String> {
+        return listOf("PG", "SG", "SF", "PF", "C")
+    }
 }

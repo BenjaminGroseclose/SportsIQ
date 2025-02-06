@@ -12,7 +12,7 @@ data class NBATeam (
     val wins: Int?,
     val loses: Int?,
     val expectedWins: Int?,
-    val expectedLosses: Int?,
+    val expectedLoses: Int?,
     val marginOfVictory: Double?,
     val strengthOfSchedule: Double?,
     val simpleRatingSystem: Double?,

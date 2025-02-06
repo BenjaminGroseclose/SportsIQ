@@ -6,11 +6,28 @@ import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
 import { MatTableDataSource, MatTableModule } from "@angular/material/table";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { StatsService } from "../../../services/stats.service";
-import { NBAPlayer } from "../../../models";
+import { Column, NBAPlayer } from "../../../models";
 import { of } from "rxjs";
 import { StatsFilterComponent } from "../stats-filter/stats-filter.component";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatSelectModule } from "@angular/material/select";
+import { compare } from "../../../functions";
+
+const columnPropertyMap = new Map<string, string>([
+	["Games", "games"],
+	["Points", "pointsPerGame"],
+	["FG%", "fieldGoalPercent"],
+	["3P%", "threePointPercent"],
+	["2P%", "twoPointPercent"],
+	["eFG%", "efieldGoalPercent"],
+	["FT%", "freeThrowPercent"],
+	["Rebounds", "totalRebounds"],
+	["Assists", "assists"],
+	["Steals", "steals"],
+	["Blocks", "blocks"],
+	["Turnovers", "turnover"],
+	["PF", "personalFouls"]
+]);
 
 @Component({
 	selector: "si-nba-player-table",
@@ -33,25 +50,40 @@ export class NBAPlayerTableComponent implements AfterViewInit {
 	@ViewChild(MatPaginator) paginator: MatPaginator = <MatPaginator>{};
 
 	years = input.required<number[]>();
+	positions = input<string[]>();
 
-	position = signal<string[]>([]);
+	columns: Column[] = [
+		{ name: "Rank", showInFilters: false },
+		{ name: "Name", showInFilters: false },
+		{ name: "Position", showInFilters: false },
+		{ name: "Age", showInFilters: false },
+		{ name: "Team", showInFilters: false },
+		{ name: "Games", showInFilters: true },
+		{ name: "Points", showInFilters: true },
+		{ name: "FG%", showInFilters: true },
+		{ name: "3P%", showInFilters: true },
+		{ name: "2P%", showInFilters: true },
+		{ name: "eFG%", showInFilters: true },
+		{ name: "FT%", showInFilters: true },
+		{ name: "Rebounds", showInFilters: true },
+		{ name: "Assists", showInFilters: true },
+		{ name: "Steals", showInFilters: true },
+		{ name: "Blocks", showInFilters: true },
+		{ name: "Turnovers", showInFilters: true },
+		{ name: "PF", showInFilters: true }
+	];
+
+	displayColumns = this.columns.map((x) => x.name);
+
 	viewInit = signal<boolean>(false);
-	filterColumns = signal<Map<string, number>>(
-		new Map([
-			["Game", 1],
-			["Points", 1],
-			["FG%", 1],
-			["3P%", 1],
-			["2P%", 1],
-			["eFG%", 1],
-			["FT%", 1],
-			["Rebounds", 1],
-			["Assists", 1],
-			["Steals", 1],
-			["Blocks", 1],
-			["Turnovers", 1],
-			["PF", 1]
-		])
+	columnWeights = signal<Map<string, number>>(
+		new Map(
+			this.columns
+				.filter((x) => x.showInFilters)
+				.map((x) => {
+					return [x.name, 1];
+				})
+		)
 	);
 
 	dataSource = computed<MatTableDataSource<NBAPlayer, MatPaginator> | null>(() => {
@@ -60,38 +92,41 @@ export class NBAPlayerTableComponent implements AfterViewInit {
 		}
 
 		let stats = this.statsResource.value();
-		const position = this.position();
+		const position = this.positions();
+
+		if (stats == null) {
+			return null;
+		}
 
 		if (position != null && position.length > 0) {
 			stats = stats?.filter((x) => x.position != null && position.includes(x.position));
 		}
+
+		const columnWeights = this.columnWeights();
+		console.log(columnWeights);
+		console.log("SORTING");
+		stats = stats.sort((a: any, b: any) => {
+			let sortValue = 0;
+
+			columnWeights.forEach((weight, column) => {
+				if (weight === 1) {
+					return;
+				}
+
+				const aValue = a[columnPropertyMap.get(column)!!];
+				const bValue = b[columnPropertyMap.get(column)!!];
+
+				sortValue += compare(aValue, bValue, false) * weight;
+			});
+
+			return sortValue;
+		});
 
 		const dataSource = new MatTableDataSource<NBAPlayer>(stats);
 		dataSource.paginator = this.paginator;
 
 		return dataSource;
 	});
-
-	positions = ["PG", "SG", "SF", "PF", "C"];
-	displayColumns = [
-		"Name",
-		"Position",
-		"Age",
-		"Team",
-		"Games",
-		"Points",
-		"FG%",
-		"3P%",
-		"2P%",
-		"eFG%",
-		"FT%",
-		"Rebounds",
-		"Assists",
-		"Steals",
-		"Blocks",
-		"Turnovers",
-		"PF"
-	];
 
 	statsResource = rxResource<NBAPlayer[], number[]>({
 		request: () => {
@@ -105,8 +140,9 @@ export class NBAPlayerTableComponent implements AfterViewInit {
 	}
 
 	updateFilterColumn(event: { key: string; value: number }): void {
-		this.filterColumns.update((x) => x.set(event.key, event.value));
+		const weights = this.columnWeights();
+		weights.set(event.key, event.value);
 
-		console.log(this.filterColumns());
+		this.columnWeights.set(new Map(weights));
 	}
 }

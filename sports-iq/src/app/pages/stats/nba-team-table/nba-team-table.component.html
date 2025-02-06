@@ -3,12 +3,132 @@
 } @else {
 	<si-stats-filter title="Teams" [columns]="filterColumns()">
 		<table mat-table [dataSource]="dataSource() ?? []" recycleRows class="mat-elevation-z8">
+			<ng-container matColumnDef="Rank">
+				<th mat-header-cell *matHeaderCellDef class="border-left"></th>
+				<td mat-cell *matCellDef="let element; let i = index">{{ i + 1 }}</td>
+			</ng-container>
+
 			<ng-container matColumnDef="Team">
 				<th mat-header-cell *matHeaderCellDef>Team</th>
 				<td mat-cell *matCellDef="let element">{{ element.team }}</td>
 			</ng-container>
 
-			<tr mat-header-row *matHeaderRowDef="displayColumns"></tr>
+			<ng-container matColumnDef="Record">
+				<th mat-header-cell *matHeaderCellDef>Record</th>
+				<td mat-cell *matCellDef="let element">{{ element.wins }} / {{ element.loses }}</td>
+			</ng-container>
+
+			<ng-container matColumnDef="Expected Record">
+				<th mat-header-cell *matHeaderCellDef>Expected Record</th>
+				<td mat-cell *matCellDef="let element">{{ element.expectedWins }} / {{ element.expectedLoses }}</td>
+			</ng-container>
+
+			<ng-container matColumnDef="Margin of Victory">
+				<th mat-header-cell *matHeaderCellDef matTooltip="Margin of Victory">MOV</th>
+				<td mat-cell *matCellDef="let element">{{ element.marginOfVictory }}</td>
+			</ng-container>
+
+			<ng-container matColumnDef="SOS">
+				<th mat-header-cell *matHeaderCellDef matTooltip="Strength of Schedule">SOS</th>
+				<td mat-cell *matCellDef="let element">{{ element.strengthOfSchedule }}</td>
+			</ng-container>
+
+			<ng-container matColumnDef="SRS">
+				<th mat-header-cell *matHeaderCellDef matTooltip="Simple Rating System">SRS</th>
+				<td mat-cell *matCellDef="let element">{{ element.simpleRatingSystem }}</td>
+			</ng-container>
+
+			<ng-container matColumnDef="Offensive Rating">
+				<th mat-header-cell *matHeaderCellDef matTooltip="Offensive Rating">ORtg</th>
+				<td mat-cell *matCellDef="let element">{{ element.offensiveRating }}</td>
+			</ng-container>
+
+			<ng-container matColumnDef="Defensive Rating">
+				<th mat-header-cell *matHeaderCellDef matTooltip="Defensive Rating">DRtg</th>
+				<td mat-cell *matCellDef="let element">{{ element.defensiveRating }}</td>
+			</ng-container>
+
+			<ng-container matColumnDef="Net Rating">
+				<th mat-header-cell *matHeaderCellDef matTooltip="Net Rating">NRtg</th>
+				<td mat-cell *matCellDef="let element" [ngClass]="{ positive: element.netRating > 0, negative: element.netRating < 0 }">
+					{{ element.netRating > 0 ? "+" : "" }}{{ element.netRating }}
+				</td>
+			</ng-container>
+
+			<ng-container matColumnDef="Pace">
+				<th mat-header-cell *matHeaderCellDef>Pace</th>
+				<td mat-cell *matCellDef="let element">{{ element.pace }}</td>
+			</ng-container>
+
+			<ng-container matColumnDef="Free Throw Rate">
+				<th mat-header-cell *matHeaderCellDef>FT Rate</th>
+				<td mat-cell *matCellDef="let element">{{ element.freeThrowRate | percent: "1.1-1" }}</td>
+			</ng-container>
+
+			<ng-container matColumnDef="Three point Rate">
+				<th mat-header-cell *matHeaderCellDef>3P Rate</th>
+				<td mat-cell *matCellDef="let element">{{ element.threePointRate | percent: "1.1-1" }}</td>
+			</ng-container>
+
+			<ng-container matColumnDef="True Shooting %">
+				<th mat-header-cell *matHeaderCellDef>TS%</th>
+				<td mat-cell *matCellDef="let element">{{ element.trueShootingPercent | percent: "1.1-1" }}</td>
+			</ng-container>
+
+			<ng-container matColumnDef="eFG%">
+				<th mat-header-cell *matHeaderCellDef class="border-left">eFG%</th>
+				<td mat-cell *matCellDef="let element">{{ element.efieldGoalPercent | percent: "1.1-1" }}</td>
+			</ng-container>
+
+			<ng-container matColumnDef="TO%">
+				<th mat-header-cell *matHeaderCellDef>TO%</th>
+				<td mat-cell *matCellDef="let element">{{ element.turnoverPercent }}%</td>
+			</ng-container>
+
+			<ng-container matColumnDef="ORB%">
+				<th mat-header-cell *matHeaderCellDef>ORB%</th>
+				<td mat-cell *matCellDef="let element">{{ element.offensiveReboundPercent }}%</td>
+			</ng-container>
+
+			<ng-container matColumnDef="FT/FG">
+				<th mat-header-cell *matHeaderCellDef class="border-right">FT/FG</th>
+				<td mat-cell *matCellDef="let element">{{ element.freeThrowPerFieldGoal }}</td>
+			</ng-container>
+
+			<ng-container matColumnDef="Defensive eFG%">
+				<th mat-header-cell *matHeaderCellDef>eFG%</th>
+				<td mat-cell *matCellDef="let element">{{ element.defensiveEFieldGoalPercent | percent: "1.1-1" }}</td>
+			</ng-container>
+
+			<ng-container matColumnDef="Defensive TO%">
+				<th mat-header-cell *matHeaderCellDef>TO%</th>
+				<td mat-cell *matCellDef="let element">{{ element.defensiveTurnoverPercent }}%</td>
+			</ng-container>
+
+			<ng-container matColumnDef="DRB%">
+				<th mat-header-cell *matHeaderCellDef>DRB%</th>
+				<td mat-cell *matCellDef="let element">{{ element.defensiveReboundPercent }}%</td>
+			</ng-container>
+
+			<ng-container matColumnDef="Defensive FT/FG">
+				<th mat-header-cell *matHeaderCellDef class="border-right">FT/FG</th>
+				<td mat-cell *matCellDef="let element">{{ element.defensiveFreeThrowPerFieldGoal }}</td>
+			</ng-container>
+
+			<ng-container matColumnDef="empty">
+				<th mat-header-cell *matHeaderCellDef [attr.colspan]="14" class="border-header"></th>
+			</ng-container>
+
+			<ng-container matColumnDef="Offense">
+				<th mat-header-cell *matHeaderCellDef [attr.colspan]="4" class="overall-header">Offense</th>
+			</ng-container>
+
+			<ng-container matColumnDef="Defense">
+				<th mat-header-cell *matHeaderCellDef [attr.colspan]="4" class="overall-header">Defense</th>
+			</ng-container>
+
+			<tr mat-header-row *matHeaderRowDef="['empty', 'Offense', 'Defense']"></tr>
+			<tr mat-header-row *matHeaderRowDef="displayColumns" class="border-row"></tr>
 			<tr mat-row *matRowDef="let row; columns: displayColumns"></tr>
 		</table>
 	</si-stats-filter>

@@ -1,0 +1,17 @@
+:host {
+	.center-spinner {
+		margin: 32px auto;
+	}
+
+	.overall-header {
+		text-align: center;
+	}
+
+	.positive {
+		color: --mat-sys-primary;
+	}
+
+	.negative {
+		color: --mat-sys-error;
+	}
+}

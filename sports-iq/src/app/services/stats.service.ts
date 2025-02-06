@@ -20,4 +20,8 @@ export class StatsService extends HttpService {
 	getYears(sport: string): Observable<number[]> {
 		return this.get<number[]>(`${sport}/years`).pipe(take(1));
 	}
+
+	getPositions(sport: string): Observable<string[]> {
+		return this.get<string[]>(`${sport}/positions`).pipe(take(1));
+	}
 }

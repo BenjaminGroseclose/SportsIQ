@@ -3,6 +3,16 @@
 		<div class="header">
 			<h2>{{ sport() | uppercase }} Stats</h2>
 			<span class="spacer"></span>
+			@if (type() === "players") {
+				<mat-form-field appearance="outline">
+					<mat-label>Position</mat-label>
+					<mat-select [value]="positions()" (selectionChange)="positions.set($event.value)" multiple>
+						@for (position of positionResource.value(); track $index) {
+							<mat-option [value]="position">{{ position }}</mat-option>
+						}
+					</mat-select>
+				</mat-form-field>
+			}
 			<mat-form-field appearance="outline">
 				<mat-label>Type</mat-label>
 				<mat-select [value]="type()" (selectionChange)="type.set($event.value)">
@@ -23,7 +33,7 @@
 		<div class="content">
 			@switch (tableType()) {
 				@case (0) {
-					<si-nba-player-table [years]="year()"></si-nba-player-table>
+					<si-nba-player-table [years]="year()" [positions]="positions()"></si-nba-player-table>
 				}
 				@case (1) {
 					<si-nba-team-table [years]="year()"></si-nba-team-table>

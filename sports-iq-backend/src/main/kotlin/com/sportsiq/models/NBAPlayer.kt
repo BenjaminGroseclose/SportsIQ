@@ -38,4 +38,6 @@ data class NBAPlayer(
     @Field("pointsPergame") val pointsPerGame: Double?,
     val year: Number?
 ) {
+    val freeThrowPercent: Double
+        get() = freeThrows ?: 1.0 / (freeThrowAttempts ?: 1.0)
 }
