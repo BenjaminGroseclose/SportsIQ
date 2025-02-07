@@ -5,13 +5,13 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
 import { MatTableDataSource, MatTableModule } from "@angular/material/table";
 import { MatTooltipModule } from "@angular/material/tooltip";
-import { StatsService } from "../../../services/stats.service";
-import { Column, NBAPlayer } from "../../../models";
 import { of } from "rxjs";
-import { StatsFilterComponent } from "../stats-filter/stats-filter.component";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatSelectModule } from "@angular/material/select";
-import { compare } from "../../../functions";
+import { Column, NBAPlayer } from "@sports-iq/models";
+import { compare } from "@sports-iq/functions";
+import { StatsFilterComponent } from "../stats-filter/stats-filter.component";
+import { StatsService } from "@sports-iq/services";
 
 const columnPropertyMap = new Map<string, string>([
 	["Games", "games"],
