@@ -22,7 +22,7 @@ export class StatsComponent {
 
 	statsService = inject(StatsService);
 
-	type = signal<"players" | "teams">("teams");
+	type = signal<"players" | "teams">("players");
 	year = signal<number[]>([2025]); // TODO: Get current year programatically
 	positions = signal<string[]>([]);
 

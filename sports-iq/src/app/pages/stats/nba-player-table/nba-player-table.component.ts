@@ -122,6 +122,9 @@ export class NBAPlayerTableComponent implements AfterViewInit {
 			return sortValue;
 		});
 
+		console.log(stats.find((x) => x.player === "Justin Minaya"));
+		console.log(stats.find((x) => x.player === "Shai Gilgeous-Alexander"));
+
 		const dataSource = new MatTableDataSource<NBAPlayer>(stats);
 		dataSource.paginator = this.paginator;
 

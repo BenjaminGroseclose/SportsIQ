@@ -32,8 +32,6 @@ export class NBATeamTableComponent implements AfterViewInit {
 			return null;
 		}
 
-		console.log(stats[0]);
-
 		return new MatTableDataSource<NBATeam>(stats);
 	});
 

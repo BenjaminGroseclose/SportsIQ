@@ -20,6 +20,6 @@ export class StatsFilterComponent {
 	@Output() updateFilter = new EventEmitter<{ key: string; value: number }>();
 
 	setFilter(columnName: string, event: any): void {
-		this.updateFilter.emit({ key: columnName, value: Number(event.data) });
+		this.updateFilter.emit({ key: columnName, value: Number(event.target.value) });
 	}
 }

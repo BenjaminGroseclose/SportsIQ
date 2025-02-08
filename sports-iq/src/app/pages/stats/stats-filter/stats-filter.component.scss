@@ -1,23 +1,30 @@
-h2 {
-	margin: 8px auto;
-	width: fit-content;
-}
-
-.filter-header {
-	display: flex;
-	justify-content: space-between;
-	margin-bottom: 8px;
-}
-
-.filters {
-	display: flex;
-	flex-direction: column;
-	gap: 4px;
-	margin: 0 16px;
-
-	.filter {
-		align-items: center;
+:host {
+	.header {
 		display: flex;
 		justify-content: space-between;
+	}
+
+	h2 {
+		margin: 8px auto;
+		width: fit-content;
+	}
+
+	.filter-header {
+		display: flex;
+		justify-content: space-between;
+		margin-bottom: 8px;
+	}
+
+	.filters {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+		margin: 0 16px;
+
+		.filter {
+			align-items: center;
+			display: flex;
+			justify-content: space-between;
+		}
 	}
 }
