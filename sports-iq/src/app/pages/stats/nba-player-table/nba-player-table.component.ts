@@ -5,12 +5,12 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
 import { MatTableDataSource, MatTableModule } from "@angular/material/table";
 import { MatTooltipModule } from "@angular/material/tooltip";
-import { of } from "rxjs";
+import { filter, of } from "rxjs";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatSelectModule } from "@angular/material/select";
 import { Column, NBAPlayer } from "@sports-iq/models";
 import { compare } from "@sports-iq/functions";
-import { StatsFilterComponent } from "../stats-filter/stats-filter.component";
+import { FilterColumn, StatsFilterComponent } from "../stats-filter/stats-filter.component";
 import { StatsService } from "@sports-iq/services";
 
 const columnPropertyMap = new Map<string, string>([
@@ -76,12 +76,12 @@ export class NBAPlayerTableComponent implements AfterViewInit {
 	displayColumns = this.columns.map((x) => x.name);
 
 	viewInit = signal<boolean>(false);
-	columnWeights = signal<Map<string, { weight: number; isAsc: boolean }>>(
+	columnWeights = signal<Map<string, FilterColumn>>(
 		new Map(
 			this.columns
 				.filter((x) => x.showInFilters)
 				.map((x) => {
-					return [x.name, { weight: 1, isAsc: true }];
+					return [x.name, { weight: 1, isAsc: true, filter: "" }];
 				})
 		)
 	);
@@ -143,18 +143,9 @@ export class NBAPlayerTableComponent implements AfterViewInit {
 		this.viewInit.set(true);
 	}
 
-	updateFilterColumnWeight(event: { key: string; value: number }): void {
+	updateFilterColumn(event: { key: string; value: FilterColumn }): void {
 		const weights = this.columnWeights();
-		const isAsc = weights.get(event.key)?.isAsc ?? true;
-		weights.set(event.key, { weight: event.value, isAsc: isAsc });
-
-		this.columnWeights.set(new Map(weights));
-	}
-
-	updateFilterColumnAsc(event: { key: string; value: boolean }): void {
-		const weights = this.columnWeights();
-		const weight = weights.get(event.key)?.weight ?? 1;
-		weights.set(event.key, { weight: weight, isAsc: event.value });
+		weights.set(event.key, event.value);
 
 		this.columnWeights.set(new Map(weights));
 	}

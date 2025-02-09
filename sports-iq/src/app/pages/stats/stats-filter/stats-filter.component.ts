@@ -7,7 +7,14 @@ import { MatInputModule } from "@angular/material/input";
 import { MatIconModule } from "@angular/material/icon";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatChipsModule } from "@angular/material/chips";
-import { MatSlideToggleModule } from "@angular/material/slide-toggle";
+import { MatSlideToggleChange, MatSlideToggleModule } from "@angular/material/slide-toggle";
+import { MatTabsModule } from "@angular/material/tabs";
+
+export interface FilterColumn {
+	filter: string;
+	weight: number;
+	isAsc: boolean;
+}
 
 @Component({
 	selector: "si-stats-filter",
@@ -20,24 +27,25 @@ import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 		MatIconModule,
 		MatTooltipModule,
 		MatChipsModule,
-		MatSlideToggleModule
+		MatSlideToggleModule,
+		MatTabsModule
 	],
 	templateUrl: "./stats-filter.component.html",
 	styleUrl: "./stats-filter.component.scss"
 })
 export class StatsFilterComponent {
 	title = input.required<string>();
-	columns = input.required<Map<string, { weight: number; isAsc: boolean }>>();
+	columns = input.required<Map<string, FilterColumn>>();
 
-	@Output() updateFilterWeight = new EventEmitter<{ key: string; value: number }>();
-	@Output() updateFilterAsc = new EventEmitter<{ key: string; value: boolean }>();
+	@Output() updateFilter = new EventEmitter<{ key: string; value: FilterColumn }>();
 
 	setFilterWeight(columnName: string, event: any): void {
-		this.updateFilterWeight.emit({ key: columnName, value: Number(event.target.value) });
+		const currentValue = this.columns().get(columnName)!!;
+		this.updateFilter.emit({ key: columnName, value: { ...currentValue, weight: event.target.value } });
 	}
 
-	setFilterAsc(columnName: string, event: any): void {
-		console.log(event);
-		this.updateFilterWeight.emit({ key: columnName, value: event.value });
+	setFilterAsc(columnName: string, event: MatSlideToggleChange): void {
+		const currentValue = this.columns().get(columnName)!!;
+		this.updateFilter.emit({ key: columnName, value: { ...currentValue, isAsc: event.checked } });
 	}
 }

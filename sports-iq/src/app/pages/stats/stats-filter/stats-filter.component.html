@@ -3,33 +3,41 @@
 		<div class="header">
 			<h2>{{ title() }} Weights</h2>
 			<mat-icon
-				matTooltip="Adjust filters 'weights' to rank players / teams as you see fit. Increasing column's number weights that stat more important
-	while lowerly will decrease it's importance in the overall rankings"
+				matTooltip="Adjust filters and 'weights' to rank players / teams as you see fit. Increasing column's number weights that stat more important
+	while decreasing the column's weight will lessen it's importance in the overall rankings. Fitlers will also remove any that do not meet the criteria"
 			>
 				info
 			</mat-icon>
 		</div>
 
-		<div class="filters">
-			@for (column of columns() | keyvalue; track $index) {
-				<div class="filter">
-					<span>{{ column.key }}</span>
-					<mat-form-field appearance="outline">
-						<input
-							matInput
-							type="number"
-							step="1"
-							min="1"
-							max="100"
-							pattern="\d"
-							[value]="column.value.weight"
-							(input)="setFilterWeight(column.key, $event)"
-						/>
-					</mat-form-field>
-					<mat-slide-toggle [checked]="column.value.isAsc" (change)="setFilterAsc(column.key, $event)">Is Asc</mat-slide-toggle>
+		<mat-tab-group>
+			<mat-tab label="Weights">
+				<div class="filters">
+					@for (column of columns() | keyvalue; track $index) {
+						<div class="filter">
+							<span>{{ column.key }}</span>
+							<span class="spacer"></span>
+							<mat-form-field appearance="outline">
+								<input
+									matInput
+									type="number"
+									step="1"
+									min="1"
+									max="100"
+									pattern="\d"
+									[value]="column.value.weight"
+									(input)="setFilterWeight(column.key, $event)"
+								/>
+							</mat-form-field>
+							<mat-slide-toggle [checked]="column.value.isAsc" (change)="setFilterAsc(column.key, $event)"
+								>Is Asc</mat-slide-toggle
+							>
+						</div>
+					}
 				</div>
-			}
-		</div>
+			</mat-tab>
+			<mat-tab label="Filters"> </mat-tab>
+		</mat-tab-group>
 	</mat-drawer>
 	<mat-drawer-content>
 		<div class="filter-header">
