@@ -36,3 +36,11 @@ th.border-left {
 th.border-right {
 	border-right: 1px solid #85948f;
 }
+
+.positive {
+	color: var(--mat-sys-primary);
+}
+
+.negative {
+	color: var(--mat-sys-error);
+}

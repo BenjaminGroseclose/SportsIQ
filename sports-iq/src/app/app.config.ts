@@ -3,10 +3,10 @@ import { provideRouter, withComponentInputBinding } from "@angular/router";
 import { routes } from "./app.routes";
 import { provideClientHydration, withEventReplay } from "@angular/platform-browser";
 import { provideAnimationsAsync } from "@angular/platform-browser/animations/async";
-import { HTTP_INTERCEPTORS, provideHttpClient, withFetch } from "@angular/common/http";
+import { provideHttpClient, withFetch, withInterceptors } from "@angular/common/http";
 import { environment } from "../environments/environment";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
-import { JsonInterceptor, JsonParser, SportsIQJsonParser } from "./services";
+import { intercept } from "./services";
 
 // console.log(environment)
 
@@ -16,15 +16,12 @@ export const appConfig: ApplicationConfig = {
 		provideRouter(routes, withComponentInputBinding()),
 		// provideClientHydration(withEventReplay()),
 		provideAnimationsAsync(),
-		provideHttpClient(withFetch()),
+		provideHttpClient(withFetch(), withInterceptors([intercept])),
 		{
 			provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
 			useValue: {
 				subscriptSizing: "dynamic"
 			}
-		},
-
-		{ provide: HTTP_INTERCEPTORS, useClass: JsonInterceptor, multi: true },
-		{ provide: JsonParser, useClass: SportsIQJsonParser }
+		}
 	]
 };

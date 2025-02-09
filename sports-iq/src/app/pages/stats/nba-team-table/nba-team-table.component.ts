@@ -2,7 +2,7 @@ import { CommonModule } from "@angular/common";
 import { AfterViewInit, Component, computed, inject, input, signal } from "@angular/core";
 import { StatsService } from "../../../services";
 import { rxResource } from "@angular/core/rxjs-interop";
-import { NBATeam } from "../../../models";
+import { Column, NBATeam } from "../../../models";
 import { of } from "rxjs";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatTableDataSource, MatTableModule } from "@angular/material/table";
@@ -35,48 +35,42 @@ export class NBATeamTableComponent implements AfterViewInit {
 		return new MatTableDataSource<NBATeam>(stats);
 	});
 
-	filterColumns = signal<Map<string, number>>(
-		new Map([
-			["Game", 1],
-			["Points", 1],
-			["FG%", 1],
-			["3P%", 1],
-			["2P%", 1],
-			["eFG%", 1],
-			["FT%", 1],
-			["Rebounds", 1],
-			["Assists", 1],
-			["Steals", 1],
-			["Blocks", 1],
-			["Turnovers", 1],
-			["PF", 1]
-		])
-	);
-
-	displayColumns = [
-		"Rank",
-		"Team",
-		"Record",
-		"Expected Record",
-		"Margin of Victory",
-		"SOS",
-		"SRS",
-		"Offensive Rating",
-		"Defensive Rating",
-		"Net Rating",
-		"Pace",
-		"Free Throw Rate",
-		"Three point Rate",
-		"True Shooting %",
-		"eFG%",
-		"TO%",
-		"ORB%",
-		"FT/FG",
-		"Defensive eFG%",
-		"Defensive TO%",
-		"DRB%",
-		"Defensive FT/FG"
+	columns: Column[] = [
+		{ name: "Rank", showInFilters: false },
+		{ name: "Team", showInFilters: false },
+		{ name: "Record", showInFilters: false },
+		{ name: "Expected Record", showInFilters: false },
+		{ name: "Margin of Victory", showInFilters: false },
+		{ name: "SOS", showInFilters: false },
+		{ name: "SRS", showInFilters: false },
+		{ name: "Offensive Rating", showInFilters: false },
+		{ name: "Defensive Rating", showInFilters: false },
+		{ name: "Net Rating", showInFilters: false },
+		{ name: "Pace", showInFilters: false },
+		{ name: "FT Rate", showInFilters: false },
+		{ name: "3P Rate", showInFilters: false },
+		{ name: "TS%", showInFilters: false },
+		{ name: "eFG%", showInFilters: false },
+		{ name: "TO%", showInFilters: false },
+		{ name: "ORB%", showInFilters: false },
+		{ name: "FT/FG", showInFilters: false },
+		{ name: "Defensive eFG%", showInFilters: false },
+		{ name: "Defensive TO%", showInFilters: false },
+		{ name: "DRB%", showInFilters: false },
+		{ name: "Defensive FT/FG", showInFilters: false }
 	];
+
+	displayColumns = this.columns.map((x) => x.name);
+
+	filterColumns = signal<Map<string, { weight: number; isAsc: boolean }>>(
+		new Map(
+			this.columns
+				.filter((x) => x.showInFilters)
+				.map((x) => {
+					return [x.name, { weight: 1, isAsc: true }];
+				})
+		)
+	);
 
 	statsResource = rxResource<NBATeam[], number[]>({
 		request: () => {

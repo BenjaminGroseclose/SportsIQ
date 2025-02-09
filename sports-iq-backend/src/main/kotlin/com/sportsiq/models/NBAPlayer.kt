@@ -25,8 +25,8 @@ data class NBAPlayer(
     val twoPointAttempts: Double?,
     val twoPointPercent: Double?,
     val eFieldGoalPercent: Double?,
-    val freeThrows: Double?,
-    val freeThrowAttempts: Double?,
+    val freeThrows: Double,
+    val freeThrowAttempts: Double,
     val offensiveRebounds: Double?,
     val defensiveRebounds: Double?,
     val totalRebounds: Double?,
@@ -39,5 +39,5 @@ data class NBAPlayer(
     val year: Number?
 ) {
     val freeThrowPercent: Double
-        get() = freeThrows ?: 1.0 / (freeThrowAttempts ?: 1.0)
+        get() = freeThrows  / freeThrowAttempts
 }

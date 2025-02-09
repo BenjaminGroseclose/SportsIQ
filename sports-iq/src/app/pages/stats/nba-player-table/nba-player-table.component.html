@@ -1,7 +1,12 @@
 @if (statsResource.isLoading()) {
 	<mat-spinner class="center-spinner"></mat-spinner>
 } @else {
-	<si-stats-filter title="NBA Players" [columns]="columnWeights()" (updateFilter)="updateFilterColumn($event)">
+	<si-stats-filter
+		title="NBA Players"
+		[columns]="columnWeights()"
+		(updateFilterWeight)="updateFilterColumnWeight($event)"
+		(updateFilterAsc)="updateFilterColumnAsc($event)"
+	>
 		<table mat-table [dataSource]="dataSource() ?? []" recycleRows>
 			<ng-container matColumnDef="Rank">
 				<th mat-header-cell *matHeaderCellDef></th>

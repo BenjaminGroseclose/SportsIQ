@@ -76,12 +76,12 @@ export class NBAPlayerTableComponent implements AfterViewInit {
 	displayColumns = this.columns.map((x) => x.name);
 
 	viewInit = signal<boolean>(false);
-	columnWeights = signal<Map<string, number>>(
+	columnWeights = signal<Map<string, { weight: number; isAsc: boolean }>>(
 		new Map(
 			this.columns
 				.filter((x) => x.showInFilters)
 				.map((x) => {
-					return [x.name, 1];
+					return [x.name, { weight: 1, isAsc: true }];
 				})
 		)
 	);
@@ -103,23 +103,24 @@ export class NBAPlayerTableComponent implements AfterViewInit {
 		}
 
 		const columnWeights = this.columnWeights();
-		console.log(columnWeights);
-		console.log("SORTING");
-		stats = stats.sort((a: any, b: any) => {
-			let sortValue = 0;
 
-			columnWeights.forEach((weight, column) => {
-				if (weight === 1) {
-					return;
-				}
+		const sortedColumnWeights = new Map(
+			[...columnWeights.entries()].filter((value) => value[1].weight > 1).sort((a, b) => compare(a[1].weight, b[1].weight, true))
+		);
 
-				const aValue = a[columnPropertyMap.get(column)!!];
-				const bValue = b[columnPropertyMap.get(column)!!];
+		console.log(sortedColumnWeights);
 
-				sortValue += compare(aValue, bValue, false) * weight;
+		sortedColumnWeights.forEach((value, column) => {
+			console.log(column, value);
+
+			stats = stats?.sort((a, b) => {
+				const property = columnPropertyMap.get(column)!! as keyof typeof a;
+
+				const aValue = a[property];
+				const bValue = b[property];
+
+				return compare(aValue, bValue, value.isAsc);
 			});
-
-			return sortValue;
 		});
 
 		console.log(stats.find((x) => x.player === "Justin Minaya"));
@@ -142,9 +143,18 @@ export class NBAPlayerTableComponent implements AfterViewInit {
 		this.viewInit.set(true);
 	}
 
-	updateFilterColumn(event: { key: string; value: number }): void {
+	updateFilterColumnWeight(event: { key: string; value: number }): void {
 		const weights = this.columnWeights();
-		weights.set(event.key, event.value);
+		const isAsc = weights.get(event.key)?.isAsc ?? true;
+		weights.set(event.key, { weight: event.value, isAsc: isAsc });
+
+		this.columnWeights.set(new Map(weights));
+	}
+
+	updateFilterColumnAsc(event: { key: string; value: boolean }): void {
+		const weights = this.columnWeights();
+		const weight = weights.get(event.key)?.weight ?? 1;
+		weights.set(event.key, { weight: weight, isAsc: event.value });
 
 		this.columnWeights.set(new Map(weights));
 	}
