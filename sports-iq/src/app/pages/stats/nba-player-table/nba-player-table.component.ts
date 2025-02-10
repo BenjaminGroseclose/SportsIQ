@@ -81,7 +81,7 @@ export class NBAPlayerTableComponent implements AfterViewInit {
 			this.columns
 				.filter((x) => x.showInFilters)
 				.map((x) => {
-					return [x.name, { weight: 1, isAsc: true, filter: "" }];
+					return [x.name, { weight: 1, isAsc: true, filterValue: null, direction: "greaterThan" }];
 				})
 		)
 	);
@@ -148,5 +148,6 @@ export class NBAPlayerTableComponent implements AfterViewInit {
 		weights.set(event.key, event.value);
 
 		this.columnWeights.set(new Map(weights));
+		console.log(this.columnWeights());
 	}
 }

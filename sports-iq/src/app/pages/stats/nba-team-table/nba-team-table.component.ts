@@ -6,7 +6,7 @@ import { Column, NBATeam } from "../../../models";
 import { of } from "rxjs";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatTableDataSource, MatTableModule } from "@angular/material/table";
-import { StatsFilterComponent } from "../stats-filter/stats-filter.component";
+import { FilterColumn, StatsFilterComponent } from "../stats-filter/stats-filter.component";
 import { MatTooltipModule } from "@angular/material/tooltip";
 
 @Component({
@@ -62,12 +62,12 @@ export class NBATeamTableComponent implements AfterViewInit {
 
 	displayColumns = this.columns.map((x) => x.name);
 
-	filterColumns = signal<Map<string, { weight: number; isAsc: boolean }>>(
+	filterColumns = signal<Map<string, FilterColumn>>(
 		new Map(
 			this.columns
 				.filter((x) => x.showInFilters)
 				.map((x) => {
-					return [x.name, { weight: 1, isAsc: true }];
+					return [x.name, { weight: 1, isAsc: true, filterValue: null, direction: "greaterThan" }];
 				})
 		)
 	);

@@ -36,7 +36,34 @@
 					}
 				</div>
 			</mat-tab>
-			<mat-tab label="Filters"> </mat-tab>
+			<mat-tab label="Filters">
+				<div class="filters">
+					@for (column of columns() | keyvalue; track $index) {
+						<div class="filter">
+							<span>{{ column.key }}</span>
+							<span class="spacer"></span>
+							<mat-button-toggle-group
+								[hideSingleSelectionIndicator]="true"
+								(change)="setFilterDirection(column.key, $event)"
+							>
+								<mat-button-toggle value="greaterThan">&gt;</mat-button-toggle>
+								<mat-button-toggle value="lessThan">&lt;</mat-button-toggle>
+							</mat-button-toggle-group>
+							<mat-form-field appearance="outline">
+								<input
+									matInput
+									type="number"
+									step="1"
+									max="100"
+									pattern="\d"
+									[value]="column.value.weight"
+									(input)="setFilterWeight(column.key, $event)"
+								/>
+							</mat-form-field>
+						</div>
+					}
+				</div>
+			</mat-tab>
 		</mat-tab-group>
 	</mat-drawer>
 	<mat-drawer-content>

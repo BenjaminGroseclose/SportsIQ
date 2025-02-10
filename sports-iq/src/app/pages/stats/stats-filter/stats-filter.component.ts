@@ -9,9 +9,11 @@ import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatChipsModule } from "@angular/material/chips";
 import { MatSlideToggleChange, MatSlideToggleModule } from "@angular/material/slide-toggle";
 import { MatTabsModule } from "@angular/material/tabs";
+import { MatButtonToggleChange, MatButtonToggleModule } from "@angular/material/button-toggle";
 
 export interface FilterColumn {
-	filter: string;
+	direction: "greaterThan" | "lessThan";
+	filterValue: number | null;
 	weight: number;
 	isAsc: boolean;
 }
@@ -28,7 +30,8 @@ export interface FilterColumn {
 		MatTooltipModule,
 		MatChipsModule,
 		MatSlideToggleModule,
-		MatTabsModule
+		MatTabsModule,
+		MatButtonToggleModule
 	],
 	templateUrl: "./stats-filter.component.html",
 	styleUrl: "./stats-filter.component.scss"
@@ -47,5 +50,15 @@ export class StatsFilterComponent {
 	setFilterAsc(columnName: string, event: MatSlideToggleChange): void {
 		const currentValue = this.columns().get(columnName)!!;
 		this.updateFilter.emit({ key: columnName, value: { ...currentValue, isAsc: event.checked } });
+	}
+
+	setFilterDirection(columnName: string, event: MatButtonToggleChange): void {
+		const currentValue = this.columns().get(columnName)!!;
+		this.updateFilter.emit({ key: columnName, value: { ...currentValue, direction: event.value } });
+	}
+
+	setFilterValue(columnName: string, event: any): void {
+		const currentValue = this.columns().get(columnName)!!;
+		this.updateFilter.emit({ key: columnName, value: { ...currentValue, filterValue: event.target.value } });
 	}
 }
