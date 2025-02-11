@@ -10,14 +10,14 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("stats/nba")
 class NBAController(@Autowired private val nbaService: NBAService) {
 
-    @GetMapping("/players/{year}")
-    fun getPlayers(@PathVariable year: Array<Int>): List<NBAPlayer> {
-        return nbaService.getPlayers(year);
+    @GetMapping("/players/{years}")
+    fun getPlayers(@PathVariable years: Array<Int>): List<NBAPlayer> {
+        return nbaService.getPlayers(years);
     }
 
-    @GetMapping("/teams/{year}")
-    fun getTeams(@PathVariable year: Array<Int>): List<NBATeam> {
-        return nbaService.getTeams(year);
+    @GetMapping("/teams/{years}")
+    fun getTeams(@PathVariable years: Array<Int>): List<NBATeam> {
+        return nbaService.getTeams(years);
     }
 
     @GetMapping("years")

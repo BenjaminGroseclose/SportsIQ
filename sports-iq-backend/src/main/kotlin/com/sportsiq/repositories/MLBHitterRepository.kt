@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface MLBHitterRepository: MongoRepository<MLBHitter, String> {
+    fun findAllByYearIn(years: Array<Int>): List<MLBHitter>
 }
