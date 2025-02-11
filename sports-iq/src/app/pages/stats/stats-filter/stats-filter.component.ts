@@ -10,13 +10,7 @@ import { MatChipsModule } from "@angular/material/chips";
 import { MatSlideToggleChange, MatSlideToggleModule } from "@angular/material/slide-toggle";
 import { MatTabsModule } from "@angular/material/tabs";
 import { MatButtonToggleChange, MatButtonToggleModule } from "@angular/material/button-toggle";
-
-export interface FilterColumn {
-	direction: "greaterThan" | "lessThan";
-	filterValue: number | null;
-	weight: number;
-	isAsc: boolean;
-}
+import { FilterColumn } from "@sports-iq/models";
 
 @Component({
 	selector: "si-stats-filter",

@@ -50,14 +50,15 @@
 								<mat-button-toggle value="lessThan">&lt;</mat-button-toggle>
 							</mat-button-toggle-group>
 							<mat-form-field appearance="outline">
+								<mat-label>Filter Value</mat-label>
 								<input
 									matInput
 									type="number"
 									step="1"
 									max="100"
 									pattern="\d"
-									[value]="column.value.weight"
-									(input)="setFilterWeight(column.key, $event)"
+									[value]="column.value.filterValue"
+									(input)="setFilterValue(column.key, $event)"
 								/>
 							</mat-form-field>
 						</div>

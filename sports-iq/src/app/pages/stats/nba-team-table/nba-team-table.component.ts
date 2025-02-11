@@ -2,11 +2,11 @@ import { CommonModule } from "@angular/common";
 import { AfterViewInit, Component, computed, inject, input, signal } from "@angular/core";
 import { StatsService } from "../../../services";
 import { rxResource } from "@angular/core/rxjs-interop";
-import { Column, NBATeam } from "../../../models";
+import { Column, FilterColumn, NBATeam } from "../../../models";
 import { of } from "rxjs";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatTableDataSource, MatTableModule } from "@angular/material/table";
-import { FilterColumn, StatsFilterComponent } from "../stats-filter/stats-filter.component";
+import { StatsFilterComponent } from "../stats-filter/stats-filter.component";
 import { MatTooltipModule } from "@angular/material/tooltip";
 
 @Component({

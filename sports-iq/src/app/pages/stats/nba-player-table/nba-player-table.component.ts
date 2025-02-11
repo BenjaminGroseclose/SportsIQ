@@ -8,10 +8,10 @@ import { MatTooltipModule } from "@angular/material/tooltip";
 import { filter, of } from "rxjs";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatSelectModule } from "@angular/material/select";
-import { Column, NBAPlayer } from "@sports-iq/models";
+import { Column, FilterColumn, NBAPlayer } from "@sports-iq/models";
 import { compare } from "@sports-iq/functions";
-import { FilterColumn, StatsFilterComponent } from "../stats-filter/stats-filter.component";
 import { StatsService } from "@sports-iq/services";
+import { StatsFilterComponent } from "../stats-filter/stats-filter.component";
 
 const columnPropertyMap = new Map<string, string>([
 	["Games", "games"],
@@ -58,19 +58,19 @@ export class NBAPlayerTableComponent implements AfterViewInit {
 		{ name: "Position", showInFilters: false },
 		{ name: "Age", showInFilters: false },
 		{ name: "Team", showInFilters: false },
-		{ name: "Games", showInFilters: true },
-		{ name: "Points", showInFilters: true },
-		{ name: "FG%", showInFilters: true },
-		{ name: "3P%", showInFilters: true },
-		{ name: "2P%", showInFilters: true },
-		{ name: "eFG%", showInFilters: true },
-		{ name: "FT%", showInFilters: true },
-		{ name: "Rebounds", showInFilters: true },
-		{ name: "Assists", showInFilters: true },
-		{ name: "Steals", showInFilters: true },
-		{ name: "Blocks", showInFilters: true },
-		{ name: "Turnovers", showInFilters: true },
-		{ name: "PF", showInFilters: true }
+		{ name: "Games", showInFilters: true, isAsc: false },
+		{ name: "Points", showInFilters: true, isAsc: false },
+		{ name: "FG%", showInFilters: true, isAsc: false },
+		{ name: "3P%", showInFilters: true, isAsc: false },
+		{ name: "2P%", showInFilters: true, isAsc: false },
+		{ name: "eFG%", showInFilters: true, isAsc: false },
+		{ name: "FT%", showInFilters: true, isAsc: false },
+		{ name: "Rebounds", showInFilters: true, isAsc: false },
+		{ name: "Assists", showInFilters: true, isAsc: false },
+		{ name: "Steals", showInFilters: true, isAsc: false },
+		{ name: "Blocks", showInFilters: true, isAsc: false },
+		{ name: "Turnovers", showInFilters: true, isAsc: false },
+		{ name: "PF", showInFilters: true, isAsc: false }
 	];
 
 	displayColumns = this.columns.map((x) => x.name);
@@ -81,7 +81,7 @@ export class NBAPlayerTableComponent implements AfterViewInit {
 			this.columns
 				.filter((x) => x.showInFilters)
 				.map((x) => {
-					return [x.name, { weight: 1, isAsc: true, filterValue: null, direction: "greaterThan" }];
+					return [x.name, { weight: 1, isAsc: x.isAsc ?? false, filterValue: null, direction: "greaterThan" }];
 				})
 		)
 	);
@@ -103,6 +103,20 @@ export class NBAPlayerTableComponent implements AfterViewInit {
 		}
 
 		const columnWeights = this.columnWeights();
+
+		const filterColumnWeights = new Map([...columnWeights.entries()].filter((value) => value[1].filterValue != null));
+
+		filterColumnWeights.forEach((value, column) => {
+			console.log(column, value);
+
+			stats = stats?.filter((x) => {
+				const property = columnPropertyMap.get(column)!! as keyof typeof x;
+				const prop = x[property];
+
+				// already filtered out nulls above
+				return value.direction === "greaterThan" ? prop > value.filterValue!! : prop < value.filterValue!!;
+			});
+		});
 
 		const sortedColumnWeights = new Map(
 			[...columnWeights.entries()].filter((value) => value[1].weight > 1).sort((a, b) => compare(a[1].weight, b[1].weight, true))
