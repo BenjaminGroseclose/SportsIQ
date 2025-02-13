@@ -67,7 +67,16 @@ export class NBATeamTableComponent implements AfterViewInit {
 			this.columns
 				.filter((x) => x.showInFilters)
 				.map((x) => {
-					return [x.name, { weight: 1, isAsc: true, filterValue: null, direction: "greaterThan" }];
+					return [
+						x.name,
+						{
+							weight: 1,
+							isAsc: true,
+							filterValue: null,
+							direction: "greaterThan",
+							isFilterPercentage: x.isFilterPercentage ?? false
+						}
+					];
 				})
 		)
 	);

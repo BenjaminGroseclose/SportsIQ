@@ -38,7 +38,7 @@ export class StatsFilterComponent {
 
 	setFilterWeight(columnName: string, event: any): void {
 		const currentValue = this.columns().get(columnName)!!;
-		this.updateFilter.emit({ key: columnName, value: { ...currentValue, weight: event.target.value } });
+		this.updateFilter.emit({ key: columnName, value: { ...currentValue, weight: parseInt(event.target.value) } });
 	}
 
 	setFilterAsc(columnName: string, event: MatSlideToggleChange): void {
@@ -53,6 +53,6 @@ export class StatsFilterComponent {
 
 	setFilterValue(columnName: string, event: any): void {
 		const currentValue = this.columns().get(columnName)!!;
-		this.updateFilter.emit({ key: columnName, value: { ...currentValue, filterValue: event.target.value } });
+		this.updateFilter.emit({ key: columnName, value: { ...currentValue, filterValue: parseInt(event.target.value) } });
 	}
 }

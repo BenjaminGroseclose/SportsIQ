@@ -60,11 +60,11 @@ export class NBAPlayerTableComponent implements AfterViewInit {
 		{ name: "Team", showInFilters: false },
 		{ name: "Games", showInFilters: true, isAsc: false },
 		{ name: "Points", showInFilters: true, isAsc: false },
-		{ name: "FG%", showInFilters: true, isAsc: false },
-		{ name: "3P%", showInFilters: true, isAsc: false },
-		{ name: "2P%", showInFilters: true, isAsc: false },
-		{ name: "eFG%", showInFilters: true, isAsc: false },
-		{ name: "FT%", showInFilters: true, isAsc: false },
+		{ name: "FG%", showInFilters: true, isAsc: false, isFilterPercentage: true },
+		{ name: "3P%", showInFilters: true, isAsc: false, isFilterPercentage: true },
+		{ name: "2P%", showInFilters: true, isAsc: false, isFilterPercentage: true },
+		{ name: "eFG%", showInFilters: true, isAsc: false, isFilterPercentage: true },
+		{ name: "FT%", showInFilters: true, isAsc: false, isFilterPercentage: true },
 		{ name: "Rebounds", showInFilters: true, isAsc: false },
 		{ name: "Assists", showInFilters: true, isAsc: false },
 		{ name: "Steals", showInFilters: true, isAsc: false },
@@ -81,7 +81,16 @@ export class NBAPlayerTableComponent implements AfterViewInit {
 			this.columns
 				.filter((x) => x.showInFilters)
 				.map((x) => {
-					return [x.name, { weight: 1, isAsc: x.isAsc ?? false, filterValue: null, direction: "greaterThan" }];
+					return [
+						x.name,
+						{
+							weight: 1,
+							isAsc: x.isAsc ?? false,
+							filterValue: null,
+							direction: "greaterThan",
+							isFilterPercentage: x.isFilterPercentage ?? false
+						}
+					];
 				})
 		)
 	);
@@ -107,38 +116,50 @@ export class NBAPlayerTableComponent implements AfterViewInit {
 		const filterColumnWeights = new Map([...columnWeights.entries()].filter((value) => value[1].filterValue != null));
 
 		filterColumnWeights.forEach((value, column) => {
-			console.log(column, value);
-
 			stats = stats?.filter((x) => {
 				const property = columnPropertyMap.get(column)!! as keyof typeof x;
 				const prop = x[property];
 
+				let filterValue = value.filterValue ?? 0;
+
+				if (value.isFilterPercentage) {
+					filterValue = filterValue / 100;
+				}
+
 				// already filtered out nulls above
-				return value.direction === "greaterThan" ? prop > value.filterValue!! : prop < value.filterValue!!;
+				return value.direction === "greaterThan" ? prop > filterValue : prop < filterValue;
 			});
 		});
 
 		const sortedColumnWeights = new Map(
-			[...columnWeights.entries()].filter((value) => value[1].weight > 1).sort((a, b) => compare(a[1].weight, b[1].weight, true))
+			[...columnWeights.entries()].filter((value) => value[1].weight > 1).sort((a, b) => compare(a[1].weight, b[1].weight, false))
 		);
 
 		console.log(sortedColumnWeights);
+		stats = stats?.sort((a, b) => {
+			let sortValue: number | null = null;
 
-		sortedColumnWeights.forEach((value, column) => {
-			console.log(column, value);
+			sortedColumnWeights.forEach((value, column) => {
+				if (sortValue != null) {
+					return;
+				}
 
-			stats = stats?.sort((a, b) => {
 				const property = columnPropertyMap.get(column)!! as keyof typeof a;
 
 				const aValue = a[property];
 				const bValue = b[property];
 
-				return compare(aValue, bValue, value.isAsc);
-			});
-		});
+				if (aValue > bValue) {
+					sortValue = 1 * (value.isAsc ? 1 : -1);
+				}
 
-		console.log(stats.find((x) => x.player === "Justin Minaya"));
-		console.log(stats.find((x) => x.player === "Shai Gilgeous-Alexander"));
+				if (aValue < bValue) {
+					sortValue = -1 * (value.isAsc ? 1 : -1);
+				}
+			});
+
+			return sortValue ?? 0;
+		});
 
 		const dataSource = new MatTableDataSource<NBAPlayer>(stats);
 		dataSource.paginator = this.paginator;
@@ -162,6 +183,5 @@ export class NBAPlayerTableComponent implements AfterViewInit {
 		weights.set(event.key, event.value);
 
 		this.columnWeights.set(new Map(weights));
-		console.log(this.columnWeights());
 	}
 }

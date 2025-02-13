@@ -19,7 +19,6 @@ export class SidenavComponent {
 	sport = input.required<string>();
 
 	navigate(path: string[]) {
-		console.log(path)
 		this.router.navigate([this.sport(), ...path]);
 	}
 }

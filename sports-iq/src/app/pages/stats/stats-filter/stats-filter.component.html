@@ -29,9 +29,9 @@
 									(input)="setFilterWeight(column.key, $event)"
 								/>
 							</mat-form-field>
-							<mat-slide-toggle [checked]="column.value.isAsc" (change)="setFilterAsc(column.key, $event)"
-								>Is Asc</mat-slide-toggle
-							>
+							<mat-slide-toggle [checked]="column.value.isAsc" (change)="setFilterAsc(column.key, $event)">
+								Is Asc
+							</mat-slide-toggle>
 						</div>
 					}
 				</div>
@@ -44,13 +44,13 @@
 							<span class="spacer"></span>
 							<mat-button-toggle-group
 								[hideSingleSelectionIndicator]="true"
+								[value]="column.value.direction"
 								(change)="setFilterDirection(column.key, $event)"
 							>
 								<mat-button-toggle value="greaterThan">&gt;</mat-button-toggle>
 								<mat-button-toggle value="lessThan">&lt;</mat-button-toggle>
 							</mat-button-toggle-group>
 							<mat-form-field appearance="outline">
-								<mat-label>Filter Value</mat-label>
 								<input
 									matInput
 									type="number"
@@ -74,13 +74,13 @@
 					@for (column of columns() | keyvalue; track column.key) {
 						@if (column.value.weight > 1) {
 							<mat-chip>
-								<mat-icon matChipAvatar>keyboard_arrow_up</mat-icon>
+								<mat-icon matChipAvatar>sort</mat-icon>
 								{{ column.key }}: {{ column.value.weight }}
 							</mat-chip>
 						}
 						@if (column.value.filterValue != null) {
 							<mat-chip>
-								<mat-icon matChipAvatar>keyboard_arrow_up</mat-icon>
+								<mat-icon matChipAvatar>filter_alt</mat-icon>
 								{{ column.key }}: {{ column.value.filterValue }}
 							</mat-chip>
 						}
