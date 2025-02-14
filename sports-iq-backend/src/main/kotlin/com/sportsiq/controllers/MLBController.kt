@@ -1,5 +1,6 @@
 package com.sportsiq.controllers
 
+import com.sportsiq.models.MLBHitter
 import com.sportsiq.models.MLBPlayers
 import com.sportsiq.services.MLBService
 import org.springframework.beans.factory.annotation.Autowired
@@ -12,8 +13,24 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("stats/mlb")
 class MLBController(@Autowired private val mlbService: MLBService) {
 
-    @GetMapping("/players/{years}")
-    fun getPlayer(@PathVariable years: Array<Int>): MLBPlayers {
-        return mlbService.getPlayers(years)
+    @GetMapping("/hitters/{years}")
+    fun getPlayer(@PathVariable years: Array<Int>): List<MLBHitter> {
+        return mlbService.getHitter(years)
+    }
+
+    @GetMapping("years")
+    fun getYears(): List<Int> {
+        val retval = mutableListOf<Int>()
+
+        for (i in 1991..2024) {
+            retval.add(i)
+        }
+
+        return retval.sortedByDescending { it }
+    }
+
+    @GetMapping("positions")
+    fun getPositions(): List<String> {
+        return listOf("Hitters", "Pitchers")
     }
 }

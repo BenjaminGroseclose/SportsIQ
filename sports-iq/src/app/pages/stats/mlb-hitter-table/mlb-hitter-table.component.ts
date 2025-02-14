@@ -1,36 +1,42 @@
 import { CommonModule } from "@angular/common";
-import { AfterViewInit, Component, computed, inject, input, signal, ViewChild } from "@angular/core";
-import { rxResource } from "@angular/core/rxjs-interop";
-import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { AfterViewInit, Component, computed, inject, input, ResourceStatus, signal, ViewChild } from "@angular/core";
 import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatTableDataSource, MatTableModule } from "@angular/material/table";
+import { StatsFilterComponent } from "../stats-filter/stats-filter.component";
 import { MatTooltipModule } from "@angular/material/tooltip";
-import { filter, of } from "rxjs";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatSelectModule } from "@angular/material/select";
-import { Column, FilterColumn, NBAPlayer } from "@sports-iq/models";
-import { compare } from "@sports-iq/functions";
 import { StatsService } from "@sports-iq/services";
-import { StatsFilterComponent } from "../stats-filter/stats-filter.component";
+import { rxResource } from "@angular/core/rxjs-interop";
+import { of } from "rxjs";
+import { MLBHitter } from "@sports-iq/models/mlb-hitter.model";
+import { Column, FilterColumn } from "@sports-iq/models";
+import { compare } from "@sports-iq/functions";
 
 const columnPropertyMap = new Map<string, string>([
-	["Games", "games"],
-	["Points", "pointsPerGame"],
-	["FG%", "fieldGoalPercent"],
-	["3P%", "threePointPercent"],
-	["2P%", "twoPointPercent"],
-	["eFG%", "efieldGoalPercent"],
-	["FT%", "freeThrowPercent"],
-	["Rebounds", "totalRebounds"],
-	["Assists", "assists"],
-	["Steals", "steals"],
-	["Blocks", "blocks"],
-	["Turnovers", "turnover"],
-	["PF", "personalFouls"]
+	["Plate Apperances", "plateAppearances"],
+	["At Bats", "atBats"],
+	["Runs", "runs"],
+	["Hits", "hits"],
+	["Doubles", "doubles"],
+	["Triples", "triples"],
+	["Home Runs", "homeRuns"],
+	["RBI", "rbi"],
+	["Steals", "stolenBases"],
+	["Base on Balls", "baseOnBalls"],
+	["Strikeouts", "strikeouts"],
+	["Batting Avg", "battingAverage"],
+	["OBP", "onBasePercentage"],
+	["Slug", "slug"],
+	["OPS+", "opsPlus"],
+	["rOBA", "roba"]
 ]);
 
+// TODO: Create a base stats component
+
 @Component({
-	selector: "si-nba-player-table",
+	selector: "si-mlb-hitter-table",
 	imports: [
 		CommonModule,
 		MatTableModule,
@@ -41,41 +47,43 @@ const columnPropertyMap = new Map<string, string>([
 		MatFormFieldModule,
 		MatSelectModule
 	],
-	templateUrl: "./nba-player-table.component.html",
-	styleUrl: "./nba-player-table.component.scss"
+	templateUrl: "./mlb-hitter-table.component.html",
+	styleUrl: "./mlb-hitter-table.component.scss"
 })
-export class NBAPlayerTableComponent implements AfterViewInit {
+export class MLBHitterTableComponent implements AfterViewInit {
 	statsService = inject(StatsService);
 
 	@ViewChild(MatPaginator) paginator: MatPaginator = <MatPaginator>{};
 
 	years = input.required<number[]>();
-	positions = input<string[]>();
 
 	columns: Column[] = [
 		{ name: "Rank", showInFilters: false },
-		{ name: "Name", showInFilters: false },
-		{ name: "Position", showInFilters: false },
 		{ name: "Age", showInFilters: false },
-		{ name: "Team", showInFilters: false },
-		{ name: "Games", showInFilters: true, isAsc: false },
-		{ name: "Points", showInFilters: true, isAsc: false },
-		{ name: "FG%", showInFilters: true, isAsc: false, isFilterPercentage: true },
-		{ name: "3P%", showInFilters: true, isAsc: false, isFilterPercentage: true },
-		{ name: "2P%", showInFilters: true, isAsc: false, isFilterPercentage: true },
-		{ name: "eFG%", showInFilters: true, isAsc: false, isFilterPercentage: true },
-		{ name: "FT%", showInFilters: true, isAsc: false, isFilterPercentage: true },
-		{ name: "Rebounds", showInFilters: true, isAsc: false },
-		{ name: "Assists", showInFilters: true, isAsc: false },
+		{ name: "Name", showInFilters: false },
+		{ name: "League", showInFilters: false },
+		{ name: "Games", showInFilters: true },
+		{ name: "WAR", showInFilters: false },
+		{ name: "Plate Apperances", showInFilters: true, isAsc: false },
+		{ name: "At Bats", showInFilters: true, isAsc: false },
+		{ name: "Batting Avg", showInFilters: true, isAsc: false },
+		{ name: "Runs", showInFilters: true, isAsc: false, isFilterPercentage: true },
+		{ name: "Hits", showInFilters: true, isAsc: false, isFilterPercentage: true },
+		{ name: "Doubles", showInFilters: true, isAsc: false, isFilterPercentage: true },
+		{ name: "Triples", showInFilters: true, isAsc: false, isFilterPercentage: true },
+		{ name: "Home Runs", showInFilters: true, isAsc: false, isFilterPercentage: true },
+		{ name: "RBI", showInFilters: true, isAsc: false },
 		{ name: "Steals", showInFilters: true, isAsc: false },
-		{ name: "Blocks", showInFilters: true, isAsc: false },
-		{ name: "Turnovers", showInFilters: true, isAsc: false },
-		{ name: "PF", showInFilters: true, isAsc: false }
+		{ name: "Base on Balls", showInFilters: true, isAsc: false },
+		{ name: "Strikeouts", showInFilters: true, isAsc: false },
+		{ name: "OBP", showInFilters: true, isAsc: false },
+		{ name: "Slug", showInFilters: true, isAsc: false },
+		{ name: "OPS+", showInFilters: true, isAsc: false },
+		{ name: "rOBA", showInFilters: true, isAsc: false }
 	];
 
-	displayColumns = this.columns.map((x) => x.name);
-
 	viewInit = signal<boolean>(false);
+	displayColumns = this.columns.map((x) => x.name);
 	columnWeights = signal<Map<string, FilterColumn>>(
 		new Map(
 			this.columns
@@ -95,21 +103,18 @@ export class NBAPlayerTableComponent implements AfterViewInit {
 		)
 	);
 
-	dataSource = computed<MatTableDataSource<NBAPlayer, MatPaginator> | null>(() => {
+	dataSource = computed<MatTableDataSource<MLBHitter, MatPaginator> | null>(() => {
 		if (this.statsResource.status() !== 4 || !this.viewInit()) {
 			return null;
 		}
 
 		let stats = this.statsResource.value();
-		const position = this.positions();
 
 		if (stats == null) {
 			return null;
 		}
 
-		if (position != null && position.length > 0) {
-			stats = stats?.filter((x) => x.position != null && position.includes(x.position));
-		}
+		console.log(stats);
 
 		const columnWeights = this.columnWeights();
 
@@ -162,20 +167,20 @@ export class NBAPlayerTableComponent implements AfterViewInit {
 			});
 		}
 
-		const dataSource = new MatTableDataSource<NBAPlayer>(stats);
+		const dataSource = new MatTableDataSource<MLBHitter>(stats);
 		dataSource.paginator = this.paginator;
 
 		return dataSource;
 	});
 
-	statsResource = rxResource<NBAPlayer[], number[]>({
+	statsResource = rxResource<MLBHitter[], number[]>({
 		request: () => {
 			return this.years();
 		},
-		loader: ({ request }) => (request == null ? of([]) : this.statsService.getPlayers<NBAPlayer>("nba", request))
+		loader: ({ request }) => (request == null || request.length === 0 ? of([]) : this.statsService.getHitters(request))
 	});
 
-	ngAfterViewInit() {
+	ngAfterViewInit(): void {
 		this.viewInit.set(true);
 	}
 

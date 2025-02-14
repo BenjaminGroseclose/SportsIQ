@@ -10,6 +10,10 @@
 		width: fit-content;
 	}
 
+	.filter-content {
+		min-height: calc(100vh - 120px);
+	}
+
 	.filter-header {
 		display: flex;
 		justify-content: right;
@@ -27,6 +31,10 @@
 			align-items: center;
 			display: flex;
 			gap: 4px;
+
+			.key {
+				max-width: 100px;
+			}
 
 			.spacer {
 				flex: 1;

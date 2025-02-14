@@ -1,7 +1,7 @@
 @if (statsResource.isLoading()) {
 	<mat-spinner class="center-spinner"></mat-spinner>
 } @else {
-	<si-stats-filter title="Teams" [columns]="filterColumns()">
+	<si-stats-filter title="Teams" [columns]="columnWeights()" (updateFilter)="updateFilterColumn($event)">
 		<table mat-table [dataSource]="dataSource() ?? []" recycleRows class="mat-elevation-z8">
 			<ng-container matColumnDef="Rank">
 				<th mat-header-cell *matHeaderCellDef class="border-left"></th>
@@ -15,12 +15,20 @@
 
 			<ng-container matColumnDef="Record">
 				<th mat-header-cell *matHeaderCellDef>Record</th>
-				<td mat-cell *matCellDef="let element">{{ element.wins }}/{{ element.loses }}</td>
+				<td mat-cell *matCellDef="let element" matTooltip="{{ element.wins / (element.wins + element.loses) | percent: '1.1-1' }}">
+					{{ element.wins }}-{{ element.loses }}
+				</td>
 			</ng-container>
 
 			<ng-container matColumnDef="Expected Record">
-				<th mat-header-cell *matHeaderCellDef>Expected Record</th>
-				<td mat-cell *matCellDef="let element">{{ element.expectedWins }}/{{ element.expectedLoses }}</td>
+				<th mat-header-cell *matHeaderCellDef matTooltip="Expected Record">Exp. Rec.</th>
+				<td
+					mat-cell
+					*matCellDef="let element"
+					matTooltip="{{ element.expectedWins / (element.expectedWins + element.expectedLoses) | percent: '1.1-1' }}"
+				>
+					{{ element.expectedWins }}-{{ element.expectedLoses }}
+				</td>
 			</ng-container>
 
 			<ng-container matColumnDef="Margin of Victory">
