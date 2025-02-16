@@ -136,8 +136,8 @@
 			</ng-container>
 
 			<tr mat-header-row *matHeaderRowDef="['empty', 'Offense', 'Defense']"></tr>
-			<tr mat-header-row *matHeaderRowDef="displayColumns" class="border-row"></tr>
-			<tr mat-row *matRowDef="let row; columns: displayColumns"></tr>
+			<tr mat-header-row *matHeaderRowDef="displayColumns()" class="border-row"></tr>
+			<tr mat-row *matRowDef="let row; columns: displayColumns()"></tr>
 		</table>
 	</si-stats-filter>
 }

@@ -82,7 +82,8 @@
 							@if (column.value.filterValue != null) {
 								<mat-chip>
 									<mat-icon matChipAvatar>filter_alt</mat-icon>
-									{{ column.key }}: {{ column.value.filterValue }}
+									{{ column.key }} {{ column.value.direction === "greaterThan" ? "&gt;" : "&lt;" }}
+									{{ column.value.filterValue }}
 								</mat-chip>
 							}
 						}

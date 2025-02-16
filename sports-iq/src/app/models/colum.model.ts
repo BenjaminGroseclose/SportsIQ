@@ -3,6 +3,7 @@ export interface Column {
 	showInFilters: boolean;
 	isAsc?: boolean;
 	isFilterPercentage?: boolean;
+	property?: string;
 }
 
 export interface FilterColumn {
@@ -11,4 +12,5 @@ export interface FilterColumn {
 	isFilterPercentage: boolean;
 	weight: number;
 	isAsc: boolean;
+	property: string;
 }

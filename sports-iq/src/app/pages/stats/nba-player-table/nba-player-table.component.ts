@@ -12,22 +12,7 @@ import { Column, FilterColumn, NBAPlayer } from "@sports-iq/models";
 import { compare } from "@sports-iq/functions";
 import { StatsService } from "@sports-iq/services";
 import { StatsFilterComponent } from "../stats-filter/stats-filter.component";
-
-const columnPropertyMap = new Map<string, string>([
-	["Games", "games"],
-	["Points", "pointsPerGame"],
-	["FG%", "fieldGoalPercent"],
-	["3P%", "threePointPercent"],
-	["2P%", "twoPointPercent"],
-	["eFG%", "efieldGoalPercent"],
-	["FT%", "freeThrowPercent"],
-	["Rebounds", "totalRebounds"],
-	["Assists", "assists"],
-	["Steals", "steals"],
-	["Blocks", "blocks"],
-	["Turnovers", "turnover"],
-	["PF", "personalFouls"]
-]);
+import { BaseStatsTableComponent } from "../base-stats-table.component";
 
 @Component({
 	selector: "si-nba-player-table",
@@ -44,56 +29,11 @@ const columnPropertyMap = new Map<string, string>([
 	templateUrl: "./nba-player-table.component.html",
 	styleUrl: "./nba-player-table.component.scss"
 })
-export class NBAPlayerTableComponent implements AfterViewInit {
+export class NBAPlayerTableComponent extends BaseStatsTableComponent {
 	statsService = inject(StatsService);
 
 	@ViewChild(MatPaginator) paginator: MatPaginator = <MatPaginator>{};
-
-	years = input.required<number[]>();
 	positions = input<string[]>();
-
-	columns: Column[] = [
-		{ name: "Rank", showInFilters: false },
-		{ name: "Name", showInFilters: false },
-		{ name: "Position", showInFilters: false },
-		{ name: "Age", showInFilters: false },
-		{ name: "Team", showInFilters: false },
-		{ name: "Games", showInFilters: true, isAsc: false },
-		{ name: "Points", showInFilters: true, isAsc: false },
-		{ name: "FG%", showInFilters: true, isAsc: false, isFilterPercentage: true },
-		{ name: "3P%", showInFilters: true, isAsc: false, isFilterPercentage: true },
-		{ name: "2P%", showInFilters: true, isAsc: false, isFilterPercentage: true },
-		{ name: "eFG%", showInFilters: true, isAsc: false, isFilterPercentage: true },
-		{ name: "FT%", showInFilters: true, isAsc: false, isFilterPercentage: true },
-		{ name: "Rebounds", showInFilters: true, isAsc: false },
-		{ name: "Assists", showInFilters: true, isAsc: false },
-		{ name: "Steals", showInFilters: true, isAsc: false },
-		{ name: "Blocks", showInFilters: true, isAsc: false },
-		{ name: "Turnovers", showInFilters: true, isAsc: false },
-		{ name: "PF", showInFilters: true, isAsc: false }
-	];
-
-	displayColumns = this.columns.map((x) => x.name);
-
-	viewInit = signal<boolean>(false);
-	columnWeights = signal<Map<string, FilterColumn>>(
-		new Map(
-			this.columns
-				.filter((x) => x.showInFilters)
-				.map((x) => {
-					return [
-						x.name,
-						{
-							weight: 1,
-							isAsc: x.isAsc ?? false,
-							filterValue: null,
-							direction: "greaterThan",
-							isFilterPercentage: x.isFilterPercentage ?? false
-						}
-					];
-				})
-		)
-	);
 
 	dataSource = computed<MatTableDataSource<NBAPlayer, MatPaginator> | null>(() => {
 		if (this.statsResource.status() !== 4 || !this.viewInit()) {
@@ -117,7 +57,7 @@ export class NBAPlayerTableComponent implements AfterViewInit {
 
 		filterColumnWeights.forEach((value, column) => {
 			stats = stats?.filter((x) => {
-				const property = columnPropertyMap.get(column)!! as keyof typeof x;
+				const property = value.property as keyof typeof x;
 				const prop = x[property];
 
 				let filterValue = value.filterValue ?? 0;
@@ -144,7 +84,7 @@ export class NBAPlayerTableComponent implements AfterViewInit {
 						return;
 					}
 
-					const property = columnPropertyMap.get(column)!! as keyof typeof a;
+					const property = value.property as keyof typeof a;
 
 					const aValue = a[property];
 					const bValue = b[property];
@@ -175,14 +115,28 @@ export class NBAPlayerTableComponent implements AfterViewInit {
 		loader: ({ request }) => (request == null ? of([]) : this.statsService.getPlayers<NBAPlayer>("nba", request))
 	});
 
-	ngAfterViewInit() {
-		this.viewInit.set(true);
-	}
+	constructor() {
+		const columns: Column[] = [
+			{ name: "Rank", showInFilters: false },
+			{ name: "Name", showInFilters: false },
+			{ name: "Position", showInFilters: false },
+			{ name: "Age", showInFilters: false },
+			{ name: "Team", showInFilters: false },
+			{ name: "Games", showInFilters: true, isAsc: false, property: "games" },
+			{ name: "Points", showInFilters: true, isAsc: false, property: "pointsPerGame" },
+			{ name: "FG%", showInFilters: true, isAsc: false, isFilterPercentage: true, property: "fieldGoalPercent" },
+			{ name: "3P%", showInFilters: true, isAsc: false, isFilterPercentage: true, property: "threePointPercent" },
+			{ name: "2P%", showInFilters: true, isAsc: false, isFilterPercentage: true, property: "twoPointPercent" },
+			{ name: "eFG%", showInFilters: true, isAsc: false, isFilterPercentage: true, property: "efieldGoalPercent" },
+			{ name: "FT%", showInFilters: true, isAsc: false, isFilterPercentage: true, property: "freeThrowPercent" },
+			{ name: "Rebounds", showInFilters: true, isAsc: false, property: "totalRebounds" },
+			{ name: "Assists", showInFilters: true, isAsc: false, property: "assists" },
+			{ name: "Steals", showInFilters: true, isAsc: false, property: "steals" },
+			{ name: "Blocks", showInFilters: true, isAsc: false, property: "blocks" },
+			{ name: "Turnovers", showInFilters: true, isAsc: false, property: "turnover" },
+			{ name: "PF", showInFilters: true, isAsc: false, property: "personalFouls" }
+		];
 
-	updateFilterColumn(event: { key: string; value: FilterColumn }): void {
-		const weights = this.columnWeights();
-		weights.set(event.key, event.value);
-
-		this.columnWeights.set(new Map(weights));
+		super(columns);
 	}
 }

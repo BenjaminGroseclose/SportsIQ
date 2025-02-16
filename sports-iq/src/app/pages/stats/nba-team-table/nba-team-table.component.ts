@@ -9,6 +9,7 @@ import { MatTableDataSource, MatTableModule } from "@angular/material/table";
 import { StatsFilterComponent } from "../stats-filter/stats-filter.component";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { compare } from "@sports-iq/functions";
+import { BaseStatsTableComponent } from "../base-stats-table.component";
 
 const columnPropertyMap = new Map<string, string>([
 	["Record", "wins"],
@@ -39,12 +40,9 @@ const columnPropertyMap = new Map<string, string>([
 	templateUrl: "./nba-team-table.component.html",
 	styleUrl: "./nba-team-table.component.scss"
 })
-export class NBATeamTableComponent implements AfterViewInit {
+export class NBATeamTableComponent extends BaseStatsTableComponent {
 	statsService = inject(StatsService);
 
-	years = input.required<number[]>();
-
-	viewInit = signal<boolean>(false);
 	dataSource = computed<MatTableDataSource<NBATeam> | null>(() => {
 		if (this.statsResource.status() !== 4 || !this.viewInit()) {
 			return null;
@@ -110,52 +108,6 @@ export class NBATeamTableComponent implements AfterViewInit {
 		return new MatTableDataSource<NBATeam>(stats);
 	});
 
-	columns: Column[] = [
-		{ name: "Rank", showInFilters: false },
-		{ name: "Team", showInFilters: false },
-		{ name: "Record", showInFilters: true },
-		{ name: "Expected Record", showInFilters: true },
-		{ name: "Margin of Victory", showInFilters: true },
-		{ name: "SOS", showInFilters: true },
-		{ name: "SRS", showInFilters: true },
-		{ name: "Offensive Rating", showInFilters: true, isAsc: false },
-		{ name: "Defensive Rating", showInFilters: true },
-		{ name: "Net Rating", showInFilters: true },
-		{ name: "Pace", showInFilters: true },
-		{ name: "FT Rate", showInFilters: true, isFilterPercentage: true },
-		{ name: "3P Rate", showInFilters: true, isFilterPercentage: true },
-		{ name: "TS%", showInFilters: true, isFilterPercentage: true },
-		{ name: "eFG%", showInFilters: true, isFilterPercentage: true },
-		{ name: "TO%", showInFilters: true, isFilterPercentage: true },
-		{ name: "ORB%", showInFilters: true, isFilterPercentage: true },
-		{ name: "FT/FG", showInFilters: true },
-		{ name: "Defensive eFG%", showInFilters: true, isFilterPercentage: true },
-		{ name: "Defensive TO%", showInFilters: true, isFilterPercentage: true },
-		{ name: "DRB%", showInFilters: true, isFilterPercentage: true },
-		{ name: "Defensive FT/FG", showInFilters: true }
-	];
-
-	displayColumns = this.columns.map((x) => x.name);
-
-	columnWeights = signal<Map<string, FilterColumn>>(
-		new Map(
-			this.columns
-				.filter((x) => x.showInFilters)
-				.map((x) => {
-					return [
-						x.name,
-						{
-							weight: 1,
-							isAsc: true,
-							filterValue: null,
-							direction: "greaterThan",
-							isFilterPercentage: x.isFilterPercentage ?? false
-						}
-					];
-				})
-		)
-	);
-
 	statsResource = rxResource<NBATeam[], number[]>({
 		request: () => {
 			return this.years();
@@ -163,14 +115,32 @@ export class NBATeamTableComponent implements AfterViewInit {
 		loader: ({ request }) => (request == null ? of([]) : this.statsService.getTeams<NBATeam>("nba", request))
 	});
 
-	ngAfterViewInit(): void {
-		this.viewInit.set(true);
-	}
+	constructor() {
+		const columns: Column[] = [
+			{ name: "Rank", showInFilters: false },
+			{ name: "Team", showInFilters: false },
+			{ name: "Record", showInFilters: true, property: "wins" },
+			{ name: "Expected Record", showInFilters: true, property: "expectedWins" },
+			{ name: "Margin of Victory", showInFilters: true, property: "marginOfVictory" },
+			{ name: "SOS", showInFilters: true, property: "strengthOfSchedule" },
+			{ name: "SRS", showInFilters: true, property: "simpleRatingSystem" },
+			{ name: "Offensive Rating", showInFilters: true, isAsc: false, property: "offensiveRating" },
+			{ name: "Defensive Rating", showInFilters: true, property: "defensiveRating" },
+			{ name: "Net Rating", showInFilters: true, property: "netRating" },
+			{ name: "Pace", showInFilters: true, property: "pace" },
+			{ name: "FT Rate", showInFilters: true, isFilterPercentage: true, property: "freeThrowRate" },
+			{ name: "3P Rate", showInFilters: true, isFilterPercentage: true, property: "threePointRate" },
+			{ name: "TS%", showInFilters: true, isFilterPercentage: true, property: "trueShootingPercent" },
+			{ name: "eFG%", showInFilters: true, isFilterPercentage: true, property: "efieldGoalPercent" },
+			{ name: "TO%", showInFilters: true, isFilterPercentage: true, property: "turnoverPercent" },
+			{ name: "ORB%", showInFilters: true, isFilterPercentage: true, property: "offensiveReboundPercent" },
+			{ name: "FT/FG", showInFilters: true, property: "freeThrowPerFieldGoal" },
+			{ name: "Defensive eFG%", showInFilters: true, isFilterPercentage: true, property: "defensiveEFieldGoalPercent" },
+			{ name: "Defensive TO%", showInFilters: true, isFilterPercentage: true, property: "defensiveTurnoverPercent" },
+			{ name: "DRB%", showInFilters: true, isFilterPercentage: true, property: "defensiveReboundPercent" },
+			{ name: "Defensive FT/FG", showInFilters: true, property: "defensiveFreeThrowPerFieldGoal" }
+		];
 
-	updateFilterColumn(event: { key: string; value: FilterColumn }): void {
-		const weights = this.columnWeights();
-		weights.set(event.key, event.value);
-
-		this.columnWeights.set(new Map(weights));
+		super(columns);
 	}
 }
