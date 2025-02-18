@@ -13,7 +13,6 @@ export class BaseStatsTableComponent implements AfterViewInit {
 	columnWeights = signal<Map<string, FilterColumn>>(new Map());
 
 	constructor(@Inject("columns") protected columns: Column[]) {
-		console.log(columns);
 		this.displayColumns.set(this.columns.map((x) => x.name));
 		this.columnWeights.set(
 			new Map(
