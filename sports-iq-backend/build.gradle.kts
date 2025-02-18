@@ -1,3 +1,5 @@
+import org.springframework.boot.gradle.tasks.bundling.BootJar
+
 plugins {
     kotlin("jvm") version "2.1.0"
     kotlin("plugin.spring") version "1.9.25"
@@ -35,6 +37,10 @@ kotlin {
     compilerOptions {
         freeCompilerArgs.addAll("-Xjsr305=strict")
     }
+}
+
+tasks.named<BootJar>("bootJar") {
+    mainClass.set("com.sportsiq.SportsIQApplication") // Fully qualified name of your main class
 }
 
 tasks.withType<Test> {
