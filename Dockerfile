@@ -18,3 +18,8 @@ FROM gradle:8.12.1-jdk21-corretto as backend-build
 
 WORKDIR /app/sports-iq-backend
 
+COPY . .
+
+RUN echo ls -l
+
+RUN gradle build ./src
