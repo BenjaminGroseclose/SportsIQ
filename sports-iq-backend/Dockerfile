@@ -3,14 +3,21 @@ FROM gradle:8.12.1-jdk21-corretto as build
 
 WORKDIR /app
 
-COPY build.gradle.kts settings.gradle.kts /app/
+COPY gradlew .
+COPY gradle ./gradle
+COPY build.gradle.kts .
+COPY settings.gradle.kts .
 
-RUN gradle build
+RUN chmod +x ./gradlew
+RUN ./gradlew dependencies --write-locks
+COPY . .
+
+RUN ./gradlew bootJar
 
 # Stage 2: Host
 FROM amazoncorretto:21
 
-COPY --from=build /app/build/libs/$ARTIFACT_NAME .
- 
+COPY --from=build /app/build/libs/*.jar app.jar
+
 EXPOSE 8080
-ENTRYPOINT exec java -jar ${ARTIFACT_NAME}
+CMD ["java", "-jar", "app.jar"]

@@ -39,10 +39,6 @@ kotlin {
     }
 }
 
-tasks.named<BootJar>("bootJar") {
-    mainClass.set("com.sportsiq.SportsIQApplication") // Fully qualified name of your main class
-}
-
 tasks.withType<Test> {
     useJUnitPlatform()
 }
