@@ -112,7 +112,8 @@ export class NBAPlayerTableComponent extends BaseStatsTableComponent {
 		request: () => {
 			return this.years();
 		},
-		loader: ({ request }) => (request == null ? of([]) : this.statsService.getPlayers<NBAPlayer>("nba", request))
+		loader: ({ request }) =>
+			request == null || request.length === 0 ? of([]) : this.statsService.getPlayers<NBAPlayer>("nba", request)
 	});
 
 	constructor() {

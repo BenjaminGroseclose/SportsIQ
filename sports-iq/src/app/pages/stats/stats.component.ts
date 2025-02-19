@@ -10,6 +10,7 @@ import { rxResource } from "@angular/core/rxjs-interop";
 import { take } from "rxjs";
 import { NBATeamTableComponent } from "./nba-team-table/nba-team-table.component";
 import { MLBHitterTableComponent } from "./mlb-hitter-table/mlb-hitter-table.component";
+import { MLBPitcherTableComponent } from "./mlb-pitcher-table/mlb-pitcher-table.component";
 
 @Component({
 	selector: "si-stats",
@@ -20,7 +21,8 @@ import { MLBHitterTableComponent } from "./mlb-hitter-table/mlb-hitter-table.com
 		MatFormFieldModule,
 		NBAPlayerTableComponent,
 		NBATeamTableComponent,
-		MLBHitterTableComponent
+		MLBHitterTableComponent,
+		MLBPitcherTableComponent
 	],
 	templateUrl: "./stats.component.html",
 	styleUrl: "./stats.component.scss",

@@ -53,6 +53,9 @@ export class StatsFilterComponent {
 
 	setFilterValue(columnName: string, event: any): void {
 		const currentValue = this.columns().get(columnName)!!;
-		this.updateFilter.emit({ key: columnName, value: { ...currentValue, filterValue: parseInt(event.target.value) } });
+		this.updateFilter.emit({
+			key: columnName,
+			value: { ...currentValue, filterValue: event.target.value != "" ? parseInt(event.target.value) : null }
+		});
 	}
 }

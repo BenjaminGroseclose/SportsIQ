@@ -3,6 +3,7 @@ import { HttpService } from "./http-service";
 import { HttpClient } from "@angular/common/http";
 import { Observable, take } from "rxjs";
 import { MLBHitter } from "@sports-iq/models";
+import { MLBPitcher } from "@sports-iq/models/mlb-pitcher.model";
 
 @Injectable()
 export class StatsService extends HttpService {
@@ -12,6 +13,10 @@ export class StatsService extends HttpService {
 
 	getHitters(year: number[]): Observable<MLBHitter[]> {
 		return this.get<MLBHitter[]>(`mlb/hitters/${year}`).pipe(take(1));
+	}
+
+	getPitchers(year: number[]): Observable<MLBHitter[]> {
+		return this.get<MLBPitcher[]>(`mlb/pitchers/${year}`).pipe(take(1));
 	}
 
 	getPlayers<T>(sport: string, year: number[]): Observable<T[]> {

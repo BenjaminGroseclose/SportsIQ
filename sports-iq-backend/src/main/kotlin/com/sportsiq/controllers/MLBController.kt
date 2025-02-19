@@ -1,7 +1,7 @@
 package com.sportsiq.controllers
 
 import com.sportsiq.models.MLBHitter
-import com.sportsiq.models.MLBPlayers
+import com.sportsiq.models.MLBPitcher
 import com.sportsiq.services.MLBService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
@@ -14,9 +14,15 @@ import org.springframework.web.bind.annotation.RestController
 class MLBController(@Autowired private val mlbService: MLBService) {
 
     @GetMapping("/hitters/{years}")
-    fun getPlayer(@PathVariable years: Array<Int>): List<MLBHitter> {
+    fun getHitters(@PathVariable years: Array<Int>): List<MLBHitter> {
         return mlbService.getHitter(years)
     }
+
+    @GetMapping("/pitchers/{years}")
+    fun getPitchers(@PathVariable years: Array<Int>): List<MLBPitcher> {
+        return mlbService.getPitchers(years)
+    }
+
 
     @GetMapping("years")
     fun getYears(): List<Int> {
