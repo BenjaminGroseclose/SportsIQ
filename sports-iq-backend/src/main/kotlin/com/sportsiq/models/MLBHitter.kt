@@ -1,12 +1,6 @@
 package com.sportsiq.models
 
-import org.bson.types.ObjectId
-import org.springframework.data.annotation.Id
-import org.springframework.data.mongodb.core.mapping.Document
-
-@Document(collection = "mlb-hitters")
 data class MLBHitter(
-    @Id val id: ObjectId? = null,
     var player: String?,
     var age: Int?,
     var league: String?,

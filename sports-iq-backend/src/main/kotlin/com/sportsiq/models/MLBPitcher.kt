@@ -1,38 +1,36 @@
 package com.sportsiq.models
 
-import org.bson.types.ObjectId
-import org.springframework.data.annotation.Id
-import org.springframework.data.mongodb.core.mapping.Document
+import java.util.Date
 
-@Document(collection = "mlb-pitchers")
 data class MLBPitcher(
-    @Id val id: ObjectId? = null,
-    var player: String?,
-    var age: Int?,
-    var league: String?,
-    var team: String?,
-    var war: Double?,
-    var wins: Int?,
-    var loses: Int?,
-    var winLosePercentage: Double?,
-    var games: Int?,
-    var gameStarts: Int?,
-    var gamesFinished: Int?,
-    var era: Double?,
-    var eraPlus: Double?,
-    var shutouts: Int?,
-    var saves: Int?,
-    var ip: Double?,
-    var hitsAllowed: Int?,
-    var earnedRunsAllowed: Int?,
-    var homeRunsAllowed: Int?,
-    var basesOnBalls: Int?,
-    var strikeouts: Int?,
-    var hitsByPitch: Int?,
-    var balks: Int?,
-    var whip: Double?,
-    var fip: Double?,
-    var strikeoutsPerWalk: Double?,
-    var year: Int?,
+    var playerID: Int,
+    var name: String,
+    var dateOfBirth: Date,
+    var teamID: Int,
+    var team: String,
+    var league: String,
+    var positionCategory: String,
+    var position: String,
+    var season: Int,
+    var games: Int,
+    var starts: Int,
+    var wins: Int,
+    var losses: Int,
+    var saves: Int,
+    var inningsPitched: Double,
+    var era: Double,
+    var runs: Int,
+    var hits: Int,
+    var homeRuns: Int,
+    var strikeouts: Int,
+    var strikeoutsPerNineInnings: Double,
+    var walks: Int,
+    var walksPerNineInnings: Double,
+    var pitchesThrown: Int,
+    var whip: Double,
+    var battingAverage: Double,
+    var obp: Double,
+    var slug: Double,
+    var obpPlus: Double
 ) {
 }
