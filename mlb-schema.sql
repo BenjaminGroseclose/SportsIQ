@@ -21,7 +21,7 @@ CREATE TABLE [MLB].[Teams]
     Division VARCHAR(100),
     PrimaryColor VARCHAR(6),
     SecondaryColor VARCHAR(6),
-    TertiaryColor VARCHAR(6),
+    TertiaryColor VARCHAR(6) NULL,
 )
 
 CREATE TABLE [MLB].[Players]
@@ -33,8 +33,11 @@ CREATE TABLE [MLB].[Players]
     TeamID INT NULL,
     DateOfBirth DATE NULL,
     PositionCategory VARCHAR(5)  NOT NULL,
-    Position VARCHAR(5)  NOT NULL,
-    [Status] VARCHAR(50) NOT NULL
+    Position VARCHAR(5) NOT NULL,
+    BatHand VARCHAR(15) NULL,
+    ThrowHand VARCHAR(15) NULL, 
+    [Status] VARCHAR(50) NOT NULL,
+    ExternalPlayerID INT NULL,
 
     FOREIGN KEY (TeamID) REFERENCES MLB.Teams(TeamID)
 )
