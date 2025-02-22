@@ -1,13 +1,14 @@
 package com.sportsiq.services
 
+import com.sportsiq.data.queries.GetMLBSeasons
 import com.sportsiq.models.MLBHitter
 import com.sportsiq.models.MLBPitcher
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Service
-import org.springframework.web.bind.annotation.PathVariable
 
 @Service
-class MLBService() {
+class MLBService(@Autowired val jdbcTemplate: JdbcTemplate) {
 //    fun getHitter(years: Array<Int>): List<MLBHitter> {
 //        return when (years.size) {
 //            0 -> mlbHitterRepository.findAll().sortedByDescending { it.plateAppearances }
@@ -21,4 +22,8 @@ class MLBService() {
 //            else -> mlbPitcherRepository.findAllByYearIn(years).sortedByDescending { it.ip }
 //        }
 //    }
+
+    fun getSeasons(): List<Int> {
+        return GetMLBSeasons().execute(jdbcTemplate)
+    }
 }

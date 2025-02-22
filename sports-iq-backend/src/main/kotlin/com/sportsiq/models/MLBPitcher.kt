@@ -6,12 +6,13 @@ data class MLBPitcher(
     var playerID: Int,
     var name: String,
     var dateOfBirth: Date,
-    var teamID: Int,
+    var teamID: Int?,
     var team: String,
     var league: String,
     var positionCategory: String,
     var position: String,
     var season: Int,
+    var seasonType: Int,
     var games: Int,
     var starts: Int,
     var wins: Int,
@@ -31,6 +32,7 @@ data class MLBPitcher(
     var battingAverage: Double,
     var obp: Double,
     var slug: Double,
-    var obpPlus: Double
+    var obpPlus: Double,
+    var shutouts: Int
 ) {
 }

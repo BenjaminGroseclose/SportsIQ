@@ -100,7 +100,8 @@ CREATE TABLE [MLB].[Pitching]
     BattingAverageAgainst FLOAT NOT NULL,
     OBP FLOAT NOT NULL,
     Slug FLOAT NOT NULL,
-    [OBPPlus] FLOAT NOT NULL
+    [OBPPlus] FLOAT NOT NULL,
+    Shutouts INT NOT NULL
 
     FOREIGN KEY (PlayerID) REFERENCES MLB.Players(PlayerID),
     FOREIGN KEY (TeamID) REFERENCES MLB.Teams(TeamID)

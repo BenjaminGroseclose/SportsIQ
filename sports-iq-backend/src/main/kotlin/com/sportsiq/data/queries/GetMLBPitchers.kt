@@ -22,6 +22,7 @@ SELECT
             positionCategory = rs.getString("PositionCategory"),
             position = rs.getString("Position"),
             season = rs.getInt("Season"),
+            seasonType = rs.getInt("SeasonType") ,
             games = rs.getInt("Games"),
             starts = rs.getInt("Starts"),
             wins = rs.getInt("Wins"),
@@ -41,7 +42,8 @@ SELECT
             battingAverage = rs.getDouble("BattingAverageAgainst"),
             obp = rs.getDouble("OBP"),
             slug = rs.getDouble("Slug"),
-            obpPlus = rs.getDouble("OBPPlus")
+            obpPlus = rs.getDouble("OBPPlus"),
+            shutouts = rs.getInt("Shutouts")
 
         )
     }

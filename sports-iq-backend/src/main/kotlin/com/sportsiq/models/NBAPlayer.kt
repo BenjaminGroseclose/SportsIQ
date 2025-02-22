@@ -28,7 +28,7 @@ data class NBAPlayer(
     val blocks: Double?,
     val turnover: Double?,
     val personalFouls: Double?,
-    @Field("pointsPergame") val pointsPerGame: Double?,
+//    @Field("pointsPergame") val pointsPerGame: Double?,
     val year: Number?
 ) {
     val freeThrowPercent: Double
