@@ -1,6 +1,7 @@
 
 
 USE main;
+SELECT * FROM MLB.Teams
 
 -- MLB
 -- DROP TABLES IF EXIST
@@ -50,7 +51,6 @@ CREATE TABLE [MLB].[Batting]
     Season INT NOT NULL,
     SeasonType INT NOT NULL,
     Games INT NOT NULL,
-    Starts INT NOT NULL,
     AtBats INT NOT NULL,
     Runs INT NOT NULL,
     Hits INT NOT NULL,
