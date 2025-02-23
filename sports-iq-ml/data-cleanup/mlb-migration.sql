@@ -1,11 +1,29 @@
 
 DROP TABLE IF EXISTS #MainPlayerIDs
 DROP TABLE IF EXISTS #TeamMap
-DROP TABLE IF EXISTS #ExistPlayers
+DROP TABLE IF EXISTS #PositionCatMap
+DROP TABLE IF EXISTS #NewPeople
+DROP TABLE IF EXISTS #Players
 
 --SELECT * FROM People WHERE nameLast = 'Semien' AND nameFirst = 'Marcus'
 
 --SELECT * FROM Batting WHERE playerID = 'semiema01' and yearID = 2023
+
+CREATE TABLE #PositionCatMap
+(
+	Position VARCHAR(10) NOT NULL,
+	Category VARCHAR(10) NOT NULL
+)
+
+INSERT INTO #PositionCatMap
+VALUES
+( 'C', 'IF')
+,( '1B', 'IF')
+,( '2B', 'IF')
+,( '3B', 'IF')
+,( 'SS', 'IF')
+,( 'OF', 'OF')
+,( 'P', 'P')
 
 CREATE TABLE #TeamMap
 (
@@ -13,9 +31,22 @@ CREATE TABLE #TeamMap
 	,ExternalFranchID VARCHAR(3) NOT NULL
 )
 
-CREATE TABLE #ExistPlayers 
+CREATE TABLE #NewPeople
 (
-    PlayerID INT NOT NULL,
+    FirstName VARCHAR(100) NOT NULL,
+    LastName VARCHAR(100) NOT NULL,
+    DateOfBirth DATE NULL,
+    PositionCategory VARCHAR(5)  NOT NULL,
+    Position VARCHAR(5) NOT NULL,
+    BatHand VARCHAR(15) NULL,
+    ThrowHand VARCHAR(15) NULL, 
+    [Status] VARCHAR(50) NOT NULL,
+    LahmanPlayerID VARCHAR(100) NULL,
+)
+
+CREATE TABLE #Players 
+(
+    PlayerID INT NULL,
     TeamID INT NOT NULL,
     Season INT NOT NULL,
     SeasonType INT NOT NULL,
@@ -35,7 +66,8 @@ CREATE TABLE #ExistPlayers
     CaughtStealing INT NOT NULL,
     OBP FLOAT NOT NULL,
     Slug FLOAT NOT NULL,
-    [OBPPlus] FLOAT NOT NULL
+    [OBPPlus] FLOAT NOT NULL,
+	ExternalPlayerID VARCHAR(100) NOT NULL
 )
 
 INSERT INTO #TeamMap (TeamID, ExternalFranchID)
@@ -106,10 +138,10 @@ GROUP BY
 --SELECT * FROM #MainPlayerIDs
 
 -- Batting
---INSERT INTO #ExistPlayers
+INSERT INTO #Players
 SELECT
 	mpi.ID AS [PlayerID]
-	--,tm.TeamID AS [TeamID]
+	,tm.TeamID AS [TeamID]
 	,b.yearID AS [Season]
 	,1 AS [SeasonType] -- Regular Season
 	,b.G AS [Games]
@@ -120,7 +152,7 @@ SELECT
 	,b.[3B] AS [Triples]
 	,b.HR AS [HomeRuns]
 	,b.RBI AS [RunsBattedIn]
-	,CASE WHEN (b.AB = 0) THEN 0 ELSE ROUND(b.H * 1.0 / b.AB, 3) END AS [BattingAverage]
+	,CASE WHEN (b.AB = 0) THEN 0 ELSE CAST(ROUND(b.H * 1.0 / b.AB, 3) AS FLOAT) END AS [BattingAverage]
 	,b.SO AS [Strikeouts]
 	,b.BB AS [Walks]
 	,b.HBP AS [HitByPitch]
@@ -130,17 +162,17 @@ SELECT
 	,CASE 
 		WHEN (b.AB = 0) THEN 0 
 		ELSE 
-			ROUND((b.H + b.BB + b.HBP) * 1.0 / (b.AB + b.BB + b.HBP + b.SF), 3)
+			CAST(ROUND((b.H + b.BB + b.HBP) * 1.0 / (b.AB + b.BB + b.HBP + b.SF), 3) AS float)
 	END AS [OBP]
 	, CASE 
 		WHEN (b.AB = 0) THEN 0 
 		ELSE 
-			ROUND(( b.H + b.[2B] +2*b.[3B] + 3*b.HR) * 1.0 / b.AB, 3)
+			CAST(ROUND(( b.H + b.[2B] +2*b.[3B] + 3*b.HR) * 1.0 / b.AB, 3) AS FLOAT)
 	END AS [Slug]
 	,CASE 
 		WHEN (b.AB = 0) THEN 0 
 		ELSE 
-			ROUND(((b.H + b.BB + b.HBP) * 1.0 / (b.AB + b.BB + b.HBP + b.SF)) + (( b.H + b.[2B] +2*b.[3B] + 3*b.HR) * 1.0 / b.AB), 3)
+			CAST(ROUND(((b.H + b.BB + b.HBP) * 1.0 / (b.AB + b.BB + b.HBP + b.SF)) + (( b.H + b.[2B] +2*b.[3B] + 3*b.HR) * 1.0 / b.AB), 3) AS FLOAT)
 	END AS [OBPPlus]
 	,mpi.ExternalPlayerID
 FROM 
@@ -149,5 +181,107 @@ FROM
 	JOIN Batting  b ON b.playerID = mpi.ExternalPlayerID
 	JOIN Teams t ON t.teamID = b.teamID AND t.yearID = b.yearID
 	JOIN #TeamMap tm ON tm.ExternalFranchID = t.franchID
+WHERE
+	b.AB != 0
 
-SELECT * FROM #ExistPlayers
+-- SELECT COUNT(*) FROM #Players
+
+INSERT INTO #Players
+SELECT
+	mpi.ID AS [PlayerID]
+	,tm.TeamID AS [TeamID]
+	,b.yearID AS [Season]
+	,1 AS [SeasonType] -- Regular Season
+	,b.G AS [Games]
+	,b.AB AS [AtBats]
+	,b.R AS [Runs]
+	,b.H AS [Hits]
+	,b.[2B] AS [Doubles]
+	,b.[3B] AS [Triples]
+	,b.HR AS [HomeRuns]
+	,b.RBI AS [RunsBattedIn]
+	,CASE WHEN (b.AB = 0) THEN 0 ELSE CAST(ROUND(b.H * 1.0 / b.AB, 3) AS FLOAT) END AS [BattingAverage]
+	,b.SO AS [Strikeouts]
+	,b.BB AS [Walks]
+	,b.HBP AS [HitByPitch]
+	,b.SB AS [Steals]
+	,b.CS AS [CaughtStealing]
+	--  (Hits + Walks + Hit by Pitch) / (At Bats + Walks + Hit by Pitch + Sacrifice Flies)
+	,CASE 
+		WHEN (b.AB = 0) THEN 0 
+		ELSE 
+			CAST(ROUND((b.H + b.BB + b.HBP) * 1.0 / (b.AB + b.BB + b.HBP + b.SF), 3) AS float)
+	END AS [OBP]
+	, CASE 
+		WHEN (b.AB = 0) THEN 0 
+		ELSE 
+			CAST(ROUND(( b.H + b.[2B] +2*b.[3B] + 3*b.HR) * 1.0 / b.AB, 3) AS FLOAT)
+	END AS [Slug]
+	,CASE 
+		WHEN (b.AB = 0) THEN 0 
+		ELSE 
+			CAST(ROUND(((b.H + b.BB + b.HBP) * 1.0 / (b.AB + b.BB + b.HBP + b.SF)) + (( b.H + b.[2B] +2*b.[3B] + 3*b.HR) * 1.0 / b.AB), 3) AS FLOAT)
+	END AS [OBPPlus]
+	,mpi.ExternalPlayerID
+FROM 
+	#MainPlayerIDs mpi
+	JOIN Batting  b ON b.playerID = mpi.ExternalPlayerID
+	JOIN Teams t ON t.teamID = b.teamID AND t.yearID = b.yearID
+	JOIN #TeamMap tm ON tm.ExternalFranchID = t.franchID
+WHERE
+	b.AB != 0
+
+
+-- SELECT * FROM #Players
+
+/*
+    FirstName VARCHAR(100) NOT NULL,
+    LastName VARCHAR(100) NOT NULL,
+    DateOfBirth DATE NULL,
+    PositionCategory VARCHAR(5)  NOT NULL,
+    Position VARCHAR(5) NOT NULL,
+    BatHand VARCHAR(15) NULL,
+    ThrowHand VARCHAR(15) NULL, 
+    [Status] VARCHAR(50) NOT NULL,
+    LahmanPlayerID INT NULL,
+*/
+INSERT INTO #NewPeople
+SELECT 
+	a.FirstName
+	,a.LastName
+	,a.DateOfBirth
+	,pcm.Category AS [PositionCategory]
+	,CASE WHEN a.Position = 'P'
+		THEN
+			CASE WHEN EXISTS (SELECT 1 FROM Pitching pit WHERE pit.playerID = a.[LahmanPlayerID] AND pit.GS > 0) THEN 'P' ELSE 'RP' END
+		ELSE a.Position
+	END AS [Position]
+	,a.BatHand
+	,a.ThrowHand
+	,a.Status
+	,a.LahmanPlayerID
+FROM 
+(
+	SELECT 
+		p.nameFirst AS [FirstName]
+		,p.nameLast AS [LastName]
+		,f.Pos AS [Position]
+		,(CAST(p.birthYear AS VARCHAR) + '-' + CAST(p.birthMonth  AS VARCHAR) + '-' + CAST(p.birthDay  AS VARCHAR)) AS [DateOfBirth]
+		,p.bats AS [BatHand]
+		,p.throws AS [ThrowHand]
+		,'Inactive' AS [Status] -- All players should be inactive because they currently do not exist in our 2024 data
+		,p.playerID AS [LahmanPlayerID]
+
+		,f.yearID
+		,ROW_NUMBER() OVER (PARTITION BY f.playerID ORDER BY f.yearID DESC) AS RowNumber
+	FROM
+		#MainPlayerIDs mpi
+		JOIN People p ON p.playerID = mpi.ExternalPlayerID
+		JOIN Fielding f ON f.playerID = p.playerID
+	WHERE 
+		mpi.ID IS NULL
+) a
+JOIN #PositionCatMap pcm ON pcm.Position = a.Position
+WHERE a.RowNumber = 1
+
+SELECT * FROM #NewPeople

@@ -3,6 +3,8 @@
 USE main;
 SELECT * FROM MLB.Teams
 
+SELECT * FROM MLB.Players WHERE [Status] != 'Active'
+
 -- MLB
 -- DROP TABLES IF EXIST
 -- DROP TABLE IF EXISTS MLB.TeamStats
@@ -31,7 +33,6 @@ CREATE TABLE [MLB].[Players]
     FirstName VARCHAR(100) NOT NULL,
     LastName VARCHAR(100) NOT NULL,
     Jersey INT NULL,
-    TeamID INT NULL,
     DateOfBirth DATE NULL,
     PositionCategory VARCHAR(5)  NOT NULL,
     Position VARCHAR(5) NOT NULL,
@@ -39,6 +40,7 @@ CREATE TABLE [MLB].[Players]
     ThrowHand VARCHAR(15) NULL, 
     [Status] VARCHAR(50) NOT NULL,
     ExternalPlayerID INT NULL,
+    LahmanPlayerID VARCHAR(100) NULL
 
     FOREIGN KEY (TeamID) REFERENCES MLB.Teams(TeamID)
 )
