@@ -3,8 +3,6 @@
 USE main;
 SELECT * FROM MLB.Teams
 
-SELECT * FROM MLB.Players WHERE [Status] != 'Active'
-
 -- MLB
 -- DROP TABLES IF EXIST
 -- DROP TABLE IF EXISTS MLB.TeamStats
@@ -33,6 +31,7 @@ CREATE TABLE [MLB].[Players]
     FirstName VARCHAR(100) NOT NULL,
     LastName VARCHAR(100) NOT NULL,
     Jersey INT NULL,
+    TeamID INT NULL,
     DateOfBirth DATE NULL,
     PositionCategory VARCHAR(5)  NOT NULL,
     Position VARCHAR(5) NOT NULL,
@@ -40,10 +39,11 @@ CREATE TABLE [MLB].[Players]
     ThrowHand VARCHAR(15) NULL, 
     [Status] VARCHAR(50) NOT NULL,
     ExternalPlayerID INT NULL,
-    LahmanPlayerID VARCHAR(100) NULL
 
     FOREIGN KEY (TeamID) REFERENCES MLB.Teams(TeamID)
 )
+
+SELECT * FROM MLB.Batting
 
 CREATE TABLE [MLB].[Batting]
 (
@@ -56,13 +56,11 @@ CREATE TABLE [MLB].[Batting]
     AtBats INT NOT NULL,
     Runs INT NOT NULL,
     Hits INT NOT NULL,
-    Singles INT NOT NULL,
     Doubles INT NOT NULL,
     Triples INT NOT NULL,
     HomeRuns INT NOT NULL,
     RunsBattedIn INT NOT NULL,
     BattingAverage FLOAT NOT NULL,
-    Outs INT NOT NULL,
     Strikeouts INT NOT NULL,
     Walks INT NOT NULL,
     HitByPitch INT NOT NULL,
@@ -75,6 +73,8 @@ CREATE TABLE [MLB].[Batting]
     FOREIGN KEY (PlayerID) REFERENCES MLB.Players(PlayerID),
     FOREIGN KEY (TeamID) REFERENCES MLB.Teams(TeamID)
 )
+
+SELECT * FROM MLB.Pitching
 
 CREATE TABLE [MLB].[Pitching]
 (
@@ -90,19 +90,16 @@ CREATE TABLE [MLB].[Pitching]
     Saves INT NOT NULL,
     InningsPitched FLOAT NOT NULL,
     ERA FLOAT NOT NULL,
-    Runs INT NOT NULL,
+    EarnedRuns INT NOT NULL,
     Hits INT NOT NULL,
     HomeRuns INT NOT NULL,
     Strikeouts INT NOT NULL,
     StrikeoutsPerNineInnings FLOAT NOT NULL,
     Walks INT NOT NULL,
     WalksPerNineInnings FLOAT NOT NULL,
-    PitchesThrown INT NOT NULL,
     WHIP FLOAT NOT NULL,
     BattingAverageAgainst FLOAT NOT NULL,
     OBP FLOAT NOT NULL,
-    Slug FLOAT NOT NULL,
-    [OBPPlus] FLOAT NOT NULL,
     Shutouts INT NOT NULL
 
     FOREIGN KEY (PlayerID) REFERENCES MLB.Players(PlayerID),

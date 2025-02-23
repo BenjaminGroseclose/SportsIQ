@@ -5,7 +5,7 @@ import com.sportsiq.models.MLBPitcher
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.RowMapper
 
-class GetMLBPitchers(private val years: List<Int>) : IQuery<MLBPitcher> {
+class GetMLBPitchers(private val years: Array<Int>) : IQuery<MLBPitcher> {
 
     override var sql: String = """
 SELECT
@@ -15,10 +15,9 @@ SELECT
         MLBPitcher(
             playerID = rs.getInt("PlayerID"),
             name = rs.getString("Name"),
-            dateOfBirth = rs.getDate("DateOfBirth"),
             teamID = rs.getInt("TeamID"),
             team = rs.getString("Team"),
-            league = rs.getString("League"),
+            pitchingID = rs.getInt("PitchingID"),
             positionCategory = rs.getString("PositionCategory"),
             position = rs.getString("Position"),
             season = rs.getInt("Season"),
@@ -30,7 +29,7 @@ SELECT
             saves = rs.getInt("Saves"),
             inningsPitched =  rs.getDouble("InningsPitched"),
             era = rs.getDouble("ERA"),
-            runs = rs.getInt("Runs"),
+            earnedRuns = rs.getInt("EarnedRuns"),
             hits = rs.getInt("Hits"),
             homeRuns = rs.getInt("HomeRuns"),
             strikeouts = rs.getInt("Strikeouts"),
@@ -41,8 +40,6 @@ SELECT
             whip = rs.getDouble("WHIP"),
             battingAverage = rs.getDouble("BattingAverageAgainst"),
             obp = rs.getDouble("OBP"),
-            slug = rs.getDouble("Slug"),
-            obpPlus = rs.getDouble("OBPPlus"),
             shutouts = rs.getInt("Shutouts")
 
         )

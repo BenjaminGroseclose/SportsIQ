@@ -1,14 +1,11 @@
 package com.sportsiq.models
 
-import java.util.Date
-
 data class MLBPitcher(
     var playerID: Int,
     var name: String,
-    var dateOfBirth: Date,
     var teamID: Int?,
     var team: String,
-    var league: String,
+    var pitchingID: Int,
     var positionCategory: String,
     var position: String,
     var season: Int,
@@ -20,7 +17,7 @@ data class MLBPitcher(
     var saves: Int,
     var inningsPitched: Double,
     var era: Double,
-    var runs: Int,
+    var earnedRuns: Int,
     var hits: Int,
     var homeRuns: Int,
     var strikeouts: Int,
@@ -31,8 +28,6 @@ data class MLBPitcher(
     var whip: Double,
     var battingAverage: Double,
     var obp: Double,
-    var slug: Double,
-    var obpPlus: Double,
     var shutouts: Int
 ) {
 }

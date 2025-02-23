@@ -3,10 +3,10 @@ DROP TABLE IF EXISTS #MainPlayerIDs
 DROP TABLE IF EXISTS #TeamMap
 DROP TABLE IF EXISTS #PositionCatMap
 DROP TABLE IF EXISTS #NewPeople
-DROP TABLE IF EXISTS #Players
+DROP TABLE IF EXISTS #Batters
+DROP TABLE IF EXISTS #Pitchers
 
 --SELECT * FROM People WHERE nameLast = 'Semien' AND nameFirst = 'Marcus'
-
 --SELECT * FROM Batting WHERE playerID = 'semiema01' and yearID = 2023
 
 CREATE TABLE #PositionCatMap
@@ -44,7 +44,34 @@ CREATE TABLE #NewPeople
     LahmanPlayerID VARCHAR(100) NULL,
 )
 
-CREATE TABLE #Players 
+CREATE TABLE #Pitchers
+(
+    PlayerID INT NULL,
+    TeamID INT NOT NULL,
+    Season INT NOT NULL,
+    SeasonType INT NOT NULL,
+    Games INT NOT NULL,
+    Starts INT NOT NULL,
+    Wins INT NOT NULL,
+    Losses INT NOT NULL,
+    Saves INT NOT NULL,
+    InningsPitched FLOAT NOT NULL,
+    ERA FLOAT NOT NULL,
+    EarnedRuns INT NOT NULL,
+    Hits INT NOT NULL,
+    HomeRuns INT NOT NULL,
+    Strikeouts INT NOT NULL,
+    StrikeoutsPerNineInnings FLOAT NOT NULL,
+    Walks INT NOT NULL,
+    WalksPerNineInnings FLOAT NOT NULL,
+    WHIP FLOAT NOT NULL,
+    BattingAverageAgainst FLOAT NOT NULL,
+    OBP FLOAT NOT NULL,
+    Shutouts INT NOT NULL,
+	ExternalPlayerID VARCHAR(100) NOT NULL
+)
+
+CREATE TABLE #Batters 
 (
     PlayerID INT NULL,
     TeamID INT NOT NULL,
@@ -127,18 +154,17 @@ FROM
 	LEFT JOIN dbo.PlayerMLB pmlb ON
 		pmlb.LastName = p.nameLast
 		AND pmlb.FirstName = p.nameFirst
-		--AND pmlb.DateOfBirth = (p.birthYear + '-' + p.birthMonth + '-' + p.birthDay)
+		AND pmlb.DateOfBirth = (CAST(p.birthYear AS VARCHAR) + '-' + CAST(p.birthMonth  AS VARCHAR) + '-' + CAST(p.birthDay  AS VARCHAR))
 GROUP BY
 	pmlb.PlayerID
 	,p.playerID
 
--- 2425
 --SELECT COUNT(*) FROM #MainPlayerIDs WHERE ID IS NULL 
 --SELECT COUNT(*) FROM #MainPlayerIDs WHERE ID IS NOT NULL 
 --SELECT * FROM #MainPlayerIDs
 
 -- Batting
-INSERT INTO #Players
+INSERT INTO #Batters
 SELECT
 	mpi.ID AS [PlayerID]
 	,tm.TeamID AS [TeamID]
@@ -152,99 +178,60 @@ SELECT
 	,b.[3B] AS [Triples]
 	,b.HR AS [HomeRuns]
 	,b.RBI AS [RunsBattedIn]
-	,CASE WHEN (b.AB = 0) THEN 0 ELSE CAST(ROUND(b.H * 1.0 / b.AB, 3) AS FLOAT) END AS [BattingAverage]
+	,CAST(ROUND(b.H * 1.0 / b.AB, 3) AS FLOAT) AS [BattingAverage]
 	,b.SO AS [Strikeouts]
 	,b.BB AS [Walks]
 	,b.HBP AS [HitByPitch]
 	,b.SB AS [Steals]
 	,b.CS AS [CaughtStealing]
-	--  (Hits + Walks + Hit by Pitch) / (At Bats + Walks + Hit by Pitch + Sacrifice Flies)
-	,CASE 
-		WHEN (b.AB = 0) THEN 0 
-		ELSE 
-			CAST(ROUND((b.H + b.BB + b.HBP) * 1.0 / (b.AB + b.BB + b.HBP + b.SF), 3) AS float)
-	END AS [OBP]
-	, CASE 
-		WHEN (b.AB = 0) THEN 0 
-		ELSE 
-			CAST(ROUND(( b.H + b.[2B] +2*b.[3B] + 3*b.HR) * 1.0 / b.AB, 3) AS FLOAT)
-	END AS [Slug]
-	,CASE 
-		WHEN (b.AB = 0) THEN 0 
-		ELSE 
-			CAST(ROUND(((b.H + b.BB + b.HBP) * 1.0 / (b.AB + b.BB + b.HBP + b.SF)) + (( b.H + b.[2B] +2*b.[3B] + 3*b.HR) * 1.0 / b.AB), 3) AS FLOAT)
-	END AS [OBPPlus]
+	,CAST(ROUND((b.H + b.BB + b.HBP) * 1.0 / (b.AB + b.BB + b.HBP + b.SF), 3) AS FLOAT) AS [OBP]
+	,CAST(ROUND(( b.H + b.[2B] +2*b.[3B] + 3*b.HR) * 1.0 / b.AB, 3) AS FLOAT) AS [Slug]
+	,CAST(ROUND(((b.H + b.BB + b.HBP) * 1.0 / (b.AB + b.BB + b.HBP + b.SF)) + (( b.H + b.[2B] +2*b.[3B] + 3*b.HR) * 1.0 / b.AB), 3) AS FLOAT) AS [OBPPlus]
 	,mpi.ExternalPlayerID
 FROM 
 	#MainPlayerIDs mpi
-	JOIN PlayerMLB pmlb ON mpi.ID = pmlb.PlayerID
+	LEFT JOIN PlayerMLB pmlb ON mpi.ID = pmlb.PlayerID
 	JOIN Batting  b ON b.playerID = mpi.ExternalPlayerID
 	JOIN Teams t ON t.teamID = b.teamID AND t.yearID = b.yearID
 	JOIN #TeamMap tm ON tm.ExternalFranchID = t.franchID
 WHERE
-	b.AB != 0
+	b.AB > 0
 
--- SELECT COUNT(*) FROM #Players
-
-INSERT INTO #Players
-SELECT
+-- 23
+INSERT INTO #Pitchers 
+SELECT 
 	mpi.ID AS [PlayerID]
 	,tm.TeamID AS [TeamID]
-	,b.yearID AS [Season]
+	,p.yearID AS [Season]
 	,1 AS [SeasonType] -- Regular Season
-	,b.G AS [Games]
-	,b.AB AS [AtBats]
-	,b.R AS [Runs]
-	,b.H AS [Hits]
-	,b.[2B] AS [Doubles]
-	,b.[3B] AS [Triples]
-	,b.HR AS [HomeRuns]
-	,b.RBI AS [RunsBattedIn]
-	,CASE WHEN (b.AB = 0) THEN 0 ELSE CAST(ROUND(b.H * 1.0 / b.AB, 3) AS FLOAT) END AS [BattingAverage]
-	,b.SO AS [Strikeouts]
-	,b.BB AS [Walks]
-	,b.HBP AS [HitByPitch]
-	,b.SB AS [Steals]
-	,b.CS AS [CaughtStealing]
-	--  (Hits + Walks + Hit by Pitch) / (At Bats + Walks + Hit by Pitch + Sacrifice Flies)
-	,CASE 
-		WHEN (b.AB = 0) THEN 0 
-		ELSE 
-			CAST(ROUND((b.H + b.BB + b.HBP) * 1.0 / (b.AB + b.BB + b.HBP + b.SF), 3) AS float)
-	END AS [OBP]
-	, CASE 
-		WHEN (b.AB = 0) THEN 0 
-		ELSE 
-			CAST(ROUND(( b.H + b.[2B] +2*b.[3B] + 3*b.HR) * 1.0 / b.AB, 3) AS FLOAT)
-	END AS [Slug]
-	,CASE 
-		WHEN (b.AB = 0) THEN 0 
-		ELSE 
-			CAST(ROUND(((b.H + b.BB + b.HBP) * 1.0 / (b.AB + b.BB + b.HBP + b.SF)) + (( b.H + b.[2B] +2*b.[3B] + 3*b.HR) * 1.0 / b.AB), 3) AS FLOAT)
-	END AS [OBPPlus]
-	,mpi.ExternalPlayerID
-FROM 
+	,p.G AS [Games]
+	,p.GS AS [Starts]
+	,p.W AS [Wins]
+	,p.L AS [Losses]
+	,p.SV AS [Saves]
+	,ROUND(p.IPOuts * 1.0 / 3, 3) AS [InningsPitched]
+	-- (Earned Runs / Innings Pitched) x 9 
+	,p.ERA AS [ERA]
+	,p.ER AS [EarnedRuns]
+	,p.H AS [Hits]
+	,p.HR AS [HomeRuns]
+	,p.SO AS [Strikeouts]
+	,ROUND((p.SO * 1.0 / (p.IPOuts * 1.0 / 3)) * 9, 3) AS [StrikeoutsPerNineInnings]
+	,p.BB AS [Walks]
+	,ROUND((p.BB * 1.0 / (p.IPOuts * 1.0 / 3)) * 9, 3) AS [WalksPerNineInnings]
+	,ROUND((p.BB + p.H) * 1.0 / (p.IPOuts * 1.0 / 3), 3) AS [WHIP]
+	,CAST(ROUND(p.H * 1.0 / p.BFP, 3) AS FLOAT) AS [BattingAverageAgainst]
+	,ISNULL(CAST(ROUND(((p.H + p.BB + p.HBP) * 1.0) / (p.BFP + p.BB + p.HBP + p.SF), 3) AS FLOAT), 0) AS [OBP]
+	,p.SHO AS [Shutouts]
+	,mpi.ExternalPlayerID AS [ExternalPlayerID]
+FROM
 	#MainPlayerIDs mpi
-	JOIN Batting  b ON b.playerID = mpi.ExternalPlayerID
-	JOIN Teams t ON t.teamID = b.teamID AND t.yearID = b.yearID
+	JOIN Pitching  p ON p.playerID = mpi.ExternalPlayerID
+	JOIN Teams t ON t.teamID = p.teamID AND p.yearID = t.yearID
 	JOIN #TeamMap tm ON tm.ExternalFranchID = t.franchID
 WHERE
-	b.AB != 0
+	p.IPOuts > 0 AND p.BFP > 0
 
-
--- SELECT * FROM #Players
-
-/*
-    FirstName VARCHAR(100) NOT NULL,
-    LastName VARCHAR(100) NOT NULL,
-    DateOfBirth DATE NULL,
-    PositionCategory VARCHAR(5)  NOT NULL,
-    Position VARCHAR(5) NOT NULL,
-    BatHand VARCHAR(15) NULL,
-    ThrowHand VARCHAR(15) NULL, 
-    [Status] VARCHAR(50) NOT NULL,
-    LahmanPlayerID INT NULL,
-*/
 INSERT INTO #NewPeople
 SELECT 
 	a.FirstName
@@ -285,3 +272,8 @@ JOIN #PositionCatMap pcm ON pcm.Position = a.Position
 WHERE a.RowNumber = 1
 
 SELECT * FROM #NewPeople
+SELECT * FROM #Batters
+SELECT * FROM #Pitchers
+
+-- 44768
+-- 22000
