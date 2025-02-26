@@ -3,7 +3,7 @@
 		<div class="header">
 			<h2>{{ sport() | uppercase }} Stats</h2>
 			<span class="spacer"></span>
-			@if (type() === "players") {
+			@if (type() !== "teams") {
 				<mat-form-field appearance="outline">
 					<mat-label>Position</mat-label>
 					<mat-select [value]="positions()" (selectionChange)="positions.set($event.value)" multiple>
@@ -23,9 +23,9 @@
 			</mat-form-field>
 			<mat-form-field appearance="outline">
 				<mat-label>Year</mat-label>
-				<mat-select [value]="year()" (selectionChange)="year.set($event.value)" placeholder="Select a Year" multiple>
-					@for (year of yearsResource.value(); track $index) {
-						<mat-option [value]="year">{{ year }}</mat-option>
+				<mat-select [value]="seasons()" (selectionChange)="seasons.set($event.value)" placeholder="Select Seasons" multiple>
+					@for (season of seasonsResource.value(); track $index) {
+						<mat-option [value]="season">{{ season }}</mat-option>
 					}
 				</mat-select>
 			</mat-form-field>
@@ -34,16 +34,16 @@
 		<div class="content">
 			@switch (tableType()) {
 				@case (0) {
-					<si-nba-player-table [years]="year()" [positions]="positions()"></si-nba-player-table>
+					<si-nba-player-table [seasons]="seasons()" [positions]="positions()"></si-nba-player-table>
 				}
 				@case (1) {
-					<si-nba-team-table [years]="year()"></si-nba-team-table>
+					<si-nba-team-table [seasons]="seasons()"></si-nba-team-table>
 				}
 				@case (4) {
-					<si-mlb-hitter-table [years]="year()"></si-mlb-hitter-table>
+					<si-mlb-hitter-table [seasons]="seasons()" [positions]="positions()"></si-mlb-hitter-table>
 				}
 				@case (5) {
-					<si-mlb-pitcher-table [years]="year()"></si-mlb-pitcher-table>
+					<si-mlb-pitcher-table [seasons]="seasons()" [positions]="positions()"></si-mlb-pitcher-table>
 				}
 			}
 		</div>

@@ -11,36 +11,26 @@
 			<ng-container matColumnDef="Name">
 				<th mat-header-cell *matHeaderCellDef>Name</th>
 				<td mat-cell *matCellDef="let element">
-					{{ element.player }}
-					@if (years().length > 1) {
+					{{ element.name }}
+					@if (seasons().length > 1) {
 						({{ element.year }})
 					}
 				</td>
 			</ng-container>
 
-			<ng-container matColumnDef="Age">
-				<th mat-header-cell *matHeaderCellDef>Age</th>
-				<td mat-cell *matCellDef="let element">{{ element.age }}</td>
+			<ng-container matColumnDef="Team">
+				<th mat-header-cell *matHeaderCellDef>Team</th>
+				<td mat-cell *matCellDef="let element">{{ element.team }}</td>
 			</ng-container>
 
-			<ng-container matColumnDef="League">
-				<th mat-header-cell *matHeaderCellDef matTooltip="League">L</th>
-				<td mat-cell *matCellDef="let element">{{ element.league }}</td>
+			<ng-container matColumnDef="Position">
+				<th mat-header-cell *matHeaderCellDef>Pos</th>
+				<td mat-cell *matCellDef="let element">{{ element.position }}</td>
 			</ng-container>
 
 			<ng-container matColumnDef="Games">
 				<th mat-header-cell *matHeaderCellDef matTooltip="Games">G</th>
 				<td mat-cell *matCellDef="let element">{{ element.games }}</td>
-			</ng-container>
-
-			<ng-container matColumnDef="PA">
-				<th mat-header-cell *matHeaderCellDef matTooltip="Plate Apperances">PA</th>
-				<td mat-cell *matCellDef="let element">{{ element.plateAppearances }}</td>
-			</ng-container>
-
-			<ng-container matColumnDef="WAR">
-				<th mat-header-cell *matHeaderCellDef>WAR</th>
-				<td mat-cell *matCellDef="let element">{{ element.war }}</td>
 			</ng-container>
 
 			<ng-container matColumnDef="At Bats">
@@ -80,12 +70,17 @@
 
 			<ng-container matColumnDef="Steals">
 				<th mat-header-cell *matHeaderCellDef matTooltip="Stolen Bases (Caught Stealing)">SB (CS)</th>
-				<td mat-cell *matCellDef="let element">{{ element.stolenBases }} ({{ element.caught }})</td>
+				<td mat-cell *matCellDef="let element">{{ element.steals }} ({{ element.caughtStealing }})</td>
 			</ng-container>
 
-			<ng-container matColumnDef="Base on Balls">
+			<ng-container matColumnDef="Walks">
 				<th mat-header-cell *matHeaderCellDef matTooltip="Base on Balls">BB</th>
-				<td mat-cell *matCellDef="let element">{{ element.baseOnBalls }}</td>
+				<td mat-cell *matCellDef="let element">{{ element.walks }}</td>
+			</ng-container>
+
+			<ng-container matColumnDef="Hit by Pitch">
+				<th mat-header-cell *matHeaderCellDef matTooltip="Hit by Pitch">HBP</th>
+				<td mat-cell *matCellDef="let element">{{ element.hitsByPitch }}</td>
 			</ng-container>
 
 			<ng-container matColumnDef="Strikeouts">
@@ -100,22 +95,17 @@
 
 			<ng-container matColumnDef="OBP">
 				<th mat-header-cell *matHeaderCellDef>OBP</th>
-				<td mat-cell *matCellDef="let element">{{ element.onBasePercentage }}</td>
+				<td mat-cell *matCellDef="let element">{{ element.obp | number: "1.3-3" }}</td>
 			</ng-container>
 
 			<ng-container matColumnDef="Slug">
 				<th mat-header-cell *matHeaderCellDef>Slug</th>
-				<td mat-cell *matCellDef="let element">{{ element.slug }}</td>
+				<td mat-cell *matCellDef="let element">{{ element.slug | number: "1.3-3" }}</td>
 			</ng-container>
 
 			<ng-container matColumnDef="OPS+">
 				<th mat-header-cell *matHeaderCellDef>OPS+</th>
-				<td mat-cell *matCellDef="let element">{{ element.opsPlus }}</td>
-			</ng-container>
-
-			<ng-container matColumnDef="rOBA">
-				<th mat-header-cell *matHeaderCellDef>rOBA</th>
-				<td mat-cell *matCellDef="let element">{{ element.roba }}</td>
+				<td mat-cell *matCellDef="let element">{{ element.obpPlus | number: "1.3-3" }}</td>
 			</ng-container>
 
 			<tr mat-header-row *matHeaderRowDef="displayColumns()" class="border-row"></tr>

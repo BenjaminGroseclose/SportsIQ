@@ -1,5 +1,5 @@
-import { MLBHitter } from "./mlb-hitter.model";
+import { MLBBatter } from "./mlb-batter.model";
 
 export interface MLBPlayer {
-	hitters: MLBHitter[];
+	hitters: MLBBatter[];
 }

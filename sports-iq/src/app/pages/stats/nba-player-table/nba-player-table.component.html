@@ -10,7 +10,9 @@
 
 			<ng-container matColumnDef="Name">
 				<th mat-header-cell *matHeaderCellDef>Name</th>
-				<td mat-cell *matCellDef="let element">{{ element.player }} {{ years().length === 1 ? "" : "(" + element.year + ")" }}</td>
+				<td mat-cell *matCellDef="let element">
+					{{ element.player }} {{ seasons().length === 1 ? "" : "(" + element.year + ")" }}
+				</td>
 			</ng-container>
 
 			<ng-container matColumnDef="Position">

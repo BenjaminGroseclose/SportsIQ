@@ -23,6 +23,7 @@ CREATE TABLE [MLB].[Teams]
     PrimaryColor VARCHAR(6),
     SecondaryColor VARCHAR(6),
     TertiaryColor VARCHAR(6) NULL,
+    ExternalTeamID INT NULL,
 )
 
 CREATE TABLE [MLB].[Players]
@@ -117,23 +118,21 @@ CREATE TABLE [MLB].[TeamStats]
     AtBats INT NOT NULL,
     Runs INT NOT NULL,
     Hits INT NOT NULL,
-    Singles INT NOT NULL,
     Doubles INT NOT NULL,
     Triples INT NOT NULL,
     HomeRuns INT NOT NULL,
     BattingAverage FLOAT NOT NULL,
-    Outs INT NOT NULL,
-    Strikeouts INT NOT NULL,
+    BattingStrikeouts INT NOT NULL,
     Steals INT NOT NULL,
     OBP FLOAT NOT NULL,
     Slug FLOAT NOT NULL,
-    [OBPPlus] FLOAT NOT NULL,    
+    [OBPPlus] FLOAT NOT NULL,
+    PitchingStrikeouts INT NOT NULL,
     Saves INT NOT NULL,
     ERA FLOAT NOT NULL,
-    PitchingBattingAverage FLOAT NOT NULL,
-    PitchingOBP FLOAT NOT NULL,
-    PitchingSlug FLOAT NOT NULL,
-    [PitchingOBPPlus] FLOAT NOT NULL,
+    RunsScoredByOpponent INT NOT NULL,
+    PitchingHits INT NOT NULL,
+    PitchingHomeRuns INT NOT NULL,
 
     FOREIGN KEY (TeamID) REFERENCES MLB.Teams(TeamID)
 )

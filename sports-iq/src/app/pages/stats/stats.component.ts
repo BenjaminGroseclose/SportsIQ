@@ -34,7 +34,7 @@ export class StatsComponent {
 	statsService = inject(StatsService);
 
 	type = signal<string>("teams");
-	year = signal<number[]>([2025]); // TODO: Get current year programatically
+	seasons = signal<number[]>([2024]); // TODO: Get current year programatically
 	positions = signal<string[]>([]);
 
 	typeOptions = computed(() => {
@@ -66,11 +66,11 @@ export class StatsComponent {
 		}
 	});
 
-	yearsResource = rxResource<number[], string>({
+	seasonsResource = rxResource<number[], string>({
 		request: () => {
 			return this.sport();
 		},
-		loader: ({ request }) => this.statsService.getYears(request).pipe(take(1))
+		loader: ({ request }) => this.statsService.getSeasons(request).pipe(take(1))
 	});
 
 	positionResource = rxResource<string[], string>({

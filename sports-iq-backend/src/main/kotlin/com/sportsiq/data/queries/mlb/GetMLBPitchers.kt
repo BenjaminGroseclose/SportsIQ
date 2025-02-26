@@ -1,14 +1,17 @@
-package com.sportsiq.data.queries
+package com.sportsiq.data.queries.mlb
 
 import com.sportsiq.data.IQuery
+import com.sportsiq.data.queries.BaseQuery
 import com.sportsiq.models.MLBPitcher
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.RowMapper
 
-class GetMLBPitchers(private val years: Array<Int>) : IQuery<MLBPitcher> {
+class GetMLBPitchers(private val seasons: Array<Int>) : IQuery<MLBPitcher> {
 
     override var sql: String = """
-SELECT
+${BaseQuery.MLB_PITCHING}
+WHERE
+    SeasonType = 1 AND Season IN (
     """.trimIndent()
     
     override val mapper: RowMapper<MLBPitcher> = RowMapper<MLBPitcher> { rs, rowNum ->
@@ -36,16 +39,17 @@ SELECT
             strikeoutsPerNineInnings = rs.getDouble("StrikeoutsPerNineInnings"),
             walks = rs.getInt("Walks"),
             walksPerNineInnings = rs.getDouble("WalksPerNineInnings"),
-            pitchesThrown = rs.getInt("PitchesThrown"),
             whip = rs.getDouble("WHIP"),
             battingAverage = rs.getDouble("BattingAverageAgainst"),
             obp = rs.getDouble("OBP"),
             shutouts = rs.getInt("Shutouts")
-
         )
     }
 
     override fun execute(template: JdbcTemplate): List<MLBPitcher> {
-        return template.query(sql, mapper, years)
+        val seasonString = seasons.joinToString(",")
+
+        sql = "$sql$seasonString)"
+        return template.query(sql, mapper)
     }
 }

@@ -1,4 +1,4 @@
-package com.sportsiq.data.queries
+package com.sportsiq.data.queries.mlb
 
 import com.sportsiq.data.IQuery
 import org.springframework.jdbc.core.JdbcTemplate

@@ -5,27 +5,17 @@
 		<table mat-table [dataSource]="dataSource() ?? []" recycleRows>
 			<ng-container matColumnDef="Rank">
 				<th mat-header-cell *matHeaderCellDef></th>
-				<td mat-cell *matCellDef="let element; let i = index">{{ i + 1 }}</td>
+				<td mat-cell *matCellDef="let element; let i = index">{{ paginator.pageIndex * paginator.pageSize + i + 1 }}</td>
 			</ng-container>
 
-			<ng-container matColumnDef="Player">
+			<ng-container matColumnDef="Name">
 				<th mat-header-cell *matHeaderCellDef>Name</th>
 				<td mat-cell *matCellDef="let element">
-					{{ element.player }}
-					@if (years().length > 1) {
-						({{ element.year }})
+					{{ element.name }}
+					@if (seasons().length > 1) {
+						({{ element.season }})
 					}
 				</td>
-			</ng-container>
-
-			<ng-container matColumnDef="Age">
-				<th mat-header-cell *matHeaderCellDef>Age</th>
-				<td mat-cell *matCellDef="let element">{{ element.age }}</td>
-			</ng-container>
-
-			<ng-container matColumnDef="League">
-				<th mat-header-cell *matHeaderCellDef matTooltip="League">L</th>
-				<td mat-cell *matCellDef="let element">{{ element.league }}</td>
 			</ng-container>
 
 			<ng-container matColumnDef="Team">
@@ -33,15 +23,20 @@
 				<td mat-cell *matCellDef="let element">{{ element.team }}</td>
 			</ng-container>
 
-			<ng-container matColumnDef="Games">
-				<th mat-header-cell *matHeaderCellDef matTooltip="Games (Starts)">G</th>
-				<td mat-cell *matCellDef="let element">{{ element.games }} ({{ element.gameStarts }})</td>
+			<ng-container matColumnDef="Position">
+				<th mat-header-cell *matHeaderCellDef>Pos</th>
+				<td mat-cell *matCellDef="let element">{{ element.position }}</td>
 			</ng-container>
 
-			<ng-container matColumnDef="Record">
-				<th mat-header-cell *matHeaderCellDef matTooltip="Games">W/L</th>
-				<td mat-cell *matCellDef="let element" [matTooltip]="element.winLosePercentage">
-					{{ element.wins }} / {{ element.loses }}
+			<ng-container matColumnDef="Games">
+				<th mat-header-cell *matHeaderCellDef matTooltip="Games (Starts)">G</th>
+				<td mat-cell *matCellDef="let element">{{ element.games }} ({{ element.starts }})</td>
+			</ng-container>
+
+			<ng-container matColumnDef="W/L">
+				<th mat-header-cell *matHeaderCellDef>W/L</th>
+				<td mat-cell *matCellDef="let element" [matTooltip]="element.winLossPercentage | number: '1.2-2'">
+					{{ element.wins }} / {{ element.losses }}
 				</td>
 			</ng-container>
 
@@ -50,9 +45,9 @@
 				<td mat-cell *matCellDef="let element">{{ element.era }}</td>
 			</ng-container>
 
-			<ng-container matColumnDef="ERA+">
-				<th mat-header-cell *matHeaderCellDef>ERA+</th>
-				<td mat-cell *matCellDef="let element">{{ element.eraPlus }}</td>
+			<ng-container matColumnDef="Earned Runs">
+				<th mat-header-cell *matHeaderCellDef matTooltip="Earned Runs">ER</th>
+				<td mat-cell *matCellDef="let element">{{ element.earnedRuns }}</td>
 			</ng-container>
 
 			<ng-container matColumnDef="Shutouts">
@@ -61,18 +56,18 @@
 			</ng-container>
 
 			<ng-container matColumnDef="Saves">
-				<th mat-header-cell *matHeaderCellDef>Saves</th>
+				<th mat-header-cell *matHeaderCellDef matTooltip="Saves">SV</th>
 				<td mat-cell *matCellDef="let element">{{ element.saves }}</td>
 			</ng-container>
 
 			<ng-container matColumnDef="IP">
 				<th mat-header-cell *matHeaderCellDef matTooltip="Innings Pitched">IP</th>
-				<td mat-cell *matCellDef="let element">{{ element.ip }}</td>
+				<td mat-cell *matCellDef="let element">{{ element.inningsPitched | number: "1.1-3" }}</td>
 			</ng-container>
 
-			<ng-container matColumnDef="Hits Allowed">
+			<ng-container matColumnDef="Hits">
 				<th mat-header-cell *matHeaderCellDef matTooltip="Hits Allowed">Hits</th>
-				<td mat-cell *matCellDef="let element">{{ element.hitsAllowed }}</td>
+				<td mat-cell *matCellDef="let element">{{ element.hits }}</td>
 			</ng-container>
 
 			<ng-container matColumnDef="WHIP">
@@ -80,44 +75,33 @@
 				<td mat-cell *matCellDef="let element">{{ element.whip }}</td>
 			</ng-container>
 
-			<ng-container matColumnDef="ERA Allowed">
-				<th mat-header-cell *matHeaderCellDef>ER</th>
-				<td mat-cell *matCellDef="let element">{{ element.earnedRunsAllowed }}</td>
-			</ng-container>
-
-			<ng-container matColumnDef="HR Allowed">
+			<ng-container matColumnDef="HR">
 				<th mat-header-cell *matHeaderCellDef>HR</th>
-				<td mat-cell *matCellDef="let element">{{ element.homeRunsAllowed }}</td>
+				<td mat-cell *matCellDef="let element">{{ element.homeRuns }}</td>
 			</ng-container>
 
-			<ng-container matColumnDef="BB">
-				<th mat-header-cell *matHeaderCellDef matTooltip="Base on Balls/Walks">BB</th>
-				<td mat-cell *matCellDef="let element">{{ element.basesOnBalls }}</td>
+			<ng-container matColumnDef="Walks">
+				<th mat-header-cell *matHeaderCellDef matTooltip="Walks">BB</th>
+				<td mat-cell *matCellDef="let element" [matTooltip]="'Per Nine Inning: ' + element.walksPerNineInnings">
+					{{ element.walks }}
+				</td>
 			</ng-container>
 
 			<ng-container matColumnDef="Strikeouts">
-				<th mat-header-cell *matHeaderCellDef>SO</th>
-				<td mat-cell *matCellDef="let element">{{ element.strikeouts }}</td>
+				<th mat-header-cell *matHeaderCellDef matTooltip="Strikeouts">SO</th>
+				<td mat-cell *matCellDef="let element" [matTooltip]="'Per Nine Inning: ' + element.strikeoutsPerNineInnings">
+					{{ element.strikeouts }}
+				</td>
 			</ng-container>
 
-			<ng-container matColumnDef="Hits by Pitch">
-				<th mat-header-cell *matHeaderCellDef>HBP</th>
-				<td mat-cell *matCellDef="let element">{{ element.hitsByPitch }}</td>
+			<ng-container matColumnDef="Avg Against">
+				<th mat-header-cell *matHeaderCellDef matTooltip="Batting Average Against">Avg</th>
+				<td mat-cell *matCellDef="let element">{{ element.battingAverage | number: "1.1-3" }}</td>
 			</ng-container>
 
-			<ng-container matColumnDef="Balks">
-				<th mat-header-cell *matHeaderCellDef>Balks</th>
-				<td mat-cell *matCellDef="let element">{{ element.balks }}</td>
-			</ng-container>
-
-			<ng-container matColumnDef="FIP">
-				<th mat-header-cell *matHeaderCellDef matTooltip="Field Independent Pitching">FIP</th>
-				<td mat-cell *matCellDef="let element">{{ element.fip }}</td>
-			</ng-container>
-
-			<ng-container matColumnDef="SO/Walk">
-				<th mat-header-cell *matHeaderCellDef matTooltip="Strikeout per Walk">SO/Walk</th>
-				<td mat-cell *matCellDef="let element">{{ element.strikeoutsPerWalk }}</td>
+			<ng-container matColumnDef="OBP">
+				<th mat-header-cell *matHeaderCellDef>OBP</th>
+				<td mat-cell *matCellDef="let element">{{ element.obp | number: "1.1-3" }}</td>
 			</ng-container>
 
 			<tr mat-header-row *matHeaderRowDef="displayColumns()"></tr>

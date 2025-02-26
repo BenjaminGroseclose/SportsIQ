@@ -6,7 +6,7 @@ import { Column, FilterColumn } from "@sports-iq/models";
 	template: ""
 })
 export class BaseStatsTableComponent implements AfterViewInit {
-	years = input.required<number[]>();
+	seasons = input.required<number[]>();
 	viewInit = signal<boolean>(false);
 
 	displayColumns = signal<string[]>([]);

@@ -110,7 +110,7 @@ export class NBAPlayerTableComponent extends BaseStatsTableComponent {
 
 	statsResource = rxResource<NBAPlayer[], number[]>({
 		request: () => {
-			return this.years();
+			return this.seasons();
 		},
 		loader: ({ request }) =>
 			request == null || request.length === 0 ? of([]) : this.statsService.getPlayers<NBAPlayer>("nba", request)

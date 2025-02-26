@@ -24,10 +24,11 @@ data class MLBPitcher(
     var strikeoutsPerNineInnings: Double,
     var walks: Int,
     var walksPerNineInnings: Double,
-    var pitchesThrown: Int,
     var whip: Double,
     var battingAverage: Double,
     var obp: Double,
     var shutouts: Int
 ) {
+    val winLossPercentage: Double
+        get() = if (losses == 0) 1.0 else (wins * 1.0 / (wins + losses))
 }

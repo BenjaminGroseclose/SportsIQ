@@ -1,4 +1,4 @@
-import { Component, computed, inject, ViewChild } from "@angular/core";
+import { Component, computed, inject, input, ViewChild } from "@angular/core";
 import { BaseStatsTableComponent } from "../base-stats-table.component";
 import { Column } from "@sports-iq/models";
 import { rxResource } from "@angular/core/rxjs-interop";
@@ -34,6 +34,7 @@ export class MLBPitcherTableComponent extends BaseStatsTableComponent {
 	statsService = inject(StatsService);
 
 	@ViewChild(MatPaginator) paginator: MatPaginator = <MatPaginator>{};
+	positions = input<string[]>();
 
 	dataSource = computed<MatTableDataSource<MLBPitcher, MatPaginator> | null>(() => {
 		if (this.statsResource.status() !== 4 || !this.viewInit()) {
@@ -41,19 +42,24 @@ export class MLBPitcherTableComponent extends BaseStatsTableComponent {
 		}
 
 		let stats = this.statsResource.value();
+		const position = this.positions();
 
 		if (stats == null) {
 			return null;
+		}
+
+		if (position != null && position.length > 0) {
+			stats = stats?.filter((x) => x.position != null && position.includes(x.position));
 		}
 
 		const columnWeights = this.columnWeights();
 
 		const filterColumnWeights = new Map([...columnWeights.entries()].filter((value) => value[1].filterValue != null));
 
-		filterColumnWeights.forEach((value, column) => {
+		filterColumnWeights.forEach((value, _) => {
 			stats = stats?.filter((x) => {
 				const property = value.property as keyof typeof x;
-				const prop = x[property];
+				const prop = Number(x[property]);
 
 				let filterValue = value.filterValue ?? 0;
 
@@ -81,8 +87,8 @@ export class MLBPitcherTableComponent extends BaseStatsTableComponent {
 
 					const property = value.property as keyof typeof a;
 
-					const aValue = a[property];
-					const bValue = b[property];
+					const aValue = Number(a[property]);
+					const bValue = Number(b[property]);
 
 					if (aValue > bValue) {
 						sortValue = 1 * (value.isAsc ? 1 : -1);
@@ -105,7 +111,7 @@ export class MLBPitcherTableComponent extends BaseStatsTableComponent {
 
 	statsResource = rxResource<MLBPitcher[], number[]>({
 		request: () => {
-			return this.years();
+			return this.seasons();
 		},
 		loader: ({ request }) => (request == null || request.length === 0 ? of([]) : this.statsService.getPitchers(request))
 	});
@@ -113,26 +119,23 @@ export class MLBPitcherTableComponent extends BaseStatsTableComponent {
 	constructor() {
 		const columns: Column[] = [
 			{ name: "Rank", showInFilters: false },
-			{ name: "Player", showInFilters: false },
-			{ name: "Age", showInFilters: false },
+			{ name: "Name", showInFilters: false },
 			{ name: "Team", showInFilters: false },
-			{ name: "League", showInFilters: false },
+			{ name: "Position", showInFilters: true, property: "position" },
 			{ name: "Games", showInFilters: true, property: "games" },
-			{ name: "Record", showInFilters: true, property: "wins" },
-			{ name: "ERA", showInFilters: true, property: "era", isAsc: false },
-			{ name: "ERA+", showInFilters: true, property: "eraPlus", isAsc: false },
-			{ name: "Shutouts", showInFilters: true, property: "shutouts" },
+			{ name: "W/L", showInFilters: true, property: "wins" },
 			{ name: "Saves", showInFilters: true, property: "saves" },
-			{ name: "IP", showInFilters: true, property: "ip" },
+			{ name: "IP", showInFilters: true, property: "inningsPitched" },
+			{ name: "ERA", showInFilters: true, property: "era", isAsc: true },
+			{ name: "Earned Runs", showInFilters: true, property: "earnedRuns", isAsc: false },
+			{ name: "Shutouts", showInFilters: true, property: "shutouts" },
 			{ name: "WHIP", showInFilters: true, property: "whip" },
-			{ name: "Hits Allowed", showInFilters: true, property: "hitsAllowed", isAsc: false },
-			{ name: "ERA Allowed", showInFilters: true, property: "earnedRunsAllowed", isAsc: false },
-			{ name: "HR Allowed", showInFilters: true, property: "homeRunsAllowed", isAsc: false },
-			{ name: "BB", showInFilters: true, property: "basesOnBalls", isAsc: false },
+			{ name: "Hits", showInFilters: true, property: "hits", isAsc: false },
 			{ name: "Strikeouts", showInFilters: true, property: "strikeouts" },
-			{ name: "Hits by Pitch", showInFilters: true, property: "hitsByPitch" },
-			{ name: "Balks", showInFilters: true, property: "balks" },
-			{ name: "SO/Walk", showInFilters: true, property: "balks" }
+			{ name: "HR", showInFilters: true, property: "homeRuns", isAsc: false },
+			{ name: "Walks", showInFilters: true, property: "walks", isAsc: false },
+			{ name: "Avg Against", showInFilters: true, property: "battingAverage", isFilterPercentage: true },
+			{ name: "OBP", showInFilters: true, property: "obp", isFilterPercentage: true }
 		];
 
 		super(columns);

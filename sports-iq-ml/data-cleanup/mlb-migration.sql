@@ -68,7 +68,7 @@ CREATE TABLE #Pitchers
     BattingAverageAgainst FLOAT NOT NULL,
     OBP FLOAT NOT NULL,
     Shutouts INT NOT NULL,
-	ExternalPlayerID VARCHAR(100) NOT NULL
+		ExternalPlayerID VARCHAR(100) NOT NULL
 )
 
 CREATE TABLE #Batters 
@@ -163,74 +163,74 @@ GROUP BY
 --SELECT COUNT(*) FROM #MainPlayerIDs WHERE ID IS NOT NULL 
 --SELECT * FROM #MainPlayerIDs
 
--- Batting
-INSERT INTO #Batters
-SELECT
-	mpi.ID AS [PlayerID]
-	,tm.TeamID AS [TeamID]
-	,b.yearID AS [Season]
-	,1 AS [SeasonType] -- Regular Season
-	,b.G AS [Games]
-	,b.AB AS [AtBats]
-	,b.R AS [Runs]
-	,b.H AS [Hits]
-	,b.[2B] AS [Doubles]
-	,b.[3B] AS [Triples]
-	,b.HR AS [HomeRuns]
-	,b.RBI AS [RunsBattedIn]
-	,CAST(ROUND(b.H * 1.0 / b.AB, 3) AS FLOAT) AS [BattingAverage]
-	,b.SO AS [Strikeouts]
-	,b.BB AS [Walks]
-	,b.HBP AS [HitByPitch]
-	,b.SB AS [Steals]
-	,b.CS AS [CaughtStealing]
-	,CAST(ROUND((b.H + b.BB + b.HBP) * 1.0 / (b.AB + b.BB + b.HBP + b.SF), 3) AS FLOAT) AS [OBP]
-	,CAST(ROUND(( b.H + b.[2B] +2*b.[3B] + 3*b.HR) * 1.0 / b.AB, 3) AS FLOAT) AS [Slug]
-	,CAST(ROUND(((b.H + b.BB + b.HBP) * 1.0 / (b.AB + b.BB + b.HBP + b.SF)) + (( b.H + b.[2B] +2*b.[3B] + 3*b.HR) * 1.0 / b.AB), 3) AS FLOAT) AS [OBPPlus]
-	,mpi.ExternalPlayerID
-FROM 
-	#MainPlayerIDs mpi
-	LEFT JOIN PlayerMLB pmlb ON mpi.ID = pmlb.PlayerID
-	JOIN Batting  b ON b.playerID = mpi.ExternalPlayerID
-	JOIN Teams t ON t.teamID = b.teamID AND t.yearID = b.yearID
-	JOIN #TeamMap tm ON tm.ExternalFranchID = t.franchID
-WHERE
-	b.AB > 0
+---- Batting
+--INSERT INTO #Batters
+--SELECT
+--	mpi.ID AS [PlayerID]
+--	,tm.TeamID AS [TeamID]
+--	,b.yearID AS [Season]
+--	,1 AS [SeasonType] -- Regular Season
+--	,b.G AS [Games]
+--	,b.AB AS [AtBats]
+--	,b.R AS [Runs]
+--	,b.H AS [Hits]
+--	,b.[2B] AS [Doubles]
+--	,b.[3B] AS [Triples]
+--	,b.HR AS [HomeRuns]
+--	,b.RBI AS [RunsBattedIn]
+--	,CAST(ROUND(b.H * 1.0 / b.AB, 3) AS FLOAT) AS [BattingAverage]
+--	,b.SO AS [Strikeouts]
+--	,b.BB AS [Walks]
+--	,b.HBP AS [HitByPitch]
+--	,b.SB AS [Steals]
+--	,b.CS AS [CaughtStealing]
+--	,CAST(ROUND((b.H + b.BB + b.HBP) * 1.0 / (b.AB + b.BB + b.HBP + b.SF), 3) AS FLOAT) AS [OBP]
+--	,CAST(ROUND(( b.H + b.[2B] +2*b.[3B] + 3*b.HR) * 1.0 / b.AB, 3) AS FLOAT) AS [Slug]
+--	,CAST(ROUND(((b.H + b.BB + b.HBP) * 1.0 / (b.AB + b.BB + b.HBP + b.SF)) + (( b.H + b.[2B] +2*b.[3B] + 3*b.HR) * 1.0 / b.AB), 3) AS FLOAT) AS [OBPPlus]
+--	,mpi.ExternalPlayerID
+--FROM 
+--	#MainPlayerIDs mpi
+--	LEFT JOIN PlayerMLB pmlb ON mpi.ID = pmlb.PlayerID
+--	JOIN Batting  b ON b.playerID = mpi.ExternalPlayerID
+--	JOIN Teams t ON t.teamID = b.teamID AND t.yearID = b.yearID
+--	JOIN #TeamMap tm ON tm.ExternalFranchID = t.franchID
+--WHERE
+--	b.AB > 0 AND b.yearID >= 1990
 
--- 23
-INSERT INTO #Pitchers 
-SELECT 
-	mpi.ID AS [PlayerID]
-	,tm.TeamID AS [TeamID]
-	,p.yearID AS [Season]
-	,1 AS [SeasonType] -- Regular Season
-	,p.G AS [Games]
-	,p.GS AS [Starts]
-	,p.W AS [Wins]
-	,p.L AS [Losses]
-	,p.SV AS [Saves]
-	,ROUND(p.IPOuts * 1.0 / 3, 3) AS [InningsPitched]
-	-- (Earned Runs / Innings Pitched) x 9 
-	,p.ERA AS [ERA]
-	,p.ER AS [EarnedRuns]
-	,p.H AS [Hits]
-	,p.HR AS [HomeRuns]
-	,p.SO AS [Strikeouts]
-	,ROUND((p.SO * 1.0 / (p.IPOuts * 1.0 / 3)) * 9, 3) AS [StrikeoutsPerNineInnings]
-	,p.BB AS [Walks]
-	,ROUND((p.BB * 1.0 / (p.IPOuts * 1.0 / 3)) * 9, 3) AS [WalksPerNineInnings]
-	,ROUND((p.BB + p.H) * 1.0 / (p.IPOuts * 1.0 / 3), 3) AS [WHIP]
-	,CAST(ROUND(p.H * 1.0 / p.BFP, 3) AS FLOAT) AS [BattingAverageAgainst]
-	,ISNULL(CAST(ROUND(((p.H + p.BB + p.HBP) * 1.0) / (p.BFP + p.BB + p.HBP + p.SF), 3) AS FLOAT), 0) AS [OBP]
-	,p.SHO AS [Shutouts]
-	,mpi.ExternalPlayerID AS [ExternalPlayerID]
-FROM
-	#MainPlayerIDs mpi
-	JOIN Pitching  p ON p.playerID = mpi.ExternalPlayerID
-	JOIN Teams t ON t.teamID = p.teamID AND p.yearID = t.yearID
-	JOIN #TeamMap tm ON tm.ExternalFranchID = t.franchID
-WHERE
-	p.IPOuts > 0 AND p.BFP > 0
+---- 23
+--INSERT INTO #Pitchers 
+--SELECT 
+--	mpi.ID AS [PlayerID]
+--	,tm.TeamID AS [TeamID]
+--	,p.yearID AS [Season]
+--	,1 AS [SeasonType] -- Regular Season
+--	,p.G AS [Games]
+--	,p.GS AS [Starts]
+--	,p.W AS [Wins]
+--	,p.L AS [Losses]
+--	,p.SV AS [Saves]
+--	,ROUND(p.IPOuts * 1.0 / 3, 3) AS [InningsPitched]
+--	-- (Earned Runs / Innings Pitched) x 9 
+--	,p.ERA AS [ERA]
+--	,p.ER AS [EarnedRuns]
+--	,p.H AS [Hits]
+--	,p.HR AS [HomeRuns]
+--	,p.SO AS [Strikeouts]
+--	,ROUND((p.SO * 1.0 / (p.IPOuts * 1.0 / 3)) * 9, 3) AS [StrikeoutsPerNineInnings]
+--	,p.BB AS [Walks]
+--	,ROUND((p.BB * 1.0 / (p.IPOuts * 1.0 / 3)) * 9, 3) AS [WalksPerNineInnings]
+--	,ROUND((p.BB + p.H) * 1.0 / (p.IPOuts * 1.0 / 3), 3) AS [WHIP]
+--	,CAST(ROUND(p.H * 1.0 / p.BFP, 3) AS FLOAT) AS [BattingAverageAgainst]
+--	,ISNULL(CAST(ROUND(((p.H + p.BB + p.HBP) * 1.0) / (p.BFP + p.BB + p.HBP + p.SF), 3) AS FLOAT), 0) AS [OBP]
+--	,p.SHO AS [Shutouts]
+--	,mpi.ExternalPlayerID AS [ExternalPlayerID]
+--FROM
+--	#MainPlayerIDs mpi
+--	JOIN Pitching  p ON p.playerID = mpi.ExternalPlayerID
+--	JOIN Teams t ON t.teamID = p.teamID AND p.yearID = t.yearID
+--	JOIN #TeamMap tm ON tm.ExternalFranchID = t.franchID
+--WHERE
+--	p.IPOuts > 0 AND p.BFP > 0 AND p.yearID >= 1990
 
 INSERT INTO #NewPeople
 SELECT 
@@ -264,16 +264,34 @@ FROM
 	FROM
 		#MainPlayerIDs mpi
 		JOIN People p ON p.playerID = mpi.ExternalPlayerID
-		JOIN Fielding f ON f.playerID = p.playerID
+		LEFT JOIN Fielding f ON f.playerID = p.playerID
 	WHERE 
 		mpi.ID IS NULL
+		AND p.playerID IN (jimenlu01
+			decasyu01
+			belnovi01
+			wrighro02
+			saloman01
+			sassero01
+			ortegbi01
+			casimca01
+			lukacro01
+			greenad01
+			bormajo01
+			godwity01
+			mullise01
+)
 ) a
 JOIN #PositionCatMap pcm ON pcm.Position = a.Position
 WHERE a.RowNumber = 1
 
-SELECT * FROM #NewPeople
-SELECT * FROM #Batters
-SELECT * FROM #Pitchers
+ SELECT * FROM #NewPeople
+--SELECT * FROM #Batters
+--SELECT * FROM #Pitchers
 
--- 44768
--- 22000
+SELECT * FROM People p
+JOIN Fielding f ON f.playerID = p.playerID
+WHERE p.playerID = 'jimenlu01'
+
+
+SELECT * FROM People p WHERE p.playerID = 'ortegbi01'

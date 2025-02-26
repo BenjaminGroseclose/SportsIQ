@@ -3,10 +3,10 @@ package com.sportsiq.models
 data class MLBBatter(
     var playerID: Int,
     var name: String,
-    var teamID: Int,
+    var teamID: Int?,
     var team: String,
-    var position: String,
     var positionCategory: String,
+    var position: String,
     var battingID: Int,
     var season: Int,
     var seasonType: Int,

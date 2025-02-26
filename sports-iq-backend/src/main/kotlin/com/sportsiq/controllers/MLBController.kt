@@ -2,6 +2,7 @@ package com.sportsiq.controllers
 
 import com.sportsiq.models.MLBBatter
 import com.sportsiq.models.MLBPitcher
+import com.sportsiq.models.MLBTeamStats
 import com.sportsiq.services.MLBService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
@@ -13,16 +14,20 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("stats/mlb")
 class MLBController(@Autowired private val mlbService: MLBService) {
 
-    @GetMapping("/hitters/{years}")
-    fun getHitters(@PathVariable years: Array<Int>): List<MLBBatter> {
-        return mlbService.getBatters(years)
+    @GetMapping("/hitters/{seasons}")
+    fun getHitters(@PathVariable seasons: Array<Int>): List<MLBBatter> {
+        return mlbService.getBatters(seasons)
     }
 
-    @GetMapping("/pitchers/{years}")
-    fun getPitchers(@PathVariable years: Array<Int>): List<MLBPitcher> {
-        return mlbService.getPitchers(years)
+    @GetMapping("/pitchers/{seasons}")
+    fun getPitchers(@PathVariable seasons: Array<Int>): List<MLBPitcher> {
+        return mlbService.getPitchers(seasons)
     }
 
+    @GetMapping("/teamStats/{seasons}")
+    fun getTeamStats(@PathVariable seasons: Array<Int>): List<MLBTeamStats> {
+        return mlbService.getTeamStats(seasons)
+    }
 
     @GetMapping("seasons")
     fun getYears(): List<Int> {
@@ -31,6 +36,6 @@ class MLBController(@Autowired private val mlbService: MLBService) {
 
     @GetMapping("positions")
     fun getPositions(): List<String> {
-        return listOf("Hitters", "Pitchers")
+        return mlbService.getPositions()
     }
 }

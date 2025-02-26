@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { HttpService } from "./http-service";
 import { HttpClient } from "@angular/common/http";
 import { Observable, take } from "rxjs";
-import { MLBHitter } from "@sports-iq/models";
+import { MLBBatter } from "@sports-iq/models";
 import { MLBPitcher } from "@sports-iq/models/mlb-pitcher.model";
 
 @Injectable()
@@ -11,11 +11,11 @@ export class StatsService extends HttpService {
 		super(httpBase, "stats");
 	}
 
-	getHitters(year: number[]): Observable<MLBHitter[]> {
-		return this.get<MLBHitter[]>(`mlb/hitters/${year}`).pipe(take(1));
+	getHitters(year: number[]): Observable<MLBBatter[]> {
+		return this.get<MLBBatter[]>(`mlb/hitters/${year}`).pipe(take(1));
 	}
 
-	getPitchers(year: number[]): Observable<MLBHitter[]> {
+	getPitchers(year: number[]): Observable<MLBPitcher[]> {
 		return this.get<MLBPitcher[]>(`mlb/pitchers/${year}`).pipe(take(1));
 	}
 
@@ -27,8 +27,8 @@ export class StatsService extends HttpService {
 		return this.get<T[]>(`${sport}/teams/${year}`).pipe(take(1));
 	}
 
-	getYears(sport: string): Observable<number[]> {
-		return this.get<number[]>(`${sport}/years`).pipe(take(1));
+	getSeasons(sport: string): Observable<number[]> {
+		return this.get<number[]>(`${sport}/seasons`).pipe(take(1));
 	}
 
 	getPositions(sport: string): Observable<string[]> {
