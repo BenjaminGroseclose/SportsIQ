@@ -23,8 +23,8 @@ export class StatsService extends HttpService {
 		return this.get<T[]>(`${sport}/players/${year}`).pipe(take(1));
 	}
 
-	getTeams<T>(sport: string, year: number[]): Observable<T[]> {
-		return this.get<T[]>(`${sport}/teams/${year}`).pipe(take(1));
+	getTeamStats<T>(sport: string, year: number[]): Observable<T[]> {
+		return this.get<T[]>(`${sport}/teamStats/${year}`).pipe(take(1));
 	}
 
 	getSeasons(sport: string): Observable<number[]> {

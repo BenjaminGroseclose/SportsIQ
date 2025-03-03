@@ -11,6 +11,7 @@ import { take } from "rxjs";
 import { NBATeamTableComponent } from "./nba-team-table/nba-team-table.component";
 import { MLBHitterTableComponent } from "./mlb-hitter-table/mlb-hitter-table.component";
 import { MLBPitcherTableComponent } from "./mlb-pitcher-table/mlb-pitcher-table.component";
+import { MLBTeamTableComponent } from "./mlb-team-table/mlb-team-table.component";
 
 @Component({
 	selector: "si-stats",
@@ -22,7 +23,8 @@ import { MLBPitcherTableComponent } from "./mlb-pitcher-table/mlb-pitcher-table.
 		NBAPlayerTableComponent,
 		NBATeamTableComponent,
 		MLBHitterTableComponent,
-		MLBPitcherTableComponent
+		MLBPitcherTableComponent,
+		MLBTeamTableComponent
 	],
 	templateUrl: "./stats.component.html",
 	styleUrl: "./stats.component.scss",

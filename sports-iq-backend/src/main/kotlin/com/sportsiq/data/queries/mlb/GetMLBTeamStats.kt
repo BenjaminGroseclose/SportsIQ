@@ -13,9 +13,11 @@ SELECT
 FROM
     MLB.TeamStats ts 
     JOIN MLB.Teams t ON t.TeamID = ts.TeamID
+WHERE
+    ts.SeasonType = 1 AND ts.Season IN (
     """.trimIndent()
     override val mapper: RowMapper<MLBTeamStats> = RowMapper<MLBTeamStats> { rs, _ -> MLBTeamStats(
-        teamStatsID = rs.getInt("TeamStatsID"),
+        teamStatsID = rs.getInt("TeamStatID"),
         teamID = rs.getInt("TeamID"),
         name = rs.getString("Name"),
         season = rs.getInt("Season"),
