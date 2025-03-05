@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("stats/mlb")
-class MLBController(@Autowired private val mlbService: MLBService) {
+class MLBStatsController(@Autowired private val mlbService: MLBService) {
 
     @GetMapping("/hitters/{seasons}")
     fun getHitters(@PathVariable seasons: Array<Int>): List<MLBBatter> {

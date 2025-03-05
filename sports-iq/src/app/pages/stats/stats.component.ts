@@ -1,6 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, computed, inject, input, Input, signal } from "@angular/core";
-import { StatsService } from "../../services/stats.service";
+import { Component, computed, inject, input, signal } from "@angular/core";
 import { SidenavComponent } from "../../components/sidenav/sidenav.component";
 import { MatSelectModule } from "@angular/material/select";
 import { MatFormFieldModule } from "@angular/material/form-field";
@@ -12,6 +11,7 @@ import { NBATeamTableComponent } from "./nba-team-table/nba-team-table.component
 import { MLBHitterTableComponent } from "./mlb-hitter-table/mlb-hitter-table.component";
 import { MLBPitcherTableComponent } from "./mlb-pitcher-table/mlb-pitcher-table.component";
 import { MLBTeamTableComponent } from "./mlb-team-table/mlb-team-table.component";
+import { StatsService } from "@sports-iq/services";
 
 @Component({
 	selector: "si-stats",

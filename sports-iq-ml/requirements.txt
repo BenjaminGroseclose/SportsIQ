@@ -1,7 +1,0 @@
-numpy
-pandas
-pymongo
-ipykernel
-pyodbc
-kagglehub
-scikit-learn

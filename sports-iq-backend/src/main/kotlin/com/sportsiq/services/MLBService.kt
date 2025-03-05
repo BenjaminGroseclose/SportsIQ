@@ -3,6 +3,7 @@ package com.sportsiq.services
 import com.sportsiq.data.queries.mlb.*
 import com.sportsiq.models.MLBBatter
 import com.sportsiq.models.MLBPitcher
+import com.sportsiq.models.PlayerRanking
 import com.sportsiq.models.MLBTeamStats
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.jdbc.core.JdbcTemplate
@@ -20,6 +21,14 @@ class MLBService(@Autowired val jdbcTemplate: JdbcTemplate) {
 
     fun getTeamStats(seasons: Array<Int>): List<MLBTeamStats> {
         return GetMLBTeamStats(seasons).execute(jdbcTemplate)
+    }
+
+    fun getRankings(): List<PlayerRanking> {
+        return GetMLBRanking().execute(jdbcTemplate)
+    }
+
+    fun saveMatchup() {
+
     }
 
     fun getSeasons(): List<Int> {

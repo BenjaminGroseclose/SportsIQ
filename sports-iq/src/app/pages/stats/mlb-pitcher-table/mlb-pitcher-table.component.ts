@@ -1,11 +1,9 @@
 import { Component, computed, inject, input, ViewChild } from "@angular/core";
 import { BaseStatsTableComponent } from "../base-stats-table.component";
-import { Column } from "@sports-iq/models";
+import { Column, MLBPitcher } from "@sports-iq/models";
 import { rxResource } from "@angular/core/rxjs-interop";
-import { StatsService } from "@sports-iq/services";
 import { of } from "rxjs";
 import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
-import { MLBPitcher } from "@sports-iq/models/mlb-pitcher.model";
 import { MatTableDataSource, MatTableModule } from "@angular/material/table";
 import { compare } from "@sports-iq/functions";
 import { CommonModule } from "@angular/common";
@@ -14,6 +12,7 @@ import { StatsFilterComponent } from "../stats-filter/stats-filter.component";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatSelectModule } from "@angular/material/select";
+import { StatsService } from "@sports-iq/services";
 
 @Component({
 	selector: "si-mlb-pitcher-table",

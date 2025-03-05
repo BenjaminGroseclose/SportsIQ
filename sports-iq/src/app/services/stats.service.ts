@@ -3,7 +3,7 @@ import { HttpService } from "./http-service";
 import { HttpClient } from "@angular/common/http";
 import { Observable, take } from "rxjs";
 import { MLBBatter } from "@sports-iq/models";
-import { MLBPitcher } from "@sports-iq/models/mlb-pitcher.model";
+import { MLBPitcher } from "@sports-iq/models/mlb/mlb-pitcher.model";
 
 @Injectable()
 export class StatsService extends HttpService {

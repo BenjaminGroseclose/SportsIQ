@@ -10,7 +10,7 @@ import { MatSelectModule } from "@angular/material/select";
 import { StatsService } from "@sports-iq/services";
 import { rxResource } from "@angular/core/rxjs-interop";
 import { of } from "rxjs";
-import { MLBBatter } from "@sports-iq/models/mlb-batter.model";
+import { MLBBatter } from "@sports-iq/models/mlb/mlb-batter.model";
 import { Column } from "@sports-iq/models";
 import { compare } from "@sports-iq/functions";
 import { BaseStatsTableComponent } from "../base-stats-table.component";

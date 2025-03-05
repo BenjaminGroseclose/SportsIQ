@@ -1,0 +1,31 @@
+:host {
+	#ranking {
+		.header {
+			align-items: center;
+			display: flex;
+			height: 64px;
+			gap: 8px;
+			margin: 0 16px 0 50px;
+
+			.spacer {
+				flex: 1;
+			}
+
+			h2 {
+				margin: 0;
+			}
+		}
+
+		.table {
+			margin: 16px;
+
+			.ranking-row {
+				align-items: center;
+				display: grid;
+				grid-template-columns: 100px 250px 100px 100px 100px;
+				height: 40px;
+				border-bottom: 1px solid white;
+			}
+		}
+	}
+}
