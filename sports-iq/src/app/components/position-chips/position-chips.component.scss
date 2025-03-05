@@ -1,0 +1,20 @@
+@use "si-colors" as *;
+
+:host {
+	.chip {
+		background-color: $siGray100;
+		color: $siGray800;
+		padding: 5px 12px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 50px;
+		position: relative;
+		width: fit-content;
+
+		&.red {
+			color: $nhaErrorBackground;
+			background-color: $nhaDarkRed;
+		}
+	}
+}
