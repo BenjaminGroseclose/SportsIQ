@@ -1,5 +1,6 @@
 package com.sportsiq.controllers
 
+import com.sportsiq.models.MLBBatter
 import com.sportsiq.models.PlayerRanking
 import com.sportsiq.services.MLBService
 import org.springframework.beans.factory.annotation.Autowired

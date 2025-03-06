@@ -11,12 +11,20 @@ export class StatsService extends HttpService {
 		super(httpBase, "stats");
 	}
 
-	getHitters(year: number[]): Observable<MLBBatter[]> {
+	getBatters(year: number[]): Observable<MLBBatter[]> {
 		return this.get<MLBBatter[]>(`mlb/hitters/${year}`).pipe(take(1));
+	}
+
+	getBatter(playerID: number): Observable<MLBBatter> {
+		return this.get<MLBBatter>(`mlb/hitter/${playerID}`).pipe(take(1));
 	}
 
 	getPitchers(year: number[]): Observable<MLBPitcher[]> {
 		return this.get<MLBPitcher[]>(`mlb/pitchers/${year}`).pipe(take(1));
+	}
+
+	getPitcher(playerID: number): Observable<MLBPitcher> {
+		return this.get<MLBPitcher>(`mlb/pitcher/${playerID}`).pipe(take(1));
 	}
 
 	getPlayers<T>(sport: string, year: number[]): Observable<T[]> {

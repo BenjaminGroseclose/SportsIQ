@@ -1,5 +1,6 @@
 export interface PlayerRanking {
 	rank: number;
+	positionRank: number;
 	rankingID: number;
 	playerID: number;
 	elo: number;

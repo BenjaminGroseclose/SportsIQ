@@ -1,10 +1,9 @@
+import { MLBPlayer } from "./mlb-player.model";
+
 export interface MLBBatter {
-	playerID: number;
-	name: string;
+	player: MLBPlayer;
 	teamID?: number;
 	team: string;
-	positionCategory: string;
-	position: string;
 	battingID: number;
 	season: number;
 	seasonType: number;

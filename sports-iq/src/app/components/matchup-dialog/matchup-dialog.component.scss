@@ -1,0 +1,8 @@
+@use "si-colors" as *;
+
+:host {
+	h2 {
+		background-color: $siTeal;
+		color: $siDark;
+	}
+}

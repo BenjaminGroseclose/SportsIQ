@@ -15,8 +15,16 @@ class MLBService(@Autowired val jdbcTemplate: JdbcTemplate) {
         return GetMLBBatters(seasons).execute(jdbcTemplate)
     }
 
+    fun getBatter(playerID: Int): MLBBatter {
+        return GetMLBBatterByID(playerID).execute(jdbcTemplate)
+    }
+
     fun getPitchers(seasons: Array<Int>): List<MLBPitcher> {
         return GetMLBPitchers(seasons).execute(jdbcTemplate)
+    }
+
+    fun getPitcher(playerID: Int): MLBPitcher {
+        return GetMLBPitcherByID(playerID).execute(jdbcTemplate)
     }
 
     fun getTeamStats(seasons: Array<Int>): List<MLBTeamStats> {

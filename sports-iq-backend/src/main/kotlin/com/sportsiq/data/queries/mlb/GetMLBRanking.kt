@@ -9,6 +9,7 @@ class GetMLBRanking: IQuery<PlayerRanking> {
     override var sql: String = """
 SELECT
     ROW_NUMBER() OVER (ORDER BY r.Elo DESC) AS [Rank]
+    ,ROW_NUMBER() OVER (PARTITION BY Position ORDER BY r.Elo DESC) AS [PositionRank]
     ,r.RankingID
     ,r.PlayerID
     ,r.Elo
@@ -26,6 +27,7 @@ ORDER BY
     override val mapper: RowMapper<PlayerRanking> = RowMapper<PlayerRanking> { rs, _ ->
         PlayerRanking(
             rank = rs.getInt("Rank"),
+            positionRank = rs.getInt("PositionRank"),
             rankingID = rs.getInt("RankingID"),
             playerID = rs.getInt("PlayerID"),
             elo = rs.getInt("Elo"),

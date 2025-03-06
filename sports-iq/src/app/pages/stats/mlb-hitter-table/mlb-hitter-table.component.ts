@@ -111,7 +111,7 @@ export class MLBHitterTableComponent extends BaseStatsTableComponent {
 
 	statsResource = rxResource<MLBBatter[], number[]>({
 		request: () => this.seasons(),
-		loader: ({ request }) => (request == null || request.length === 0 ? of([]) : this.statsService.getHitters(request))
+		loader: ({ request }) => (request == null || request.length === 0 ? of([]) : this.statsService.getBatters(request))
 	});
 
 	constructor() {

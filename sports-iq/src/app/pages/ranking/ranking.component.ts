@@ -15,6 +15,7 @@ import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
 import { MatSelectModule } from "@angular/material/select";
 import { MatDialog } from "@angular/material/dialog";
 import { MatchupDialogComponent } from "@sports-iq/components/matchup-dialog/matchup-dialog.component";
+import { randomInt } from "@sports-iq/functions";
 
 @Component({
 	selector: "si-ranking",
@@ -97,8 +98,32 @@ export class RankingComponent implements AfterViewInit {
 	}
 
 	openMatchupDialog(): void {
-		console.log("openMatchupDialog");
+		const players = this.rankingResource.value();
 
-		this.dialog.open(MatchupDialogComponent);
+		console.log("openMatchupDialog");
+		console.log(players);
+
+		if (players == null || players.length === 0) {
+			return;
+		}
+
+		const playerLength = players.length - 1;
+		const initialPandomPlayerIndex = randomInt(0, playerLength);
+		const secondPlayerMin = initialPandomPlayerIndex <= 10 ? 0 : initialPandomPlayerIndex - 10;
+		const secondPlayerMax = initialPandomPlayerIndex >= players.length - 10 ? playerLength : initialPandomPlayerIndex + 10;
+
+		let secondPandomPlayerIndex = randomInt(secondPlayerMin, secondPlayerMax);
+
+		if (initialPandomPlayerIndex === secondPandomPlayerIndex) {
+			secondPandomPlayerIndex = secondPandomPlayerIndex + 5;
+		}
+
+		const initialPlayer = players[initialPandomPlayerIndex];
+		const secondPlayer = players[secondPandomPlayerIndex];
+
+		console.log(initialPlayer);
+		console.log(secondPlayer);
+
+		this.dialog.open(MatchupDialogComponent, { data: { players: [initialPlayer, secondPlayer], sport: this.sport() } });
 	}
 }

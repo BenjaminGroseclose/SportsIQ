@@ -6,8 +6,7 @@ class BaseQuery {
 SELECT 
     p.FirstName + ' ' + p.LastName AS [Name]
     ,t.Abbreviation AS [Team]
-    ,p.PositionCategory
-    ,p.[Position]
+    ,p.*
     ,pit.*
 FROM
     MLB.Pitching pit 
