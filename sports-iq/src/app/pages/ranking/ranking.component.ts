@@ -3,7 +3,7 @@ import { AfterViewInit, Component, computed, inject, input, signal, ViewChild } 
 import { SidenavComponent } from "../../components/sidenav/sidenav.component";
 import { rxResource, toSignal } from "@angular/core/rxjs-interop";
 import { PlayerRanking } from "@sports-iq/models";
-import { take } from "rxjs";
+import { filter, take } from "rxjs";
 import { RankingService, StatsService } from "@sports-iq/services";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatButtonModule } from "@angular/material/button";
@@ -16,6 +16,7 @@ import { MatSelectModule } from "@angular/material/select";
 import { MatDialog } from "@angular/material/dialog";
 import { MatchupDialogComponent } from "@sports-iq/components/matchup-dialog/matchup-dialog.component";
 import { randomInt } from "@sports-iq/functions";
+import { MatTooltipModule } from "@angular/material/tooltip";
 
 @Component({
 	selector: "si-ranking",
@@ -29,7 +30,8 @@ import { randomInt } from "@sports-iq/functions";
 		ReactiveFormsModule,
 		MatTableModule,
 		MatPaginatorModule,
-		MatSelectModule
+		MatSelectModule,
+		MatTooltipModule
 	],
 	templateUrl: "./ranking.component.html",
 	styleUrl: "./ranking.component.scss",
@@ -100,9 +102,6 @@ export class RankingComponent implements AfterViewInit {
 	openMatchupDialog(): void {
 		const players = this.rankingResource.value();
 
-		console.log("openMatchupDialog");
-		console.log(players);
-
 		if (players == null || players.length === 0) {
 			return;
 		}
@@ -121,9 +120,13 @@ export class RankingComponent implements AfterViewInit {
 		const initialPlayer = players[initialPandomPlayerIndex];
 		const secondPlayer = players[secondPandomPlayerIndex];
 
-		console.log(initialPlayer);
-		console.log(secondPlayer);
-
-		this.dialog.open(MatchupDialogComponent, { data: { players: [initialPlayer, secondPlayer], sport: this.sport() } });
+		this.dialog
+			.open(MatchupDialogComponent, { data: { players: [initialPlayer, secondPlayer], sport: this.sport() } })
+			.afterClosed()
+			.pipe(
+				take(1),
+				filter((result) => !!result)
+			)
+			.subscribe(() => this.rankingResource.reload());
 	}
 }

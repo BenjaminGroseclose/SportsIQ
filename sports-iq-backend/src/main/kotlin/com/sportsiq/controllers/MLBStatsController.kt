@@ -19,19 +19,9 @@ class MLBStatsController(@Autowired private val mlbService: MLBService) {
         return mlbService.getBatters(seasons)
     }
 
-    @GetMapping("/hitter/{playerID}")
-    fun getHitter(@PathVariable playerID: Int): MLBBatter {
-        return mlbService.getBatter(playerID)
-    }
-
     @GetMapping("/pitchers/{seasons}")
     fun getPitchers(@PathVariable seasons: Array<Int>): List<MLBPitcher> {
         return mlbService.getPitchers(seasons)
-    }
-
-    @GetMapping("/pitcher/{playerID}")
-    fun getPitcher(@PathVariable playerID: Int): MLBPitcher {
-        return mlbService.getPitcher(playerID)
     }
 
     @GetMapping("/teamStats/{seasons}")

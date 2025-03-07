@@ -5,4 +5,50 @@
 		background-color: $siTeal;
 		color: $siDark;
 	}
+
+	.content {
+		margin-top: 8px;
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+
+		.sub-header {
+			font-size: 14px;
+			font-weight: bold;
+		}
+
+		.containers {
+			display: flex;
+			gap: 8px;
+			justify-content: space-between;
+
+			.player-container {
+				display: flex;
+				flex-direction: column;
+				gap: 4px;
+
+				cursor: pointer;
+				padding: 8px;
+				border: 1px solid $siTeal;
+				border-radius: 4px;
+				width: 200px;
+
+				.header {
+					align-items: center;
+					display: flex;
+					gap: 8px;
+					justify-content: space-between;
+
+					h3 {
+						margin: 4px 0;
+					}
+				}
+
+				.chips {
+					display: flex;
+					gap: 4px;
+				}
+			}
+		}
+	}
 }

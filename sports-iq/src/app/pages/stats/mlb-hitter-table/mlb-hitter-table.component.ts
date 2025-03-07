@@ -49,7 +49,7 @@ export class MLBHitterTableComponent extends BaseStatsTableComponent {
 		}
 
 		if (positions != null && positions.length > 0) {
-			stats = stats?.filter((x) => x.position != null && positions.includes(x.position));
+			stats = stats?.filter((x) => x.player.position != null && positions.includes(x.player.position));
 		}
 
 		const columnWeights = this.columnWeights();

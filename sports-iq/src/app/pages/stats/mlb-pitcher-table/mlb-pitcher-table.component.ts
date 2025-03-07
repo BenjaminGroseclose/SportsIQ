@@ -48,7 +48,7 @@ export class MLBPitcherTableComponent extends BaseStatsTableComponent {
 		}
 
 		if (position != null && position.length > 0) {
-			stats = stats?.filter((x) => x.position != null && position.includes(x.position));
+			stats = stats?.filter((x) => x.player.position != null && position.includes(x.player.position));
 		}
 
 		const columnWeights = this.columnWeights();

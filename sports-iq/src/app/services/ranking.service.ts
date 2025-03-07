@@ -13,4 +13,8 @@ export class RankingService extends HttpService {
 	getRanking(sport: string): Observable<PlayerRanking[]> {
 		return this.get<PlayerRanking[]>(sport).pipe(take(1));
 	}
+
+	saveMatchupResult(sport: string, playerOne: PlayerRanking, playerTwo: PlayerRanking, winner: number): Observable<void> {
+		return this.post<void>(sport, { playerOne, playerTwo, winner }).pipe(take(1));
+	}
 }

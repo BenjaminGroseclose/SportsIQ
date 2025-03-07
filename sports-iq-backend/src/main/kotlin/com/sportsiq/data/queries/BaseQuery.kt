@@ -18,8 +18,7 @@ FROM
 SELECT 
     p.FirstName + ' ' + p.LastName AS [Name]
     ,t.Abbreviation AS [Team]
-    ,p.PositionCategory
-    ,p.[Position]
+    ,p.*
     ,b.*
 FROM
     MLB.Batting b 

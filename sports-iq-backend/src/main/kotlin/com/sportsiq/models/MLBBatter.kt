@@ -35,7 +35,7 @@ data class MLBBatter(
                     name = rs.getString("Name"),
                     positionCategory = rs.getString("PositionCategory"),
                     position = rs.getString("Position"),
-                    batHand = rs.getString("Bathand"),
+                    batHand = rs.getString("BatHand"),
                     throwHand = rs.getString("ThrowHand"),
                     dateOfBirth = rs.getDate("DateOfBirth")
                 ),

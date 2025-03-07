@@ -1,11 +1,13 @@
 package com.sportsiq.controllers
 
+import com.sportsiq.controllers.requests.MatchUpResultRequest
 import com.sportsiq.models.MLBBatter
 import com.sportsiq.models.PlayerRanking
 import com.sportsiq.services.MLBService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -19,9 +21,7 @@ class MLBRankingController(@Autowired private val mlbService: MLBService) {
     }
 
     @PostMapping
-    fun saveMatchupResult(): List<PlayerRanking> {
-        mlbService.saveMatchup()
-
-        return mlbService.getRankings()
+    fun saveMatchUpResult(@RequestBody request: MatchUpResultRequest) {
+        mlbService.saveMatchUp(request);
     }
 }

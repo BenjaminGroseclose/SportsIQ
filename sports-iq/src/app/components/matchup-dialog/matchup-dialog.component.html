@@ -1,5 +1,33 @@
 <h2 mat-dialog-title>Ranking Matchup</h2>
-<mat-dialog-content> </mat-dialog-content>
+<mat-dialog-content class="content">
+	<div class="sub-header">Which player do you prefer?</div>
+	<div class="containers">
+		<div class="player-container" (click)="selected.set(0)">
+			<div class="header">
+				<h3>{{ playerOne.name }}</h3>
+				<mat-checkbox [checked]="selected() === 0"></mat-checkbox>
+			</div>
+			<si-position-chips [position]="playerOne.position"></si-position-chips>
+			<div class="chips">
+				<mat-chip matTooltip="Rank">{{ playerOne.rank }}</mat-chip>
+				<mat-chip matTooltip="Rating">{{ playerOne.elo }}</mat-chip>
+			</div>
+		</div>
+		<div class="player-container" (click)="selected.set(1)">
+			<div class="header">
+				<h3>{{ playerTwo.name }}</h3>
+				<mat-checkbox [checked]="selected() === 1"></mat-checkbox>
+			</div>
+
+			<si-position-chips [position]="playerTwo.position"></si-position-chips>
+			<div class="chips">
+				<mat-chip matTooltip="Rank">{{ playerTwo.rank }}</mat-chip>
+				<mat-chip matTooltip="Rating">{{ playerTwo.elo }}</mat-chip>
+			</div>
+		</div>
+	</div>
+</mat-dialog-content>
 <mat-dialog-actions>
 	<button mat-button color="warn" mat-dialog-close>Close</button>
+	<button mat-stroked-button color="warn" [disabled]="selected() === -1" (click)="submit()">Submit</button>
 </mat-dialog-actions>
