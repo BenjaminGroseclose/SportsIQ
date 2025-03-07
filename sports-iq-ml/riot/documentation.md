@@ -37,8 +37,21 @@ def getChallengers() -> pd.DataFrame:
 		- Realizing that many of this matches will overlap so I should remove duplicates before looping, will be interesting to know how many duplicates there are.
 	- This will get us their `matchId` which we can then loop through and get match data with
 		- [/lol/match/v5/matches/{matchId}](https://developer.riotgames.com/apis#match-v5/GET_getMatch)
+	- Need to be mindful that I am limited to 20 API requests a second and 100 per 2 mins with Riot's API
+		- Solution is to chunk the data and only retrieve some a certain time
 
 - After collecting all the match data we will then need to do some data pre-processing
 	- encoding
 	- MinMaxScaling
 	- etc
+
+- Created a `MatchIDs.csv` file that contains 6000 matchIDs (I have not removed duplicates yet) the 6000 come from the top 300 players (challenger level) last 20 games. Meaning we have the top player's last 20 games, the second to top player's last 20 games... etc
+	- Removed Duplicates and it went from `6000 -> 3078` matches
+	- Question is, is this enough data?
+
+```py
+match_ids = pd.read_csv("MatchIDs.csv")
+match_ids = match_ids.drop("Unnamed: 0", axis=1)
+
+match_ids = match_ids.drop_duplicates()
+```
