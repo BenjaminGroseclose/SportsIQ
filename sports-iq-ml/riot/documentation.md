@@ -55,3 +55,49 @@ match_ids = match_ids.drop("Unnamed: 0", axis=1)
 
 match_ids = match_ids.drop_duplicates()
 ```
+
+
+### 3/7/24
+
+- Setup the `getMatchData` method to scrub the data to the format we are interested in initially
+
+```py
+blueTeamId = 100
+redTeamId = 200
+def getWinner(teams):
+	for t in teams:
+		if t['teamId'] == blueTeamId:
+			return 0 if t['win'] else 1
+
+def getChampionID(participants, side, position):
+	for p in participants:
+		if p['teamId'] == side and p['teamPosition'] == position:
+			return p['championId']
+
+
+def getMatchData(matchId):
+	url = f"https://americas.api.riotgames.com/lol/match/v5/matches/{matchId}?api_key={api_key}"
+
+	response = requests.get(url)
+
+	if response.status_code == 200:
+		match_data = response.json()
+
+		scrubbed_match_data = {
+			'matchId': match_data['metadata']['matchId'],
+			'gameDurationSeconds': match_data['info']['gameDuration'],
+			'championBlueTop': getChampionID(match_data['info']['participants'], blueTeamId, 'TOP'),
+			'championBlueJG': getChampionID(match_data['info']['participants'], blueTeamId, 'JUNGLE'),
+			'championBlueMid': getChampionID(match_data['info']['participants'], blueTeamId, 'MIDDLE'),
+			'championBlueBot': getChampionID(match_data['info']['participants'], blueTeamId, 'BOTTOM'),
+			'championBlueSup': getChampionID(match_data['info']['participants'], blueTeamId, 'UTILITY'),
+			'championRedTop': getChampionID(match_data['info']['participants'], redTeamId, 'TOP'),
+			'championRedJG': getChampionID(match_data['info']['participants'], redTeamId, 'JUNGLE'),
+			'championRedMid': getChampionID(match_data['info']['participants'], redTeamId, 'MIDDLE'),
+			'championRedBot': getChampionID(match_data['info']['participants'], redTeamId, 'BOTTOM'),
+			'championRedSup': getChampionID(match_data['info']['participants'], redTeamId, 'UTILITY'),
+			'winner': getWinner(match_data['info']['teams']) # 0 = Blue side, 1 = Red Side
+		}
+
+		return scrubbed_match_data
+```
