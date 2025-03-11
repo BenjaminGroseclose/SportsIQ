@@ -101,3 +101,103 @@ def getMatchData(matchId):
 
 		return scrubbed_match_data
 ```
+
+
+### 3/8/24
+
+- I believe I need to get more data, so going to pull Challenger, Grand Master and Master games
+
+### 3/9/24
+
+- Updated to fetch Challenger, Grand Master and Master games and to get their last 40 games
+
+```py
+def getLadder(type) -> pd.DataFrame:
+	url = f"{base_url}/lol/league/v4/{type}/by-queue/{solo_duo}?api_key={api_key}"
+
+	response = requests.get(url)
+
+	print(response)
+
+	if response.status_code == 200:
+			data = response.json()
+			players = data['entries']
+
+			return pd.DataFrame(players)
+
+def getMatches(puuid):
+	url = f"https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/{puuid}/ids?queue=420&start=0&count=40&api_key={api_key}"
+
+	response = requests.get(url)
+
+	if response.status_code == 200:
+			data = response.json()
+
+			return data
+	else:
+		print(response)
+
+def getAllLadders():
+	ladder = pd.concat([getLadder("challengerleagues"), getLadder("grandmasterleagues"), getLadder("masterleagues")])
+
+	return ladder
+```
+
+- That result in getting `236908` matchIds that we can use, the script too a very long time due the RIOT api restrictions (100 requets per 2 mins)
+
+- Removing duplicate matchIds since many of these players play against each other results in `81542` matches
+
+`236908 -> 81542`
+
+- Now I am going to write a script that will fetch the 81542 matches. This is going to take a while due to the 100 request per 2 mins limitions. This is going to take about 27 hours to complete. 
+	- `81542 / 100 = 815.42 * 2 = 1630.84 / 60 = 27.18`
+	- I will attempt to batch it so that I can start working on some data while the remaining matches are loaded. 
+
+```
+def getMatches(match_ids):
+	allMatches = []
+	matchIdProcessed = []
+	try:
+
+		for index, row in match_ids.iterrows():
+			matchId = row.match_id
+
+			url = f"https://americas.api.riotgames.com/lol/match/v5/matches/{matchId}?api_key={api_key}"
+
+			response = requests.get(url)
+			
+			if response.status_code == 200:
+				match_data = response.json()
+				allMatches.append(match_data)
+
+			
+			matchIdProcessed.append(matchId)
+			if (index + 1) % 100 == 0:
+				print(len(match_ids))				
+				time.sleep(121) # Sleep 121 seconds so that it won't hit the rate limit
+
+			if (index + 1) % 10000 == 0:
+				print(index + 1, 'Dumping to JSON')
+				with open('match_data.json', 'w') as file:
+					json.dump(allMatches, file)
+
+
+		with open('match_data.json', 'w') as file:
+			json.dump(allMatches, file)
+	
+	except Exception as e: print(e)
+	finally:
+		df = pd.DataFrame({ 'match_id': matchIdProcessed })
+		df.to_csv("./MatchIDsProcess.csv")
+
+		with open('match_data.json', 'w') as file:
+			json.dump(allMatches, file)
+```
+
+- Start to process and retrieve the data and save it in a json file. However I think it is too much data. I have failed twice so far and saved the results two two different json files. 
+	- One contains ~1700 records
+	- Second onctina ~3400 objects, I am unable to open this file in VSCode as it just crashed my computer
+
+- I think I should convert the records I get from the API into a pandas row then save that as a CSV afterwards
+	- This will require me map the objects to rows that I desire. Will need to think about what columns I want because I want to only do this once.
+		- On the bright side I can play around with my current ~5000 records. 
