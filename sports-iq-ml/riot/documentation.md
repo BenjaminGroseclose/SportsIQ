@@ -6,7 +6,7 @@ Question Format: In the situation where all but 1 champion is selected, what cha
 
 ## Journal
 
-### 3/6/24
+### 3/6/25
 
 Gather data from [Riot API](https://developer.riotgames.com/) and start to investigate how I am going to use it. 
 
@@ -57,7 +57,7 @@ match_ids = match_ids.drop_duplicates()
 ```
 
 
-### 3/7/24
+### 3/7/25
 
 - Setup the `getMatchData` method to scrub the data to the format we are interested in initially
 
@@ -103,11 +103,11 @@ def getMatchData(matchId):
 ```
 
 
-### 3/8/24
+### 3/8/25
 
 - I believe I need to get more data, so going to pull Challenger, Grand Master and Master games
 
-### 3/10/24
+### 3/10/25
 
 - Updated to fetch Challenger, Grand Master and Master games and to get their last 40 games
 
@@ -202,7 +202,7 @@ def getMatches(match_ids):
 	- This will require me map the objects to rows that I desire. Will need to think about what columns I want because I want to only do this once.
 		- On the bright side I can play around with my current ~5000 records. 
 
-### 3/11/24
+### 3/11/25
 
 - Due to the data being too large, I decieded to condense it as I save it. The format I landed on was:
 
@@ -232,3 +232,40 @@ def getMatches(match_ids):
 ```
 
 - Additionally I am filtering out any games that end prior to 15 mins, because this is most likely an FF due to AFK. If it wasn't due to an AFK there is probably some level of trolling going on that makes the data not valid.
+
+### 3/12/25
+
+- I have gathered about 4000 rows, I am still waiting on the script to complete (should take another day or two) but want to start working on some of the models I want to create
+
+- Want to attempt to use `pytorch` at some point in this project, I think it will give me more flexibility.
+
+- Model ideas
+	- Predict Gold Difference at 14 min
+	- Predict winner
+	- Predict number of grubs (or horde as RIOT api calls them)
+
+- Data Visualization
+	- Display number of champions played as well as their win rates
+	- Display any corelation between atakahan and winning the game
+	- Display what the most important objective is (grubs, dragons, atakahn, baron)
+		- My assumption would be the baron but might be interesting to see, need to be aware of causation vs corelation. Meaning that the winning team is probably going to get more objectives, however this doesn't mean getting the objective wins you the game for example.
+
+- Predict Gold Difference at 14 mins
+
+- Going to attempt to use a simple Linear Regression model to predict the goal difference at 14 mins. Going to use sklearn models:
+	- Linear Regression: Simple
+	- Lasso Regression (L1)
+		- Want to try this to see if it will remove any variables, might be interesting since my features for this will just be the champions in the game so if it determines X role is not useful might be interesting
+	- Ridge Regressino (L2)
+		- Same reason as Lasso but used a different formula.
+
+
+#### Attempt 1
+
+- Setup a simple LR model include the champions only 
+
+- Results:
+```
+MSE (training data): 12353986.67
+MSE (test data): 12902874.48
+```
