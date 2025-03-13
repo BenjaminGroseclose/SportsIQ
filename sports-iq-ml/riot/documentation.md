@@ -107,7 +107,7 @@ def getMatchData(matchId):
 
 - I believe I need to get more data, so going to pull Challenger, Grand Master and Master games
 
-### 3/9/24
+### 3/10/24
 
 - Updated to fetch Challenger, Grand Master and Master games and to get their last 40 games
 
@@ -201,3 +201,34 @@ def getMatches(match_ids):
 - I think I should convert the records I get from the API into a pandas row then save that as a CSV afterwards
 	- This will require me map the objects to rows that I desire. Will need to think about what columns I want because I want to only do this once.
 		- On the bright side I can play around with my current ~5000 records. 
+
+### 3/11/24
+
+- Due to the data being too large, I decieded to condense it as I save it. The format I landed on was:
+
+```py
+		'matchId': match_data['metadata']['matchId'],
+		'gameDurationSeconds': match_data['info']['gameDuration'],
+		'championBlueTop': getChampionID(match_data['info']['participants'], blueTeamId, 'TOP'),
+		'championBlueJG': getChampionID(match_data['info']['participants'], blueTeamId, 'JUNGLE'),
+		'championBlueMid': getChampionID(match_data['info']['participants'], blueTeamId, 'MIDDLE'),
+		'championBlueBot': getChampionID(match_data['info']['participants'], blueTeamId, 'BOTTOM'),
+		'championBlueSup': getChampionID(match_data['info']['participants'], blueTeamId, 'UTILITY'),
+		'championRedTop': getChampionID(match_data['info']['participants'], redTeamId, 'TOP'),
+		'championRedJG': getChampionID(match_data['info']['participants'], redTeamId, 'JUNGLE'),
+		'championRedMid': getChampionID(match_data['info']['participants'], redTeamId, 'MIDDLE'),
+		'championRedBot': getChampionID(match_data['info']['participants'], redTeamId, 'BOTTOM'),
+		'championRedSup': getChampionID(match_data['info']['participants'], redTeamId, 'UTILITY'),
+		'goldDifference': blue_gold - red_gold, # Negactive number means red side is ahead
+		'blueGrubCount': match_data['info']['teams'][0]['objectives']['horde']['kills'],
+		'redGrubCount': match_data['info']['teams'][1]['objectives']['horde']['kills'],
+		'blueDragonCount': match_data['info']['teams'][0]['objectives']['dragon']['kills'],
+		'redDragonCount': match_data['info']['teams'][1]['objectives']['dragon']['kills'],
+		'blueBaronCount': match_data['info']['teams'][0]['objectives']['baron']['kills'],
+		'redBaronCount': match_data['info']['teams'][1]['objectives']['baron']['kills'],
+		'blueAtakhan': match_data['info']['teams'][0]['objectives']['atakhan']['kills'],
+		'redAtakhan': match_data['info']['teams'][1]['objectives']['atakhan']['kills'],
+		'winner': getWinner(match_data['info']['teams']) # 0 = Blue side, 1 = Red Side
+```
+
+- Additionally I am filtering out any games that end prior to 15 mins, because this is most likely an FF due to AFK. If it wasn't due to an AFK there is probably some level of trolling going on that makes the data not valid.
