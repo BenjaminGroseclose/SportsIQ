@@ -47,7 +47,7 @@ def getChallengers() -> pd.DataFrame:
 
 - Created a `MatchIDs.csv` file that contains 6000 matchIDs (I have not removed duplicates yet) the 6000 come from the top 300 players (challenger level) last 20 games. Meaning we have the top player's last 20 games, the second to top player's last 20 games... etc
 	- Removed Duplicates and it went from `6000 -> 3078` matches
-	- Question is, is this enough data?
+	- This is not enough data
 
 ```py
 match_ids = pd.read_csv("MatchIDs.csv")
@@ -109,7 +109,8 @@ def getMatchData(matchId):
 
 ### 3/10/25
 
-- Updated to fetch Challenger, Grand Master and Master games and to get their last 40 games
+- Updated to fetch Challenger, Grand Master and Master games and to get their last 40 games.
+	- Result in getting about ~6000 players (puuids)
 
 ```py
 def getLadder(type) -> pd.DataFrame:
@@ -153,7 +154,7 @@ def getAllLadders():
 	- `81542 / 100 = 815.42 * 2 = 1630.84 / 60 = 27.18`
 	- I will attempt to batch it so that I can start working on some data while the remaining matches are loaded. 
 
-```
+```py
 def getMatches(match_ids):
 	allMatches = []
 	matchIdProcessed = []
@@ -264,8 +265,121 @@ def getMatches(match_ids):
 
 - Setup a simple LR model include the champions only 
 
+- With only 4000 records I execpt this is not going to have great results but will be interesting to see if the MSE will improve with data.
+
+Features:
+
+```py
+features = ["championBlueTop", "championBlueJG", "championBlueMid", "championBlueBot", "championBlueSup", "championRedTop", "championRedJG", "championRedMid", "championRedBot", "championRedSup"]
+
+X, y = matches[features], matches['goldDifference']
+```
+
 - Results:
 ```
 MSE (training data): 12353986.67
 MSE (test data): 12902874.48
 ```
+
+#### Attempt 2
+
+- Added in Lasso and Ridge Regression initial thought was it might help me remove unneeded features but in retro I think there are no features that are unneeded
+
+Results
+
+| model | train error | test error |
+| ------| ------------| -----------|
+|	linear regression | 12449233.87 | 12709754.89 |
+|	lasso | 12449233.87 | 12709746.42 |
+|	ridge | 12449233.87 | 12709754.87 |
+
+- Still way off, I expected more data will help reduce these numbers. 
+- Want to investigate options to improve the model or attempt different type of regression models. 
+
+
+### 3/13/25
+
+- Continued to fetch and save data
+
+- Had a thought about the project: Continual prediction of a games winning chances when you are playing a local game.
+	- Train a model that compares general game data then as the game progresses in realtime on the local client
+	- You can fetch local client game data in realtime via: `https://127.0.0.1:2999/swagger`
+	- [Documentation](https://developer.riotgames.com/docs/lol)
+
+#### Attempt 1
+
+- Create a simple RandomForestClassifier model that will classify the game as either a Red or Blue win
+
+- Initial classifier will attempt to classifiy from a game at 14 mins so include all Champions, Gold difference 14, Grub count for each team  
+
+Features:
+```py
+features = ["championBlueTop", "championBlueJG", "championBlueMid", "championBlueBot" "championBlueSup", "championRedTop", "championRedJG", "championRedMid", "championRedBot", "championRedSup", "goldDifference", "blueGrubCount", "redGrubCount"]
+```
+
+- Results
+```
+accuracy score (training data): 1.00
+accuracy_score (test data): 0.75
+```
+
+#### Attempt 2
+
+- I am wondering if the champions matter, if we remove them and remain with `"goldDifference", "blueGrubCount", "redGrubCount"` do we have similar results?
+
+Features: 
+
+```py
+features = ["goldDifference", "blueGrubCount", "redGrubCount"]
+```
+
+Results:
+```
+accuracy score (training data): 0.99
+accuracy_score (test data): 0.69
+```
+
+- The accuracy went down slightly, this indicates to me that while non champion features play a heavy role in the prediction they do not tell the full story. 
+
+
+#### Attempt 3
+
+- Lets add in dragon count, this is an end of the game stat which does not directly align with the 14 mins prediction but in theory at least two dragon could be captures prior to the 14 mins mark
+
+```py
+features = ["championBlueTop", "championBlueJG", "championBlueMid", "championBlueBot","championBlueSup", "championRedTop", "championRedJG", "championRedMid", "championRedBot", "championRedSup", "goldDifference", "blueGrubCount", "redGrubCount", "blueDragonCount", "redDragonCount"]
+```
+
+Results
+```
+accuracy score (training data): 1.00
+accuracy_score (test data): 0.84
+```
+
+#### Attempt 4
+
+- Champion only, also increased number of records from 12000 -> 16000
+
+```py
+features = ["championBlueTop", "championBlueJG", "championBlueMid", "championBlueBot", "championBlueSup", "championRedTop", "championRedJG", "championRedMid", "championRedBot","championRedSup"]
+```
+
+Results
+```
+accuracy score (training data): 1.00
+accuracy_score (test data): 0.51
+```
+
+### 3/14/25
+
+- With more data I wanted to attempt the LR models again
+	- Data went from 4000 -> 16000
+
+- Results
+| model | train error | test error |
+| ------| ------------| -----------|
+|	linear regression | 13038579.91 | 12877175.81 |
+|	lasso | 13038579.91 | 12877169.84 |
+|	ridge | 13038579.91 | 12877175.80 |
+
+- The model's prediction got worse with more data, will need to reevalutate
