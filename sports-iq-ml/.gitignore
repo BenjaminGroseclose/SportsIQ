@@ -176,3 +176,5 @@ cython_debug/
 #CSV files
 
 *.csv
+
+riot/game-results/*

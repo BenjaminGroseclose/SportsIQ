@@ -383,3 +383,186 @@ accuracy_score (test data): 0.51
 |	ridge | 13038579.91 | 12877175.80 |
 
 - The model's prediction got worse with more data, will need to reevalutate
+
+
+### 3/15/25
+
+- Investigated the RIOT Live Client API, has an endpoint: `https://127.0.0.1:2999/liveclientdata/allgamedata` that will fetch live game data. 
+	- Shows you live data from the active players POV, meaning I don't know how much gold an opponent would have.
+	- I know what items opponents have (once we have made contact) I believe I can calc current gold in items for the gold difference 
+	- Has events that track throughout the game when objectives die, I can probably use that to determine who has what objectives
+```json
+{
+	"Assisters": [],
+	"EventID": 5,
+	"EventName": "HordeKill",
+	"EventTime": 507.6042785644531,
+	"KillerName": "Snowy Phantom",
+	"Stolen": "False"
+},
+{
+	"Assisters": [],
+	"DragonType": "Earth",
+	"EventID": 2,
+	"EventName": "DragonKill",
+	"EventTime": 443.339111328125,
+	"KillerName": "Snowy Phantom",
+	"Stolen": "False"
+},
+{
+	"Assisters": [],
+	"EventID": 17,
+	"EventName": "HeraldKill",
+	"EventTime": 1041.3204345703126,
+	"KillerName": "Snowy Phantom",
+	"Stolen": "False"
+}
+```
+
+- I believe we will just have to identity all the different event we want to track and then score them.
+
+We can setup an application that will fetch data from that endpoint and run it against the model every min. Probably start it after 2 mins (laning phase starts). From there we can predict based on that data we have been given. Want to be mindful that we will not know the opponent's really total gold. Maybe we can adjust the calculation a bit to account for this. For example at the start of the game we will not see the opponent JG players team will be ahead 500G by default
+
+
+### 3/16/25
+
+- Start to write the application taht will fetch data from the liveclient data and was successfull in setting up and getting the data required
+
+```
+['Snowy Phantom', 'Hecarim Bot', 'Sivir Bot', 'Lissandra Bot', 'Lulu Bot']
+Gold: 18125
+Grubs: 3
+Dragons: 0
+Atakhan: 0
+Baron: 0
+
+Red Side
+['Sona Bot', 'Amumu Bot', 'Smolder Bot', 'Irelia Bot', 'Garen Bot']
+Gold: 17683
+Grubs: 0
+Dragons: 0
+Atakhan: 0
+Baron: 0
+```
+
+- Change the classifier model to a Gaussian Mixture model because I can get a % that it believe it is accurate
+
+### 3/19/25
+
+Created the script that can run while you are playing and predict the outcome of the game. 
+
+### 3/22/25
+
+Did more testing of the applicaiton, found that that winrate % tends to jump around too much and sometimes feel very inaccurate to how I felt playing the game. For example it would claim we had a 75% plus chance of winning the game even though I felt in the game we were losing. Perhaps this is a cool feature but I think part of the issue is related to the Gold Difference at 14 having a heavy impact on things.
+
+Most of the gold different at 14 were not massive advantages so if I was playing the game and were well past 14 mins and had a 2k gold lead the model would give us a huge chance of winning because a 2k gold lead at 14 is way more impactful than one at 30 mins, when in reality a 2k gold lead a 30 mins in helpful but no where near as impactful. Because of this I am going to adjust my data to reflect end of game only gold difference. This I hope will help since our gold is to predict who will win at the end. 
+
+I am also going to add in more data points. Champion Kills, and Tower Kills I believe this will just increase the models knowledge additionally those are data points that are available to us int he LiveClient so can be used in the prediction. Our data should look like this going forward: 
+
+```py
+	scrubbed_match_data = {
+		'match_id': match_data['metadata']['matchId'],
+		'duration': match_data['info']['gameDuration'],
+		'blue_top': getChampionID(match_data['info']['participants'], blue_team_id, 'TOP'),
+		'blue_jg': getChampionID(match_data['info']['participants'], blue_team_id, 'JUNGLE'),
+		'blue_mid': getChampionID(match_data['info']['participants'], blue_team_id, 'MIDDLE'),
+		'blue_bot': getChampionID(match_data['info']['participants'], blue_team_id, 'BOTTOM'),
+		'blue_supp': getChampionID(match_data['info']['participants'], blue_team_id, 'UTILITY'),
+		'red_top': getChampionID(match_data['info']['participants'], red_team_id, 'TOP'),
+		'red_jg': getChampionID(match_data['info']['participants'], red_team_id, 'JUNGLE'),
+		'red_mid': getChampionID(match_data['info']['participants'], red_team_id, 'MIDDLE'),
+		'red_bot': getChampionID(match_data['info']['participants'], red_team_id, 'BOTTOM'),
+		'red_supp': getChampionID(match_data['info']['participants'], red_team_id, 'UTILITY'),
+		'gold_difference': blue_gold - red_gold, # Negactive number means red side is ahead
+		'blue_champ_kills': match_data['info']['teams'][0]['objectives']['champion']['kills'],
+		'red_champ_kills': match_data['info']['teams'][1]['objectives']['champion']['kills'],
+		'blue_tower_kills': match_data['info']['teams'][0]['objectives']['tower']['kills'],
+		'red_tower_kills': match_data['info']['teams'][1]['objectives']['tower']['kills'],
+		'blue_grubs': match_data['info']['teams'][0]['objectives']['horde']['kills'],
+		'red_grubs': match_data['info']['teams'][1]['objectives']['horde']['kills'],
+		'blue_heralds': match_data['info']['teams'][0]['objectives']['riftHerald']['kills'],
+		'red_heralds': match_data['info']['teams'][1]['objectives']['riftHerald']['kills'],
+		'blue_dragons': match_data['info']['teams'][0]['objectives']['dragon']['kills'],
+		'red_dragons': match_data['info']['teams'][1]['objectives']['dragon']['kills'],
+		'blue_barons': match_data['info']['teams'][0]['objectives']['baron']['kills'],
+		'red_barons': match_data['info']['teams'][1]['objectives']['baron']['kills'],
+		'blue_atakhan': blue_atakhan,
+		'red_atakhan': red_atakhan,
+		'winner': getWinner(match_data['info']['teams']) # 0 = Blue side, 1 = Red Side
+	}
+```
+
+Another nice part about removing Gold Difference at 14 is that i no longer need to fetch the timeline of the game allowing my data collection script to run a lot faster. I am going to aim to have similar number of data points ~20,000 records
+
+
+### 3/24/25
+
+Started to collect the data from about and currently am at 10,000 records. 
+
+Updated the classifier model to run with the new columns and features.
+
+```py
+features = ['blue_top', 'blue_jg', 'blue_mid', 'blue_bot',
+       'blue_supp', 'red_top', 'red_jg', 'red_mid', 'red_bot', 'red_supp',
+       'gold_difference', 'blue_champ_kills', 'red_champ_kills',
+       'blue_tower_kills', 'red_tower_kills', 'blue_grubs', 'red_grubs',
+       'blue_heralds', 'red_heralds', 'blue_dragons', 'red_dragons',
+       'red_barons', 'blue_atakhan', 'red_atakhan']
+
+
+# Export model to binary, read up on exporting
+
+X, y = matches[features], matches['winner']
+```
+
+Results:
+```
+accuracy score (training data): 1.00
+accuracy_score (test data): 0.96
+```
+
+### 3/25/25
+
+Played a few games and started to track the history of the win% over time and planning to create a chart displaying this data. 
+
+```
+   minute  blue   red
+0       3  53.0  47.0
+0       4  49.0  51.0
+0       5  49.0  51.0
+0       6  65.0  35.0
+0       7  81.0  19.0
+```
+
+![Win % of rank game](image.png)
+
+
+### 3/28/25
+
+- Over the last few days I have played several games with it and included a few friends to get a feel for the model. Here are my take aways:
+	- It is too aggressive with the %, often times I would imply that a game which in person felt close had a 80/20 split
+	- Current player's side is given too large of an advantage
+	- Could improve a lot of the display
+	- Might want to decrease the interval from 60 -> 30 seconds
+
+
+- Looking into some options to help improve things. 
+
+	- Use the Median instead of mean for prediction
+	- Include "lower elo" game play
+
+
+### 3/30/25
+
+- Started to gather "lower" elo games to be added into the model
+
+
+### 4/1/25
+
+- Have gathered a decent amount of emerald and silver games and added them into the model. 
+	- I am still seeing a very high accuracy rate over 95%
+	- I am hopeful this help reduce the aggressiveness and include more gameplay that is closer to where I am testing
+
+
+- Also checked out "septator mode" to see if we can an even balance or how the data is different on the `https://127.0.0.1:2999/liveclientdata/allgamedata` endpoint
+	- Fetching the data no longer has "your pov" issue and just has the true gold difference
