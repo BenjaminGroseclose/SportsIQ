@@ -1,0 +1,21 @@
+:host {
+  .header {
+    display: flex;
+    justify-content: space-between;
+
+    span {
+      font-size: 24px;
+    }
+  }
+
+  .content {
+    display: flex;
+    gap: 8px;
+
+    .team-column {
+      .title {
+        font-size: 20px;
+      }
+    }
+  }
+}

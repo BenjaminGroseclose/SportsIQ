@@ -2,7 +2,6 @@ import { Routes } from "@angular/router";
 import { LandingComponent } from "./pages/landing/landing.component";
 import { StatsComponent } from "./pages/stats/stats.component";
 import { RankingComponent } from "./pages/ranking/ranking.component";
-import { RenderMode } from "@angular/ssr";
 
 export const routes: Routes = [
 	{

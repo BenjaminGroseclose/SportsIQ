@@ -178,3 +178,5 @@ cython_debug/
 *.csv
 
 riot/game-results/*
+*.zip
+*.json
