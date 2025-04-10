@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, computed, inject, OnDestroy, OnInit, signal } from "@angular/core";
-import { delay, interval, map, Observable, of, Subject, switchMap, takeUntil } from "rxjs";
+import { delay, interval, map, Observable, of, Subject, switchMap, takeUntil, tap } from "rxjs";
 import { CommonModule } from "@angular/common";
 import { MatDividerModule } from "@angular/material/divider";
 import { MatButtonModule } from "@angular/material/button";
@@ -10,6 +10,7 @@ import { IChampion, IChampionItem, IGold, IModelData, IModelPrediction, IObjecti
 import { FileManagementService, ModelService, RiotService } from "@victory-curve/services";
 import { WinPercentGraphComponent } from "@victory-curve/components/win-percent-graph/win-percent-graph.component";
 import { GoldGraphComponent } from "@victory-curve/components/gold-graph/gold-graph.component";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 
 const championSortMap = new Map([
 	["TOP", 5],
@@ -30,7 +31,8 @@ const championSortMap = new Map([
 		MatTooltipModule,
 		MatTabsModule,
 		WinPercentGraphComponent,
-		GoldGraphComponent
+		GoldGraphComponent,
+		MatProgressSpinnerModule
 	],
 	templateUrl: "./tracker.component.html",
 	styleUrl: "./tracker.component.scss",
@@ -42,6 +44,7 @@ export class TrackerComponent implements OnInit, OnDestroy {
 	private readonly fileManagement = inject(FileManagementService);
 
 	allPlayers = signal<any>(null);
+	initialLoad = signal<boolean>(true);
 
 	champions = signal<any>(null);
 	items = signal<any>(null);
@@ -54,7 +57,7 @@ export class TrackerComponent implements OnInit, OnDestroy {
 
 	championItems = signal<IChampionItem[]>([]);
 
-	goldDifference = signal<IGold[]>([]);
+	goldTracker = signal<IGold[]>([]);
 	predictions = signal<IModelPrediction[]>([]);
 	currentPrediction = computed<IModelPrediction>(() => this.predictions()[this.predictions().length - 1]);
 
@@ -64,12 +67,13 @@ export class TrackerComponent implements OnInit, OnDestroy {
 		this.fileManagement.getJsonFile("./items.json").then((items) => this.items.set(items));
 
 		// Add tap to set initial load start / end for the first 3 mins
-		interval(30000) // Should be 60 seconds
+		interval(60000)
 			.pipe(
-				// delay(150000), // Wait 3 mins
+				delay(120000), // Wait 2 mins
 				takeUntil(this.componentDestroyed$),
 				switchMap(() => this.riotService.getLiveData()),
 				map((riotData) => this.mapRiotData(riotData)),
+				tap(() => this.initialLoad.set(false)),
 				switchMap((x) => this.modelService.getPrediction(x))
 			)
 			.subscribe({
@@ -101,9 +105,6 @@ export class TrackerComponent implements OnInit, OnDestroy {
 			blueChampions = championData.blueChampions;
 			redChampions = championData.redChampions;
 		}
-
-		console.log(blueChampions);
-		console.log(redChampions);
 
 		const blueChampionName = blueChampions.map((x) => x.summonerName);
 		const redChampionName = redChampions.map((x) => x.summonerName);
@@ -163,7 +164,6 @@ export class TrackerComponent implements OnInit, OnDestroy {
 		}
 
 		this.championItems.set(championItems);
-		console.log(this.championItems());
 
 		for (const event of data.events.Events) {
 			switch (event.EventName) {
@@ -241,7 +241,7 @@ export class TrackerComponent implements OnInit, OnDestroy {
 			atakhan: redAtakhanKills === 1
 		});
 
-		this.goldDifference.update((items) => [
+		this.goldTracker.update((items) => [
 			...items,
 			{
 				blue: blueGold,
@@ -347,6 +347,15 @@ export class TrackerComponent implements OnInit, OnDestroy {
 	private handleError(err: any): Observable<void> {
 		// TODO: Save to files
 		console.error(err);
+
+		const results = {
+			predictions: this.predictions(),
+			goldTracker: this.goldTracker(),
+			redObjectives: this.redObjectives(),
+			blueObjectives: this.redObjectives()
+		};
+
+		console.log(results);
 
 		return of();
 	}
