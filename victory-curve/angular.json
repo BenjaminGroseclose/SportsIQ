@@ -12,7 +12,7 @@
       },
       "root": "",
       "sourceRoot": "src",
-      "prefix": "app",
+      "prefix": "vc",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:application",
@@ -36,6 +36,9 @@
 							"src/theme.scss",
 							"src/_theme-colors.scss"
             ],
+						"stylePreprocessorOptions": {
+              "includePaths": ["src/partials"]
+            },
             "scripts": []
           },
           "configurations": {

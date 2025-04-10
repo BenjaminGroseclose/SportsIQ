@@ -1,338 +1,353 @@
-import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
-import {
-  interval,
-  map,
-  Observable,
-  of,
-  Subject,
-  switchMap,
-  take,
-  takeUntil,
-} from 'rxjs';
-import { ModelService } from '../services/mode.service';
-import { CommonModule } from '@angular/common';
-import { MatDividerModule } from '@angular/material/divider';
-import { RiotService } from '../services/riot.service';
-import { IModelData } from '../models/model-data.type';
-import { FileManagementService } from '../services/file-management.service';
-import { MatButtonModule } from '@angular/material/button';
-import { RouterModule } from '@angular/router';
+import { AfterViewInit, Component, computed, inject, OnDestroy, OnInit, signal } from "@angular/core";
+import { delay, interval, map, Observable, of, Subject, switchMap, takeUntil } from "rxjs";
+import { CommonModule } from "@angular/common";
+import { MatDividerModule } from "@angular/material/divider";
+import { MatButtonModule } from "@angular/material/button";
+import { RouterModule } from "@angular/router";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { MatTabsModule } from "@angular/material/tabs";
+import { IChampion, IChampionItem, IGold, IModelData, IModelPrediction, IObjectives } from "@victory-curve/models";
+import { FileManagementService, ModelService, RiotService } from "@victory-curve/services";
+import { WinPercentGraphComponent } from "@victory-curve/components/win-percent-graph/win-percent-graph.component";
+import { GoldGraphComponent } from "@victory-curve/components/gold-graph/gold-graph.component";
 
-interface IChampion {
-  name: string;
-  position: 'TOP' | 'JUNGLE' | 'MIDDLE' | 'BOTTOM' | 'UTILITY';
-  championId: number;
-}
-
-interface IChampionItem {
-  championName: string;
-}
-
-interface IObjectives {
-  gold: number;
-  championKills: number;
-  towerKills: number;
-  grubKills: number;
-  heraldKills: number;
-  dragonKills: number;
-  baronKills: number;
-  atakhan: boolean;
-}
+const championSortMap = new Map([
+	["TOP", 5],
+	["JUNGLE", 4],
+	["MIDDLE", 3],
+	["BOTTOM", 2],
+	["UTILITY", 1],
+	["", 2]
+]);
 
 @Component({
-  selector: 'app-tracker',
-  imports: [CommonModule, MatDividerModule, MatButtonModule, RouterModule],
-  templateUrl: './tracker.component.html',
-  styleUrl: './tracker.component.scss',
-  providers: [ModelService, RiotService, FileManagementService],
+	selector: "vc-tracker",
+	imports: [
+		CommonModule,
+		MatDividerModule,
+		MatButtonModule,
+		RouterModule,
+		MatTooltipModule,
+		MatTabsModule,
+		WinPercentGraphComponent,
+		GoldGraphComponent
+	],
+	templateUrl: "./tracker.component.html",
+	styleUrl: "./tracker.component.scss",
+	providers: [ModelService, RiotService, FileManagementService]
 })
 export class TrackerComponent implements OnInit, OnDestroy {
-  private readonly modelService = inject(ModelService);
-  private readonly riotService = inject(RiotService);
-  private readonly fileManagement = inject(FileManagementService);
+	private readonly modelService = inject(ModelService);
+	private readonly riotService = inject(RiotService);
+	private readonly fileManagement = inject(FileManagementService);
 
-  allPlayers = signal<any>(null);
+	allPlayers = signal<any>(null);
 
-  champions = signal<any>(null);
-  items = signal<any>(null);
+	champions = signal<any>(null);
+	items = signal<any>(null);
 
-  blueChampions = signal<IChampion[]>([]);
-  redChampions = signal<IChampion[]>([]);
+	blueChampions = signal<IChampion[]>([]);
+	redChampions = signal<IChampion[]>([]);
 
-  redObjectives = signal<IObjectives | null>(null);
-  blueObjectives = signal<IObjectives | null>(null);
+	redObjectives = signal<IObjectives | null>(null);
+	blueObjectives = signal<IObjectives | null>(null);
 
-  championItems = signal<IChampionItem[]>([]);
+	championItems = signal<IChampionItem[]>([]);
 
-  protected componentDestroyed$ = new Subject<boolean>();
-  ngOnInit(): void {
-    this.fileManagement
-      .getJsonFile('./champions.json')
-      .then((champions) => this.champions.set(champions));
-    this.fileManagement
-      .getJsonFile('./items.json')
-      .then((items) => this.items.set(items));
+	goldDifference = signal<IGold[]>([]);
+	predictions = signal<IModelPrediction[]>([]);
+	currentPrediction = computed<IModelPrediction>(() => this.predictions()[this.predictions().length - 1]);
 
-    interval(30000)
-      .pipe(
-        takeUntil(this.componentDestroyed$),
-        switchMap(() => this.riotService.getLiveData()),
-        map((riotData) => this.mapRiotData(riotData)),
-        switchMap((x) => this.modelService.getPrediction(x))
-      )
-      .subscribe({
-        next: (results) => this.handleResults(results),
-        error: (err) => this.handleError(err),
-      });
-  }
+	protected componentDestroyed$ = new Subject<boolean>();
+	ngOnInit(): void {
+		this.fileManagement.getJsonFile("./champions.json").then((champions) => this.champions.set(champions));
+		this.fileManagement.getJsonFile("./items.json").then((items) => this.items.set(items));
 
-  ngOnDestroy(): void {
-    this.componentDestroyed$.next(true);
-    this.componentDestroyed$.complete();
-  }
+		// Add tap to set initial load start / end for the first 3 mins
+		interval(30000) // Should be 60 seconds
+			.pipe(
+				// delay(150000), // Wait 3 mins
+				takeUntil(this.componentDestroyed$),
+				switchMap(() => this.riotService.getLiveData()),
+				map((riotData) => this.mapRiotData(riotData)),
+				switchMap((x) => this.modelService.getPrediction(x))
+			)
+			.subscribe({
+				next: (results) => this.predictions.update((items) => [...items, results]),
+				error: (err) => this.handleError(err)
+			});
+	}
 
-  private mapRiotData(data: any): IModelData {
-    const champions = this.champions();
-    const items = this.items();
-    let blueChampions = this.blueChampions();
-    let redChampions = this.redChampions();
+	ngOnDestroy(): void {
+		this.componentDestroyed$.next(true);
+		this.componentDestroyed$.complete();
+	}
 
-    const players = data.allPlayers;
+	getChampionItem(summonerName: string): IChampionItem[] {
+		return this.championItems().filter((x) => x.summonerName === summonerName);
+	}
 
-    if (blueChampions.length === 0 || redChampions.length === 0) {
-      const championData = this.getChampions(players);
+	// Clean this up, should be a smaller method
+	private mapRiotData(data: any): IModelData {
+		const items = this.items();
+		let blueChampions = this.blueChampions();
+		let redChampions = this.redChampions();
 
-      blueChampions = championData.blueChampions;
-      redChampions = championData.redChampions;
-    }
+		const players = data.allPlayers;
 
-    console.log(blueChampions);
-    console.log(redChampions);
+		if (blueChampions.length === 0 || redChampions.length === 0) {
+			const championData = this.getChampions(players);
 
-    const blueChampionName = blueChampions.map((x) => x.name);
-    const redChampionName = redChampions.map((x) => x.name);
+			blueChampions = championData.blueChampions;
+			redChampions = championData.redChampions;
+		}
 
-    let blueGold = 0;
-    let redGold = 0;
+		console.log(blueChampions);
+		console.log(redChampions);
 
-    let blueChampionKills = 0;
-    let redChampionKills = 0;
+		const blueChampionName = blueChampions.map((x) => x.summonerName);
+		const redChampionName = redChampions.map((x) => x.summonerName);
 
-    let blueTowerKills = 0;
-    let redTowerKills = 0;
+		let blueGold = 0;
+		let redGold = 0;
 
-    let blueHeraldKills = 0;
-    let redHeraldKills = 0;
+		let blueChampionKills = 0;
+		let redChampionKills = 0;
 
-    let blueGrubKills = 0;
-    let redGrubKills = 0;
+		let blueTowerKills = 0;
+		let redTowerKills = 0;
 
-    let blueDragonKills = 0;
-    let redDragonKills = 0;
+		let blueHeraldKills = 0;
+		let redHeraldKills = 0;
 
-    let blueBaronKills = 0;
-    let redBaronKills = 0;
+		let blueGrubKills = 0;
+		let redGrubKills = 0;
 
-    let blueAtakhanKills = 0;
-    let redAtakhanKills = 0;
+		let blueDragonKills = 0;
+		let redDragonKills = 0;
 
-    for (const player of players) {
-      let total_gold = 0;
-      let name = player.isBot
-        ? player.riotIdGameName + ' Bot'
-        : player.riotIdGameName;
+		let blueBaronKills = 0;
+		let redBaronKills = 0;
 
-      for (const item of player.items) {
-        if (item.slot == 6) {
-          continue;
-        }
+		let blueAtakhanKills = 0;
+		let redAtakhanKills = 0;
 
-        total_gold += items.data[item.itemID].gold.total;
-      }
+		const championItems: IChampionItem[] = [];
+		for (const player of players) {
+			let total_gold = 0;
+			let name = player.isBot ? player.riotIdGameName + " Bot" : player.riotIdGameName;
 
-      if (blueChampionName.includes(name)) {
-        blueGold += total_gold;
-      } else {
-        redGold += total_gold;
-      }
-    }
+			for (const item of player.items) {
+				if (item.slot == 6) {
+					continue;
+				}
 
-    for (const event of data.events.Events) {
-      switch (event.EventName) {
-        case 'HordeKill':
-          if (blueChampionName.includes(event.KillerName)) {
-            blueGrubKills += 1;
-          } else {
-            redGrubKills += 1;
-          }
-          break;
-        case 'DragonKill':
-          if (blueChampionName.includes(event.KillerName)) {
-            blueDragonKills += 1;
-          } else {
-            redDragonKills += 1;
-          }
-          break;
-        case 'AtakhanKill':
-          if (blueChampionName.includes(event.KillerName)) {
-            blueAtakhanKills += 1;
-          } else {
-            redAtakhanKills += 1;
-          }
-          break;
-        case 'BaronKill':
-          if (blueChampionName.includes(event.KillerName)) {
-            blueBaronKills += 1;
-          } else {
-            redBaronKills += 1;
-          }
-          break;
-        case 'ChampionKill':
-          if (blueChampionName.includes(event.KillerName)) {
-            blueChampionKills += 1;
-          } else if (redChampionName.includes(event.KillerName)) {
-            redChampionKills += 1;
-          }
-          break;
-        case 'HeraldKill':
-          if (blueChampionName.includes(event.KillerName)) {
-            blueHeraldKills += 1;
-          } else if (redChampionName.includes(event.KillerName)) {
-            redHeraldKills += 1;
-          }
-          break;
-        case 'TurretKilled':
-          if (blueChampionName.includes(event.KillerName)) {
-            blueTowerKills += 1;
-          } else {
-            redTowerKills += 1;
-          }
-          break;
-      }
-    }
+				const itemData = items.data[item.itemID];
 
-    this.blueObjectives.set({
-      gold: blueGold,
-      championKills: blueChampionKills,
-      towerKills: blueTowerKills,
-      grubKills: blueGrubKills,
-      heraldKills: blueHeraldKills,
-      dragonKills: blueDragonKills,
-      baronKills: blueBaronKills,
-      atakhan: blueAtakhanKills === 1,
-    });
+				total_gold += itemData.gold.total;
 
-    this.redObjectives.set({
-      gold: redGold,
-      championKills: redChampionKills,
-      towerKills: redTowerKills,
-      grubKills: redGrubKills,
-      heraldKills: redHeraldKills,
-      dragonKills: redDragonKills,
-      baronKills: redBaronKills,
-      atakhan: redAtakhanKills === 1,
-    });
+				championItems.push({
+					summonerName: name,
+					image: itemData.image.full,
+					name: itemData.name,
+					slot: item.slot,
+					gold: itemData.gold.total
+				});
+			}
 
-    return {
-      duration: data.gameData.gameTime,
-      blueTop: blueChampions.find((x) => x.position === 'TOP')?.championId,
-      blueJG: blueChampions.find((x) => x.position === 'JUNGLE')?.championId,
-      blueMid: blueChampions.find((x) => x.position === 'MIDDLE')?.championId,
-      blueBot: blueChampions.find((x) => x.position === 'BOTTOM')?.championId,
-      blueSupp: blueChampions.find((x) => x.position === 'UTILITY')?.championId,
+			if (blueChampionName.includes(name)) {
+				blueGold += total_gold;
+			} else {
+				redGold += total_gold;
+			}
+		}
 
-      redTop: redChampions.find((x) => x.position === 'TOP')?.championId,
-      redJG: redChampions.find((x) => x.position === 'JUNGLE')?.championId,
-      redMid: redChampions.find((x) => x.position === 'MIDDLE')?.championId,
-      redBot: redChampions.find((x) => x.position === 'BOTTOM')?.championId,
-      redSupp: redChampions.find((x) => x.position === 'UTILITY')?.championId,
+		this.championItems.set(championItems);
+		console.log(this.championItems());
 
-      goldDifference: blueGold - redGold,
+		for (const event of data.events.Events) {
+			switch (event.EventName) {
+				case "HordeKill":
+					if (blueChampionName.includes(event.KillerName)) {
+						blueGrubKills += 1;
+					} else {
+						redGrubKills += 1;
+					}
+					break;
+				case "DragonKill":
+					if (blueChampionName.includes(event.KillerName)) {
+						blueDragonKills += 1;
+					} else {
+						redDragonKills += 1;
+					}
+					break;
+				case "AtakhanKill":
+					if (blueChampionName.includes(event.KillerName)) {
+						blueAtakhanKills += 1;
+					} else {
+						redAtakhanKills += 1;
+					}
+					break;
+				case "BaronKill":
+					if (blueChampionName.includes(event.KillerName)) {
+						blueBaronKills += 1;
+					} else {
+						redBaronKills += 1;
+					}
+					break;
+				case "ChampionKill":
+					if (blueChampionName.includes(event.KillerName)) {
+						blueChampionKills += 1;
+					} else if (redChampionName.includes(event.KillerName)) {
+						redChampionKills += 1;
+					}
+					break;
+				case "HeraldKill":
+					if (blueChampionName.includes(event.KillerName)) {
+						blueHeraldKills += 1;
+					} else if (redChampionName.includes(event.KillerName)) {
+						redHeraldKills += 1;
+					}
+					break;
+				case "TurretKilled":
+					if (blueChampionName.includes(event.KillerName)) {
+						blueTowerKills += 1;
+					} else {
+						redTowerKills += 1;
+					}
+					break;
+			}
+		}
 
-      blueChampKills: blueChampionKills,
-      blueTowerKills: blueTowerKills,
-      blueGrubs: blueGrubKills,
-      blueHeralds: blueHeraldKills,
-      blueDragons: blueDragonKills,
-      blueBaron: blueBaronKills,
-      blueAtakhan: blueAtakhanKills,
+		this.blueObjectives.set({
+			gold: blueGold,
+			championKills: blueChampionKills,
+			towerKills: blueTowerKills,
+			grubKills: blueGrubKills,
+			heraldKills: blueHeraldKills,
+			dragonKills: blueDragonKills,
+			baronKills: blueBaronKills,
+			atakhan: blueAtakhanKills === 1
+		});
 
-      redChampKills: redChampionKills,
-      redTowerKills: redTowerKills,
-      redGrubs: redGrubKills,
-      redHeralds: redHeraldKills,
-      redDragons: redDragonKills,
-      redBaron: redBaronKills,
-      redAtakhan: redAtakhanKills,
-    } as IModelData;
-  }
+		this.redObjectives.set({
+			gold: redGold,
+			championKills: redChampionKills,
+			towerKills: redTowerKills,
+			grubKills: redGrubKills,
+			heraldKills: redHeraldKills,
+			dragonKills: redDragonKills,
+			baronKills: redBaronKills,
+			atakhan: redAtakhanKills === 1
+		});
 
-  private getChampions(players: any[]): {
-    blueChampions: IChampion[];
-    redChampions: IChampion[];
-  } {
-    const blueChampions: IChampion[] = [];
-    const redChampions: IChampion[] = [];
+		this.goldDifference.update((items) => [
+			...items,
+			{
+				blue: blueGold,
+				red: redGold,
+				minute: Math.round(data.gameData.gameTime / 60)
+			}
+		]);
 
-    for (const player of players) {
-      if (player.team === 'ORDER') {
-        blueChampions.push({
-          name: player.isBot
-            ? player.riotIdGameName + ' Bot'
-            : player.riotIdGameName,
-          position: player.position,
-          championId: this.getChampion(player.championName),
-        });
-      } else {
-        redChampions.push({
-          name: player.isBot
-            ? player.riotIdGameName + ' Bot'
-            : player.riotIdGameName,
-          position: player.position,
-          championId: this.getChampion(player.championName),
-        });
-      }
-    }
+		return {
+			duration: data.gameData.gameTime,
+			blueTop: blueChampions.find((x) => x.position === "TOP")?.championId,
+			blueJG: blueChampions.find((x) => x.position === "JUNGLE")?.championId,
+			blueMid: blueChampions.find((x) => x.position === "MIDDLE")?.championId,
+			blueBot: blueChampions.find((x) => x.position === "")?.championId,
+			blueSupp: blueChampions.find((x) => x.position === "UTILITY")?.championId,
 
-    this.blueChampions.set(blueChampions);
-    this.redChampions.set(redChampions);
+			redTop: redChampions.find((x) => x.position === "TOP")?.championId,
+			redJG: redChampions.find((x) => x.position === "JUNGLE")?.championId,
+			redMid: redChampions.find((x) => x.position === "MIDDLE")?.championId,
+			redBot: redChampions.find((x) => x.position === "BOTTOM")?.championId,
+			redSupp: redChampions.find((x) => x.position === "UTILITY")?.championId,
 
-    return {
-      blueChampions,
-      redChampions,
-    };
-  }
+			goldDifference: blueGold - redGold,
 
-  private getChampion(championName: string): number {
-    const champions = this.champions();
-    let championId = -1;
+			blueChampKills: blueChampionKills,
+			blueTowerKills: blueTowerKills,
+			blueGrubs: blueGrubKills,
+			blueHeralds: blueHeraldKills,
+			blueDragons: blueDragonKills,
+			blueBaron: blueBaronKills,
+			blueAtakhan: blueAtakhanKills,
 
-    console.log(champions);
+			redChampKills: redChampionKills,
+			redTowerKills: redTowerKills,
+			redGrubs: redGrubKills,
+			redHeralds: redHeraldKills,
+			redDragons: redDragonKills,
+			redBaron: redBaronKills,
+			redAtakhan: redAtakhanKills
+		} as IModelData;
+	}
 
-    Object.values(champions.data).forEach((champion: any) => {
-      if (championId !== -1) {
-        return;
-      }
+	private getChampions(players: any[]): {
+		blueChampions: IChampion[];
+		redChampions: IChampion[];
+	} {
+		const blueChampions: IChampion[] = [];
+		const redChampions: IChampion[] = [];
 
-      if (champion.name === championName) {
-        championId = champion.key;
-      }
-    });
+		for (const player of players) {
+			const champ = this.getChampion(player.championName);
 
-    if (championId === -1) {
-      console.error(`Could not find championId with name ${championName}`);
-    }
-    return championId;
-  }
+			if (player.team === "ORDER") {
+				blueChampions.push({
+					summonerName: player.isBot ? player.riotIdGameName + " Bot" : player.riotIdGameName,
+					position: player.position,
+					championId: champ.key,
+					image: champ.image.full,
+					name: champ.name,
+					displayOrder: championSortMap.get(player.position) ?? 0
+				});
+			} else {
+				redChampions.push({
+					summonerName: player.isBot ? player.riotIdGameName + " Bot" : player.riotIdGameName,
+					position: player.position,
+					championId: champ.key,
+					image: champ.image.full,
+					name: champ.name,
+					displayOrder: championSortMap.get(player.position) ?? 0
+				});
+			}
+		}
 
-  private handleResults(results: any) {
-    console.log(results);
-  }
+		this.blueChampions.set(blueChampions.sort((a, b) => (a.displayOrder - b.displayOrder) * -1));
+		this.redChampions.set(redChampions.sort((a, b) => (a.displayOrder - b.displayOrder) * -1));
 
-  private handleError(err: any): Observable<void> {
-    // TODO: Save to files
-    console.log(err);
+		return {
+			blueChampions,
+			redChampions
+		};
+	}
 
-    return of();
-  }
+	private getChampion(championName: string): any {
+		const champions = this.champions();
+		let retval: any = null;
+
+		Object.values(champions.data).forEach((champion: any) => {
+			if (retval != null) {
+				return;
+			}
+
+			if (champion.name === championName) {
+				retval = champion;
+			}
+		});
+
+		if (retval == null) {
+			console.error(`Could not find championId with name ${championName}`);
+		}
+		return retval;
+	}
+
+	private handleError(err: any): Observable<void> {
+		// TODO: Save to files
+		console.error(err);
+
+		return of();
+	}
 }
