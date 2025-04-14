@@ -1,15 +1,15 @@
 @use "@angular/material" as mat;
 @use "./theme-colors" as my-theme;
 html {
-  color-scheme: dark;
-  @include mat.theme(
-    (
-      color: (
-        primary: my-theme.$primary-palette,
-        tertiary: my-theme.$tertiary-palette,
-        theme-type: dark,
-      ),
-      density: -2,
-    )
-  );
+	color-scheme: light;
+	@include mat.theme(
+		(
+			color: (
+				primary: my-theme.$primary-palette,
+				tertiary: my-theme.$tertiary-palette,
+				theme-type: light
+			),
+			density: -2
+		)
+	);
 }

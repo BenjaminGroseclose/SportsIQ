@@ -69,7 +69,7 @@ export class TrackerComponent implements OnInit, OnDestroy {
 		// Add tap to set initial load start / end for the first 3 mins
 		interval(60000)
 			.pipe(
-				delay(120000), // Wait 2 mins
+				// delay(120000), // Wait 2 mins
 				takeUntil(this.componentDestroyed$),
 				switchMap(() => this.riotService.getLiveData()),
 				map((riotData) => this.mapRiotData(riotData)),
@@ -255,7 +255,7 @@ export class TrackerComponent implements OnInit, OnDestroy {
 			blueTop: blueChampions.find((x) => x.position === "TOP")?.championId,
 			blueJG: blueChampions.find((x) => x.position === "JUNGLE")?.championId,
 			blueMid: blueChampions.find((x) => x.position === "MIDDLE")?.championId,
-			blueBot: blueChampions.find((x) => x.position === "")?.championId,
+			blueBot: blueChampions.find((x) => x.position === "BOTTOM")?.championId,
 			blueSupp: blueChampions.find((x) => x.position === "UTILITY")?.championId,
 
 			redTop: redChampions.find((x) => x.position === "TOP")?.championId,
