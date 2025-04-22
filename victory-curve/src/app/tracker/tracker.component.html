@@ -31,9 +31,9 @@
 								@let championImage = "https://ddragon.leagueoflegends.com/cdn/15.7.1/img/champion/" + champion.image;
 
 								<img [src]="championImage" width="50" height="50" />
-								<span
-									>{{ champion.name }} <i>({{ champion.summonerName }})</i></span
-								>
+								<span>
+									{{ champion.name }} <i>({{ champion.summonerName }})</i>
+								</span>
 							</div>
 							<div class="items-section">
 								@for (item of getChampionItem(champion.summonerName); track $index) {
@@ -53,9 +53,9 @@
 								@let championImage = "https://ddragon.leagueoflegends.com/cdn/15.7.1/img/champion/" + champion.image;
 
 								<img [src]="championImage" width="50" height="50" />
-								<span
-									>{{ champion.name }} <i>({{ champion.summonerName }})</i></span
-								>
+								<span>
+									<i>({{ champion.summonerName }})</i> {{ champion.name }}
+								</span>
 							</div>
 							<div class="items-section flip">
 								@for (item of getChampionItem(champion.summonerName); track $index) {

@@ -69,7 +69,7 @@ export class TrackerComponent implements OnInit, OnDestroy {
 		// Add tap to set initial load start / end for the first 3 mins
 		interval(60000)
 			.pipe(
-				// delay(120000), // Wait 2 mins
+				delay(120000), // Wait 2 mins
 				takeUntil(this.componentDestroyed$),
 				switchMap(() => this.riotService.getLiveData()),
 				map((riotData) => this.mapRiotData(riotData)),
