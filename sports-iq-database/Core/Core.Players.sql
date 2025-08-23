@@ -1,0 +1,9 @@
+CREATE TABLE [dbo].[Core.Players]
+(
+  [PlayerID] INT NOT NULL PRIMARY KEY  IDENTITY(1,1),
+	[SportID] INT NOT NULL,
+	[ExternalPlayerID] INT NOT NULL,
+	[CreateDate] DATETIMEOFFSET NOT NULL DEFAULT SYSDATETIMEOFFSET(3),
+
+	FOREIGN KEY (SportID) REFERENCES [dbo].[Core.Sports](SportID)
+)
