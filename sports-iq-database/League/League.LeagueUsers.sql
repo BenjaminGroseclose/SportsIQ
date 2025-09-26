@@ -1,4 +1,4 @@
-CREATE TABLE [dbo].[League.LeagueUseres]
+CREATE TABLE [dbo].[League.LeagueUsers]
 (
   [LeagueUserID] INT NOT NULL PRIMARY KEY  IDENTITY(1,1),
 	[LeagueID] INT NOT NULL,

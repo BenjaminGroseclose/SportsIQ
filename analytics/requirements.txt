@@ -1,0 +1,6 @@
+ipykernel
+cfbd
+pandas
+numpy
+requests
+scikit-learn
