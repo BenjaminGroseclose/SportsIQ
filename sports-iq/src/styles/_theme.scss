@@ -1,0 +1,238 @@
+@use '@angular/material' as mat;
+
+// -----------------------------------------------------------------------------
+// Fintech Sports Theme (Material 3)
+// Feel: High-frequency trading meets live sports feed.
+// Brand: Electric Blue primary, crisp dark surfaces, neon data signals.
+// -----------------------------------------------------------------------------
+
+// 1. Typography (modern, data-centric)
+$font-brand: 'Manrope', sans-serif;
+$font-plain: 'Manrope', sans-serif;
+$font-mono: 'Roboto Mono', monospace;
+
+// 2. Brand & Semantic Colors
+$brand-blue: #3b82f6; // Primary CTA / focus color (Electric Blue)
+$brand-blue-rgb: 59, 130, 246;
+$surface-0: #06080A; // Deep base
+$surface-1: #0C1116; // Elevated
+$surface-2: #131B23; // Hover / active
+$surface-3: #1B2632; // Card / panel
+$outline-color: #2E3A46;
+$accent-purple: #8854FF; // Tertiary accent (charts/secondary emphasis)
+$info-cyan: #06B6D4; // Informational chips
+$warning-amber: #FFB020; // Non-critical warnings
+$error-red: #FF3B30; // Errors
+$success-green: #00C805; // Positive (trend-up)
+$neutral-gray: #A0AFBD; // Muted labels
+
+// 3. Material 3 Theme Definition
+$sports-iq-theme: mat.define-theme((color: (theme-type: dark,
+                primary: $brand-blue,
+                tertiary: $accent-purple,
+                use-system-variables: true,
+                system-variables-prefix: 'fv'
+            ),
+            typography: (brand-family: $font-brand,
+                plain-family: $font-plain,
+                bold-weight: 700,
+                medium-weight: 500,
+                regular-weight: 400),
+            density: (scale: -1)));
+
+// 4. Theme Mixin
+@mixin load-theme() {
+    html {
+        @include mat.all-component-themes($sports-iq-theme);
+
+        // Surface & background system
+        --s-iq-surface-0: #{$surface-0};
+        --s-iq-surface-1: #{$surface-1};
+        --s-iq-surface-2: #{$surface-2};
+        --s-iq-surface-3: #{$surface-3};
+        --s-iq-outline: #{$outline-color};
+        --s-iq-text-primary: #ffffff;
+        --s-iq-text-secondary: #{$neutral-gray};
+        --s-iq-brand-blue: #{$brand-blue};
+        --s-iq-accent-purple: #{$accent-purple};
+        --s-iq-info-cyan: #{$info-cyan};
+        --s-iq-warning-amber: #{$warning-amber};
+        --s-iq-error-red: #{$error-red};
+        --s-iq-success-green: #{$success-green};
+
+        // Material override anchors
+        --mat-app-background-color: var(--s-iq-surface-0);
+        --mat-app-surface: var(--s-iq-surface-1);
+        --mat-app-on-surface: var(--s-iq-text-primary);
+
+        background: radial-gradient(circle at 20% 15%, #0F1720 0%, var(--s-iq-surface-0) 60%) fixed;
+        color: var(--s-iq-text-primary);
+
+        // Elevated element style helpers
+        .elevated,
+        .mat-mdc-card,
+        .mat-mdc-menu-panel {
+            background-color: var(--s-iq-surface-1);
+            border: 1px solid var(--s-iq-outline);
+            backdrop-filter: blur(6px);
+        }
+
+        // Interactive row hover
+        .hover-row:hover {
+            background-color: var(--s-iq-surface-2);
+        }
+
+        // Outline style for focus rings
+        :focus-visible {
+            outline: 2px solid rgba($brand-blue-rgb, .85);
+            outline-offset: 2px;
+        }
+
+        // Data mono font helper
+        .data-font {
+            font-family: $font-mono !important;
+            letter-spacing: -0.25px;
+        }
+    }
+
+    // 5. Data Semantics
+    .trend-up,
+    .value-up {
+        color: var(--s-iq-success-green);
+        text-shadow: 0 0 12px rgba(0, 200, 5, .25);
+    }
+
+    .trend-down,
+    .value-down {
+        color: var(--s-iq-error-red);
+    }
+
+    .value-neutral {
+        color: var(--s-iq-text-secondary);
+    }
+
+    // 6. Badges / Chips
+    .chip-info {
+        background: rgba($info-cyan, .15);
+        color: var(--s-iq-info-cyan);
+        border: 1px solid rgba($info-cyan, .4);
+    }
+
+    .chip-warning {
+        background: rgba($warning-amber, .15);
+        color: var(--s-iq-warning-amber);
+        border: 1px solid rgba($warning-amber, .4);
+    }
+
+    .chip-accent {
+        background: rgba($accent-purple, .18);
+        color: var(--s-iq-accent-purple);
+        border: 1px solid rgba($accent-purple, .45);
+    }
+
+    // 7. Buttons (Primary CTA emphasis)
+    .mat-mdc-raised-button.mat-primary,
+    .mat-mdc-outlined-button.mat-primary {
+        --mdc-filled-button-container-color: var(--s-iq-brand-blue);
+        --mdc-filled-button-label-text-color: #fff;
+        box-shadow: 0 0 0 1px rgba($brand-blue-rgb, .6), 0 0 18px -2px rgba($brand-blue-rgb, .55), 0 0 40px -6px rgba($brand-blue-rgb, .45);
+        transition: box-shadow .25s ease, transform .15s ease;
+    }
+
+    .mat-mdc-raised-button.mat-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 28px -4px rgba($brand-blue-rgb, .7);
+    }
+
+    .mat-mdc-raised-button.mat-primary:active {
+        transform: translateY(0);
+        box-shadow: 0 0 0 1px rgba($brand-blue-rgb, .8);
+    }
+
+    // 8. Tables / Gridlines
+    .data-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 4px;
+    }
+
+    .data-table thead th {
+        font-size: .70rem;
+        text-transform: uppercase;
+        letter-spacing: .08rem;
+        font-weight: 600;
+        color: var(--s-iq-text-secondary);
+    }
+
+    .data-table tbody tr {
+        background: var(--s-iq-surface-1);
+    }
+
+    .data-table tbody tr td {
+        padding: .6rem .9rem;
+        font-size: .78rem;
+    }
+
+    .data-table tbody tr:hover {
+        background: var(--s-iq-surface-2);
+    }
+
+    // 9. Score / Live Status Tags
+    .status-live {
+        color: var(--s-iq-success-green);
+        font-weight: 600;
+        text-shadow: 0 0 10px rgba(0, 200, 5, .4);
+    }
+
+    .status-final {
+        color: var(--s-iq-text-secondary);
+        font-style: italic;
+    }
+
+    .status-upcoming {
+        color: var(--s-iq-accent-purple);
+    }
+
+    // 10. Card Header Accent Border
+    .panel-header-accent {
+        border-bottom: 2px solid var(--s-iq-brand-blue);
+    }
+
+    // 11. Gradient Bar Utility (e.g., win probability visual)
+    .gradient-bar {
+        height: 6px;
+        background: linear-gradient(90deg, var(--s-iq-success-green), var(--s-iq-brand-blue));
+        border-radius: 999px;
+    }
+
+    // 12. Sparkline Container (future injection point)
+    .sparkline-slot {
+        height: 36px;
+        display: flex;
+        align-items: center;
+    }
+
+    // 13. Scrollbar Styling (WebKit only fallback)
+    ::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: var(--s-iq-surface-0);
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: var(--s-iq-surface-2);
+        border-radius: 8px;
+        border: 2px solid var(--s-iq-surface-0);
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--s-iq-surface-3);
+    }
+}
+
+// 14. Export helper to apply externally if needed
+@mixin sports-iq-theme() {
+    @include load-theme();
+}

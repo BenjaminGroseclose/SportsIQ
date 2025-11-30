@@ -1,0 +1,6 @@
+dist
+node_modules
+/.nx/cache
+.angular
+
+/.nx/workspace-data

@@ -1,0 +1,17 @@
+{
+	"singleQuote": true,
+	"tabWidth": 4,
+	"useTabs": true,
+	"bracketSpacing": true,
+	"printWidth": 160,
+	"trailingComma": "none",
+	"quoteProps": "consistent",
+	"overrides": [
+		{
+			"files": "*.yml",
+			"options": {
+				"tabWidth": 2
+			}
+		}
+	]
+}
