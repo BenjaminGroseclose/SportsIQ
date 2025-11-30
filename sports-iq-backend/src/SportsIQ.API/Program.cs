@@ -6,6 +6,20 @@ builder.Services.AddControllers();
 // Add OpenAPI/Swagger documentation
 builder.Services.AddOpenApi();
 
+// Services
+
+// Auth
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.Authority = "https://dev--isjyw9f.us.auth0.com/";
+        options.Audience = "https://fantasyforge.api";
+    });
+
+
+// Database
+
+
 var app = builder.Build();
 
 // Configure middleware pipeline

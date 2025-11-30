@@ -1,0 +1,54 @@
+// Fintech Sports Neon Dark Theme Colors
+
+// Brand (Primary)
+$brand-gold: #FFD740; // Neon Gold/Yellow
+$brand-gold-hover: #FFE885;
+$brand-gold-container: #4d3c00;
+$brand-gold-text: #000000; // Dark text on gold
+
+// Accent / Tertiary (Neon Purple)
+$accent-purple: #C15CFF;
+$accent-purple-hover: #CE7BFF;
+$accent-purple-container: #3A1559;
+$accent-purple-text: #111318;
+
+// Secondary (alias to accent if still needed)
+$secondary: #C15CFF;
+$secondary-contrast: #FFFFFF;
+
+// Surfaces
+$surface-0: #0B0F14;
+$surface-1: #111822;
+$surface-2: #17202B;
+$surface-3: #1B2632;
+$outline-color: #2E3A46;
+
+// Semantic
+$success-green: #00C805;
+$success-green-container: #0E3B22;
+$success-green-text: #D1FFE0;
+
+$info-cyan: #06B6D4;
+$info-cyan-container: #0A2D39;
+$info-cyan-text: #D0F6FF;
+
+$warning-amber: #FFB020;
+$warning-amber-container: #3A2A0E;
+$warning-amber-text: #FFE7B8;
+
+$error-red: #FF6F67; // lightened
+$error-red-hover: #FF7A73;
+$error-red-container: #3B1918;
+$error-red-text: #FFE4E2;
+
+// Neutrals / Text
+$text-primary: #FFFFFF;
+$text-secondary: #A0AFBD;
+$text-muted: #8392A5;
+$neutral-gray: #A0AFBD;
+$gridline-color: #26323C;
+
+// Gradients
+$gradient-blue: linear-gradient(90deg, #129CF0, #33A8FF);
+$gradient-purple: linear-gradient(90deg, #A939FF, #C15CFF);
+$gradient-success: linear-gradient(90deg, #00C805, #33A8FF);
