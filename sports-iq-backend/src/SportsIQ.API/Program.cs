@@ -1,4 +1,11 @@
 
+
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using SportsIQ.Infrastructure;
+using SportsIQ.Infrastructure.Interfaces;
+using SportsIQ.Infrastructure.Repositories;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add controller services
@@ -18,11 +25,16 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 
 // Database
+builder.Services.AddDbContext<SportsIQContext>(
+    options => options.UseSqlServer(builder.Configuration.GetConnectionString("SportsIQDatabase"))
+);
 
+// Repositories
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 
 var app = builder.Build();
 
-// Configure middleware pipeline
+// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
@@ -30,9 +42,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseCors("AllowSpecificOrigins");
+
+app.UseAuthentication();
 app.UseAuthorization();
 
-// Map controller routes
 app.MapControllers();
 
 app.Run();

@@ -12,10 +12,12 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="10.0.0" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\SportsIQ.Application\SportsIQ.Application.csproj" />
+    <ProjectReference Include="..\SportsIQ.Domain\SportsIQ.Domain.csproj" />
     <ProjectReference Include="..\SportsIQ.Infrastructure\SportsIQ.Infrastructure.csproj" />
   </ItemGroup>
 
