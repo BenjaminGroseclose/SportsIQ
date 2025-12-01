@@ -9,14 +9,13 @@ export interface AppSettings {
   responseType: string;
   scope: string;
   showDebugInformation: boolean;
-  audience: string;
 }
 
 @Injectable({ providedIn: 'root' })
 export class AppSettingsService {
   settings: AppSettings | null = null;
 
-  constructor() {}
+  constructor() { }
 
   getSettings(): AppSettings {
     if (this.settings == null) {

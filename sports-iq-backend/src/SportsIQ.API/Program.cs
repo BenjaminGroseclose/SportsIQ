@@ -1,3 +1,4 @@
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add controller services
@@ -13,7 +14,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         options.Authority = "https://dev--isjyw9f.us.auth0.com/";
-        options.Audience = "https://fantasyforge.api";
     });
 
 

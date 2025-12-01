@@ -15,8 +15,8 @@ export class AuthenticationService {
   private oauthService = inject(OAuthService);
   private accountService = inject(AccountService);
   private authConfig: AuthConfig;
-  private storageService = new StorageService();
-  private settings: AppSettings;
+  private readonly storageService = new StorageService();
+  private readonly settings: AppSettings;
 
   public user = signal<IAccount | null>(null);
   public isLoggedIn = computed<boolean>(() => this.user() !== null);
@@ -51,10 +51,7 @@ export class AuthenticationService {
       issuer: this.authConfig.issuer,
       redirectUri: this.authConfig.redirectUri,
       clientId: this.authConfig.clientId,
-      scope: this.authConfig.scope,
-      customQueryParams: {
-        audience: this.settings.audience,
-      },
+      scope: this.authConfig.scope
     });
 
     this.oauthService.loadDiscoveryDocumentAndTryLogin();
@@ -73,7 +70,9 @@ export class AuthenticationService {
 
         this.storageService.set(SESSION_KEY, userProfile);
 
-				this.getUser(userProfile);
+        this.getUser(userProfile);
+      } else {
+        // TODO: Handle other events as needed
       }
     });
   }
@@ -88,13 +87,13 @@ export class AuthenticationService {
     }
   }
 
-	getUser(userProfile: any): void {
+  getUser(userProfile: any): void {
 
-		this.accountService.getUser(userProfile.email).subscribe({
-			next: (user) => this.user.set(user),
-			error: () => this.createAccount()
-		});
-	}
+    this.accountService.getUser(userProfile.email).subscribe({
+      next: (user) => this.user.set(user),
+      error: () => this.createAccount()
+    });
+  }
 
   createAccount(): void {
     const userProfile = this.getUserProfile();
