@@ -7,7 +7,7 @@ ENV MSSQL_PID=Developer
 WORKDIR /var/opt/mssql/deploy
 
 # Copy the dacpac from your build output
-COPY bin/Debug/FantasyForge.Database.dacpac ./FantasyForge.Database.dacpac
+COPY bin/Debug/SportsIQ.Database.dacpac ./SportsIQ.Database.dacpac
 
 # Copy deployment script
 COPY deploy-dacpac.sh ./deploy-dacpac.sh

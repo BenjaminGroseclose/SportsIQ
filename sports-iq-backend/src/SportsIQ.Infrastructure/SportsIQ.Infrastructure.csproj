@@ -2,7 +2,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SportsIQ.Domain\SportsIQ.Domain.csproj" />
-    <ProjectReference Include="..\SportsIQ.Application\SportsIQ.Application.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,0 +1,16 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Sports IQ API (Debug)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build SportsIQ.API",
+      "program": "${workspaceFolder}/sports-iq-backend/src/SportsIQ.API/bin/Debug/net10.0/SportsIQ.API.dll",
+      "cwd": "${workspaceFolder}/sports-iq-backend/src/SportsIQ.API",
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  ]
+}

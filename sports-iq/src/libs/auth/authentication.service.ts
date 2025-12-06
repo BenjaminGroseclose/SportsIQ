@@ -1,9 +1,11 @@
 import * as Cookies from 'es-cookie';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { AuthConfig, OAuthEvent, OAuthService } from 'angular-oauth2-oidc';
-import { AppSettings, AppSettingsService, StorageService } from '../services';
+import { StorageService } from '../services';
 import { AccountService } from '../../app/services/account.service';
 import { IAccount } from '../../app/models';
+import { Environment } from '../models/environment.type';
+import { environment } from '@sports-iq/environments/environment.prod';
 
 const SESSION_KEY: string = 'user';
 
@@ -11,38 +13,35 @@ const SESSION_KEY: string = 'user';
   providedIn: 'root',
 })
 export class AuthenticationService {
-  private appSettingsService = inject(AppSettingsService);
   private oauthService = inject(OAuthService);
   private accountService = inject(AccountService);
   private authConfig: AuthConfig;
   private readonly storageService = new StorageService();
-  private readonly settings: AppSettings;
+  private readonly env: Environment;
 
   public user = signal<IAccount | null>(null);
   public isLoggedIn = computed<boolean>(() => this.user() !== null);
 
   constructor() {
-    this.settings = this.appSettingsService.getSettings();
+    this.env = environment;
 
     this.authConfig = {
-      issuer: this.settings.issuer,
-      clientId: this.settings.clientId,
+      issuer: this.env.issuer,
+      clientId: this.env.clientId,
       redirectUri: window.location.origin,
-      responseType: this.settings.responseType,
-      scope: this.settings.scope,
-      showDebugInformation: this.settings.showDebugInformation,
+      responseType: this.env.responseType,
+      scope: this.env.scope,
+      showDebugInformation: this.env.showDebugInformation,
     };
   }
 
-  init(): void {
+  initialize(): void {
     if (!this.storageService.hasKey(SESSION_KEY)) {
       this.configure();
     } else {
       const userProfile = this.getUserProfile();
 
-      this.accountService
-        .getUser(userProfile.email)
-        .subscribe((user) => this.user.set(user));
+      this.accountService.getUser(userProfile.email).subscribe((user) => this.user.set(user));
     }
   }
 
@@ -51,7 +50,7 @@ export class AuthenticationService {
       issuer: this.authConfig.issuer,
       redirectUri: this.authConfig.redirectUri,
       clientId: this.authConfig.clientId,
-      scope: this.authConfig.scope
+      scope: this.authConfig.scope,
     });
 
     this.oauthService.loadDiscoveryDocumentAndTryLogin();
@@ -88,10 +87,9 @@ export class AuthenticationService {
   }
 
   getUser(userProfile: any): void {
-
     this.accountService.getUser(userProfile.email).subscribe({
       next: (user) => this.user.set(user),
-      error: () => this.createAccount()
+      error: () => this.createAccount(),
     });
   }
 
@@ -110,9 +108,7 @@ export class AuthenticationService {
       lastModified: null,
     };
 
-    this.accountService
-      .createAccount(account)
-      .subscribe((user) => this.user.set(user));
+    this.accountService.createAccount(account).subscribe((user) => this.user.set(user));
   }
 
   logout(): void {

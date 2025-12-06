@@ -42,6 +42,7 @@ $font-mono: 'Roboto Mono', monospace;
     --siq-surface-2: #{$surface-2};
     --siq-surface-3: #{$surface-3};
     --siq-outline: #{$outline-color};
+    --siq-border-color: #{$outline-color};
     
     // Text colors
     --siq-text-primary: #{$text-primary};
@@ -87,6 +88,10 @@ $font-mono: 'Roboto Mono', monospace;
 
     background: var(--siq-surface-0);
     color: var(--siq-text-primary);
+
+    body {
+      margin: 0;
+    }
 
     // Elevated element style helpers
     .elevated,

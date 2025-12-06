@@ -1,0 +1,50 @@
+@use '@angular/material' as mat;
+
+:host {
+
+    @include mat.icon-button-density(3);
+    @include mat.button-density(3);
+
+    .sidenav-container {
+        height: 100vh;
+        border-right: solid 1px var(--siq-border-color);
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .sidenav-expanded {
+        width: 150px;
+
+        .logo-text {
+            font-size: 18px;
+            color: var(--siq-brand-gold);
+        }
+
+        .menu-container {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            width: 100%;
+            justify-content: left;
+        }
+    }
+
+    .sidenav {
+        width: 60px;
+
+        
+
+        // button {
+        //     height: 40px;
+        //     width: 40px;
+        // }
+    }
+
+    .logo-icon {
+        width: 60px;
+        height: 60px;
+    }
+}
