@@ -1,50 +1,69 @@
 @use '@angular/material' as mat;
 
 :host {
+  .sidenav-container {
+    height: 100vh;
+    border-right: solid 1px var(--siq-border-color);
 
-    @include mat.icon-button-density(3);
-    @include mat.button-density(3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
 
-    .sidenav-container {
-        height: 100vh;
-        border-right: solid 1px var(--siq-border-color);
+    width: 65px;
 
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 8px;
+    // Add smooth transition for width changes
+    transition: width 0.3s ease-in-out;
+
+    &.expanded {
+      width: 165px;
     }
 
-    .sidenav-expanded {
-        width: 150px;
-
-        .logo-text {
-            font-size: 18px;
-            color: var(--siq-brand-gold);
-        }
-
-        .menu-container {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            width: 100%;
-            justify-content: left;
-        }
+    .logo-text {
+      font-size: 18px;
+      color: var(--siq-brand-gold);
     }
 
-    .sidenav {
-        width: 60px;
-
-        
-
-        // button {
-        //     height: 40px;
-        //     width: 40px;
-        // }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      width: 100%;
+      justify-content: left;
+      border-bottom: solid 1px var(--siq-border-color);
     }
+  }
 
-    .logo-icon {
-        width: 60px;
-        height: 60px;
+  .logo-icon {
+    width: 65px;
+    height: 65px;
+  }
+
+  .text-enter {
+    animation: fade-in 0.5s forwards; // 0.1s delay
+  }
+
+  .text-leave {
+    animation: fade-out 0.2s forwards; // No delay
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateX(-10px);
     }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes fade-out {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
 }

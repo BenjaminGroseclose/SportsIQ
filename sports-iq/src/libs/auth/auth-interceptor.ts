@@ -4,6 +4,7 @@ import { HttpInterceptorFn } from '@angular/common/http';
 export const AuthInterceptor: HttpInterceptorFn = (req, next) => {
   const token = Cookies.get('access_token');
 
+  console.log(token);
   if (token) {
     req = req.clone({
       setHeaders: {
@@ -11,6 +12,8 @@ export const AuthInterceptor: HttpInterceptorFn = (req, next) => {
       },
     });
   }
+
+  console.log(req);
 
   return next(req);
 };

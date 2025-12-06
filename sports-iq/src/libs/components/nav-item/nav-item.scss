@@ -1,0 +1,51 @@
+:host {
+  .item {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+    border-radius: 8px;
+    justify-content: left;
+
+    transition: width 0.3s ease-in-out;
+
+    &:hover {
+      background-color: var(--siq-surface-3);
+    }
+  }
+
+  .center {
+    justify-content: center;
+  }
+
+  .text-enter {
+    animation: fade-in 0.5s forwards; // 0.1s delay
+  }
+
+  .text-leave {
+    animation: fade-out 0.2s forwards; // No delay
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateX(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes fade-out {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+}

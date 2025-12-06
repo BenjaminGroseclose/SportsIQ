@@ -1,10 +1,8 @@
 import * as Cookies from 'es-cookie';
 import { computed, inject, Injectable, signal, PLATFORM_ID } from '@angular/core';
-import { AuthConfig, OAuthEvent, OAuthService } from 'angular-oauth2-oidc';
+import { OAuthEvent, OAuthService } from 'angular-oauth2-oidc';
 import { AccountService } from '../../app/services/account.service';
 import { IAccount } from '../../app/models';
-import { Environment } from '../models/environment.type';
-import { environment } from '@sports-iq/environments/environment';
 import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
@@ -13,28 +11,13 @@ import { isPlatformBrowser } from '@angular/common';
 export class AuthenticationService {
   private oauthService = inject(OAuthService);
   private accountService = inject(AccountService);
-  private authConfig: AuthConfig | null;
-  private readonly env: Environment;
   private readonly isBrowser: boolean = isPlatformBrowser(inject(PLATFORM_ID));
 
   public user = signal<IAccount | null>(null);
   public isLoggedIn = computed<boolean>(() => this.user() !== null);
 
   constructor() {
-    this.env = environment;
-
-    if (this.isBrowser) {
-      this.authConfig = {
-        issuer: this.env.issuer,
-        clientId: this.env.clientId,
-        redirectUri: window.location.origin,
-        responseType: this.env.responseType,
-        scope: this.env.scope,
-        showDebugInformation: this.env.showDebugInformation,
-      };
-    } else {
-      this.authConfig = null;
-    }
+    // OAuth is already configured in app.config.ts
   }
 
   initialize(): void {
@@ -42,34 +25,17 @@ export class AuthenticationService {
       return;
     }
 
-    this.configure();
+    console.log('Initializing AuthenticationService');
 
-    const userProfile = this.getUserProfile();
-    if (userProfile) {
-      this.accountService.getUser(userProfile.email).subscribe((user) => this.user.set(user));
-    }
-  }
-
-  configure(): void {
-    if (!this.isBrowser || !this.authConfig) {
-      return;
-    }
-
-    this.oauthService.configure({
-      issuer: this.authConfig.issuer,
-      redirectUri: this.authConfig.redirectUri,
-      clientId: this.authConfig.clientId,
-      scope: this.authConfig.scope,
-    });
-
-    this.oauthService.loadDiscoveryDocumentAndTryLogin();
-
+    // Just subscribe to events, don't reconfigure
     this.oauthService.events.subscribe((event: OAuthEvent) => {
       if (event.type === 'token_received') {
         const userProfile = this.getUserProfile();
         if (!userProfile) {
           return;
         }
+
+        console.log('Token received, user profile:', userProfile);
 
         const accessToken = this.oauthService.getAccessToken();
         const idToken = this.oauthService.getIdToken();
@@ -79,11 +45,16 @@ export class AuthenticationService {
         Cookies.set('access_token', accessToken);
         Cookies.set('refresh_token', refreshToken);
 
+        console.log('Tokens set in cookies:', { idToken, accessToken, refreshToken });
+
         this.getUser(userProfile);
-      } else {
-        // TODO: Handle other events as needed
       }
     });
+
+    const userProfile = this.getUserProfile();
+    if (userProfile) {
+      this.accountService.getUser(userProfile.email).subscribe((user) => this.user.set(user));
+    }
   }
 
   login(): void {
@@ -91,8 +62,6 @@ export class AuthenticationService {
       return;
     }
 
-    // If we already have identity claims, load the user; otherwise start
-    // the OAuth login flow. No reliance on client-side storage.
     const userProfile = this.getUserProfile();
     if (!userProfile) {
       this.oauthService.initLoginFlow();
@@ -123,7 +92,7 @@ export class AuthenticationService {
       username: userProfile.email,
       displayName: userProfile.name,
       email: userProfile.email,
-      profilePictureUrl: userProfile.picture, // TODO: Implement a random profile picture
+      profilePictureUrl: userProfile.picture,
       lastLogin: new Date(),
       isActive: true,
       createDate: new Date(),

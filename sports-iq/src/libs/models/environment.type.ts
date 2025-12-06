@@ -8,4 +8,5 @@ export interface Environment {
   scope: string;
   showDebugInformation: boolean;
   redirectUri: string;
+  audience: string;
 }

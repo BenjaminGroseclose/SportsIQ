@@ -1,0 +1,15 @@
+<div
+  class="item"
+  [style.width]="width() + 'px'"
+  [ngClass]="{ center: !showTitle() }"
+  (click)="clicked.emit()"
+>
+  @if (showIcon()) {
+    <mat-icon>{{ icon() }}</mat-icon>
+  }
+  @if (showTitle()) {
+    <span animate.enter="text-enter" animate-leave="text-leave" class="text-enter">
+      {{ title() }}
+    </span>
+  }
+</div>

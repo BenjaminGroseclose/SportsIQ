@@ -7,10 +7,21 @@
       "request": "launch",
       "preLaunchTask": "build SportsIQ.API",
       "program": "${workspaceFolder}/sports-iq-backend/src/SportsIQ.API/bin/Debug/net10.0/SportsIQ.API.dll",
+      "args": [],
       "cwd": "${workspaceFolder}/sports-iq-backend/src/SportsIQ.API",
+      "stopAtEntry": false,
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+      },
       "env": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+      },
+      "sourceFileMap": {
+        "/Views": "${workspaceFolder}/Views"
+      },
+      "justMyCode": true,
+      "requireExactSource": false
     }
   ]
 }

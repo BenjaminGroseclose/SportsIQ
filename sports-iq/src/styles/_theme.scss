@@ -15,21 +15,25 @@ $font-mono: 'Roboto Mono', monospace;
 
 @mixin sports-iq-theme() {
   // 2. Material 3 Theme Definition
-  $theme: mat.define-theme((
-    color: (
-      primary: themeColors.$primary-palette,
-      tertiary: themeColors.$tertiary-palette,
-      theme-type: dark
-    ),
-    typography: (
-      brand-family: $font-brand,
-      plain-family: $font-plain,
-      bold-weight: 700,
-      medium-weight: 500,
-      regular-weight: 400,
-    ),
-    density: ( scale:-2 )
-  ));
+  $theme: mat.define-theme(
+    (
+      color: (
+        primary: themeColors.$primary-palette,
+        tertiary: themeColors.$tertiary-palette,
+        theme-type: dark,
+      ),
+      typography: (
+        brand-family: $font-brand,
+        plain-family: $font-plain,
+        bold-weight: 700,
+        medium-weight: 500,
+        regular-weight: 400,
+      ),
+      density: (
+        scale: -2,
+      ),
+    )
+  );
 
   // Apply the theme
   @include mat.all-component-themes($theme);
@@ -43,39 +47,39 @@ $font-mono: 'Roboto Mono', monospace;
     --siq-surface-3: #{$surface-3};
     --siq-outline: #{$outline-color};
     --siq-border-color: #{$outline-color};
-    
+
     // Text colors
     --siq-text-primary: #{$text-primary};
     --siq-text-secondary: #{$text-secondary};
     --siq-text-muted: #{$text-muted};
-    
+
     // Brand colors
     --siq-brand-gold: #{$brand-gold};
     --siq-brand-gold-hover: #{$brand-gold-hover};
     --siq-brand-gold-container: #{$brand-gold-container};
-    
+
     --siq-accent-purple: #{$accent-purple};
     --siq-accent-purple-hover: #{$accent-purple-hover};
     --siq-accent-purple-container: #{$accent-purple-container};
-    
+
     // Semantic colors
     --siq-success-green: #{$success-green};
     --siq-success-green-container: #{$success-green-container};
     --siq-success-green-text: #{$success-green-text};
-    
+
     --siq-info-cyan: #{$info-cyan};
     --siq-info-cyan-container: #{$info-cyan-container};
     --siq-info-cyan-text: #{$info-cyan-text};
-    
+
     --siq-warning-amber: #{$warning-amber};
     --siq-warning-amber-container: #{$warning-amber-container};
     --siq-warning-amber-text: #{$warning-amber-text};
-    
+
     --siq-error-red: #{$error-red};
     --siq-error-red-hover: #{$error-red-hover};
     --siq-error-red-container: #{$error-red-container};
     --siq-error-red-text: #{$error-red-text};
-    
+
     // Gradients
     --siq-gradient-blue: #{$gradient-blue};
     --siq-gradient-purple: #{$gradient-purple};
@@ -120,11 +124,13 @@ $font-mono: 'Roboto Mono', monospace;
   }
 
   // 4. Material Component Overrides
-  @include mat.card-overrides((
-    elevated-container-color: var(--siq-surface-2),
-    filled-container-color: var(--siq-surface-2),
-    outlined-container-color: var(--siq-surface-2)
-  ));
+  @include mat.card-overrides(
+    (
+      elevated-container-color: var(--siq-surface-2),
+      filled-container-color: var(--siq-surface-2),
+      outlined-container-color: var(--siq-surface-2),
+    )
+  );
 
   // 5. Data Semantics
   .trend-up,
@@ -144,49 +150,60 @@ $font-mono: 'Roboto Mono', monospace;
 
   // 6. Badges / Chips
   mat-chip {
+    &.primary {
+      @include mat.chips-overrides(
+        (
+          outline-color: var(--siq-brand-gold),
+          label-text-color: var(--siq-brand-gold),
+        )
+      );
+    }
 
-      &.primary {
-          @include mat.chips-overrides((
-              outline-color: var(--siq-brand-gold),
-              label-text-color: var(--siq-brand-gold)
-          ));
-      }
+    &.info {
+      @include mat.chips-overrides(
+        (
+          outline-color: var(--siq-info-cyan),
+          label-text-color: var(--siq-info-cyan),
+        )
+      );
+    }
 
-      &.info {
-          @include mat.chips-overrides((
-              outline-color: var(--siq-info-cyan),
-              label-text-color: var(--siq-info-cyan)
-          ));
-      }
+    &.warning {
+      @include mat.chips-overrides(
+        (
+          outline-color: var(--siq-warning-amber),
+          label-text-color: var(--siq-warning-amber),
+          elevated-container-color: rgba(var(--siq-warning-amber), 0.15),
+        )
+      );
+    }
 
-      &.warning {
-          @include mat.chips-overrides((
-              outline-color: var(--siq-warning-amber),
-              label-text-color: var(--siq-warning-amber),
-              elevated-container-color: rgba(var(--siq-warning-amber), 0.15),
-          ));
-      }
+    &.accent {
+      @include mat.chips-overrides(
+        (
+          outline-color: var(--siq-accent-purple),
+          label-text-color: var(--siq-accent-purple),
+        )
+      );
+    }
 
-      &.accent {
-          @include mat.chips-overrides((
-              outline-color: var(--siq-accent-purple),
-              label-text-color: var(--siq-accent-purple)
-          ));
-      }
+    &.success {
+      @include mat.chips-overrides(
+        (
+          outline-color: var(--siq-success-green),
+          label-text-color: var(--siq-success-green),
+        )
+      );
+    }
 
-      &.success {
-          @include mat.chips-overrides((
-              outline-color: var(--siq-success-green),
-              label-text-color: var(--siq-success-green)
-          ));
-      }
-
-      &.error {
-          @include mat.chips-overrides((
-              outline-color: var(--siq-error-red),
-              label-text-color: var(--siq-error-red)
-          ));
-      }
+    &.error {
+      @include mat.chips-overrides(
+        (
+          outline-color: var(--siq-error-red),
+          label-text-color: var(--siq-error-red),
+        )
+      );
+    }
   }
 
   // 8. Tables / Gridlines

@@ -19,9 +19,9 @@ import { environment } from '../environments/environment';
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    provideRouter(routes),
     provideBrowserGlobalErrorListeners(),
     provideHttpClient(withInterceptors([AuthInterceptor])),
-    provideRouter(routes),
     provideClientHydration(withEventReplay()),
     provideAppInitializer(() => {
       const platformId = injectFn(PLATFORM_ID);
@@ -41,6 +41,9 @@ export const appConfig: ApplicationConfig = {
         responseType: environment.responseType,
         scope: environment.scope,
         showDebugInformation: environment.showDebugInformation,
+        customQueryParams: {
+          audience: environment.audience,
+        },
       };
 
       oauthService.configure(authConfig);

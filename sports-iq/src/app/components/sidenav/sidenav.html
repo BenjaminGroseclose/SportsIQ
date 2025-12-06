@@ -1,33 +1,28 @@
-@if (isExpanded()) {
-  <div class="sidenav-container sidenav-expanded">
-    <div class="menu-container">
-      <img src="assets/sportsiq-icon.svg" alt="SportsIQ Logo" class="logo-icon" />
-      <span class="logo-text">SportsIQ</span>
-    </div>
-
-    <siq-spacer></siq-spacer>
-    <mat-nav-list>
-      <a mat-list-item>
-        <mat-icon matListItemIcon>login</mat-icon>
-        <span matListItemTitle>Login</span>
-      </a>
-      <a mat-list-item (click)="isExpanded.set(false)">
-        <mat-icon matListItemIcon>keyboard_double_arrow_left</mat-icon>
-        <span matListItemTitle>Collapse</span>
-      </a>
-    </mat-nav-list>
-  </div>
-} @else {
-  <div class="sidenav-container sidenav">
+<div class="sidenav-container" [ngClass]="{ expanded: isExpanded() }">
+  <div class="logo-container">
     <img src="assets/sportsiq-icon.svg" alt="SportsIQ Logo" class="logo-icon" />
-
-    <siq-spacer></siq-spacer>
-
-    <button matIconButton (click)="login()">
-      <mat-icon>login</mat-icon>
-    </button>
-    <button matIconButton (click)="isExpanded.set(true)">
-      <mat-icon>keyboard_double_arrow_right</mat-icon>
-    </button>
+    @if (isExpanded()) {
+      <span animate.enter="text-enter" animate-leave="text-leave" class="logo-text">SportsIQ</span>
+    }
   </div>
-}
+  @for (items of topNavItems(); track $index) {
+    <siq-nav-item
+      [icon]="items.icon"
+      [title]="items.title"
+      [showTitle]="isExpanded()"
+      [width]="isExpanded() ? 165 : 65"
+      (clicked)="items.action()"
+    ></siq-nav-item>
+  }
+
+  <siq-spacer></siq-spacer>
+  @for (items of bottomNavItems(); track $index) {
+    <siq-nav-item
+      [icon]="items.icon"
+      [title]="items.title"
+      [showTitle]="isExpanded()"
+      [width]="isExpanded() ? 165 : 65"
+      (clicked)="items.action()"
+    ></siq-nav-item>
+  }
+</div>
