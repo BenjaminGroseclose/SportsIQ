@@ -8,6 +8,7 @@ import { AuthenticationService } from '@sports-iq/libs';
 import { NavItem } from '@sports-iq/libs/components/nav-item/nav-item';
 import { INavItem } from '@sports-iq/libs/models/nav-item.type';
 import { Router } from '@angular/router';
+import { AuthService } from '@auth0/auth0-angular';
 
 @Component({
   selector: 'siq-sidenav',
@@ -16,14 +17,14 @@ import { Router } from '@angular/router';
   styleUrl: './sidenav.scss',
 })
 export class Sidenav {
-  private readonly authenticationService = inject(AuthenticationService);
+  private readonly authenticationService = inject(AuthService);
   private readonly router = inject(Router);
 
   isExpanded = signal<boolean>(false);
 
-  user = this.authenticationService.user;
-  isLoggedIn = this.authenticationService.isLoggedIn;
-  username = computed(() => this.user()?.username);
+  // user = this.authenticationService.user;
+  // isLoggedIn = this.authenticationService.isLoggedIn;
+  // username = computed(() => this.user()?.username);
 
   topNavItems = computed<INavItem[]>(() => {
     const items: INavItem[] = [];
@@ -69,7 +70,7 @@ export class Sidenav {
   });
 
   login(): void {
-    this.authenticationService.login();
+    this.authenticationService.loginWithRedirect();
   }
 
   navigate(path: string): void {

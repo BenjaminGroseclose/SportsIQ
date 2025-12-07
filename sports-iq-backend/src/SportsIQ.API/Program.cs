@@ -1,6 +1,4 @@
 
-
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using SportsIQ.Infrastructure;
 using SportsIQ.Infrastructure.Interfaces;
@@ -17,62 +15,28 @@ builder.Services.AddOpenApi();
 // Services
 
 // Auth
-builder.Services.AddAuthentication(options =>
+builder.Services.AddAuth(options =>
 {
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options =>
-    {
-        options.Authority = "https://dev--isjyw9f.us.auth0.com/";
-        options.Audience = "https://sportsiq.api";
-        options.RequireHttpsMetadata = true;
-        options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidIssuer = "https://dev--isjyw9f.us.auth0.com/",
-            ValidateAudience = true,
-            ValidAudience = "https://sportsiq.api",
-            ValidateLifetime = true
-        };
-
-            // Add logging for debugging
-        options.Events = new JwtBearerEvents
-        {
-            OnAuthenticationFailed = context =>
-            {
-                Console.WriteLine($"Authentication failed: {context.Exception}");
-                return Task.CompletedTask;
-            },
-            OnTokenValidated = context =>
-            {
-                Console.WriteLine("Token validated successfully");
-                return Task.CompletedTask;
-            },
-            OnChallenge = context =>
-            {
-                Console.WriteLine($"OnChallenge error: {context.Error}, {context.ErrorDescription}");
-                return Task.CompletedTask;
-            }
-        };
-    }
-);
+    options.Domain = builder.Configuration["Auth0:Domain"]!;
+    options.Audience = builder.Configuration["Auth0:Audience"]!;
+});
 
 // Database
 builder.Services.AddDbContext<SportsIQContext>(
     options => options.UseSqlServer(builder.Configuration.GetConnectionString("SportsIQDatabase"))
-);  
+);
 
 // Repositories
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 
 builder.Services.AddCors(options =>
 {
-	options.AddPolicy("AllowSpecificOrigins", policy =>
-	{
-		policy.WithOrigins("http://localhost:4200")
-		.AllowAnyHeader()
-		.AllowAnyMethod();
-	});
+    options.AddPolicy("AllowSpecificOrigins", policy =>
+    {
+        policy.WithOrigins("http://localhost:4200")
+        .AllowAnyHeader()
+        .AllowAnyMethod();
+    });
 });
 
 var app = builder.Build();
