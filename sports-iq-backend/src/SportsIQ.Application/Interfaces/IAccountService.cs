@@ -4,7 +4,6 @@ namespace SportsIQ.Application.Interfaces;
 
 public interface IAccountService
 {
-    Task<Account> GetAccountByUsername(string username);
-    Task<Account> GetAccountByID(int accountID);
+    Task<Account> GetAccountByUserID(string userID);
     Task<Account> CreateAccount(Account account);
 }

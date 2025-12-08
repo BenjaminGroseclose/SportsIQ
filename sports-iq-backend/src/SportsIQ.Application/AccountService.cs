@@ -30,19 +30,14 @@ public class AccountService : IAccountService
         }
     }
 
-    public async Task<Account> GetAccountByID(int accountID)
-    {
-        return await _accountRepository.GetByIdAsync(accountID);
-    }
-
-    public async Task<Account> GetAccountByUsername(string username)
+    public async Task<Account> GetAccountByUserID(string userID)
     {
         var accounts = await _accountRepository.GetAllAsync();
-        var account = accounts.FirstOrDefault(a => a.Username == username);
+        var account = accounts.FirstOrDefault(a => a.UserID == userID);
 
         if (account == null)
         {
-            throw new KeyNotFoundException($"Account with username {username} not found.");
+            throw new KeyNotFoundException($"Account with userID {userID} not found.");
         }
 
         return account;

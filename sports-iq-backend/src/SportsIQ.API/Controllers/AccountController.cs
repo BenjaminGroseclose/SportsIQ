@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SportsIQ.Application.Interfaces;
@@ -21,10 +22,19 @@ public class AccountController : ControllerBase
     /// Requires authentication
     /// </summary>
     [Authorize]
-    [HttpGet("{username}")]
+    [HttpGet]
     public IActionResult Get(string username)
     {
-        var account = _accountService.GetAccountByUsername(username);
+        var userID = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (userID == null)
+        {
+            return Unauthorized();
+        }
+
+        Console.WriteLine($"Authenticated user ID: {userID}");
+
+        var account = _accountService.GetAccountByUserID(username);
         if (account == null)
         {
             return NotFound();

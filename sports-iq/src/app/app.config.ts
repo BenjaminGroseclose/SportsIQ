@@ -22,7 +22,7 @@ export const appConfig: ApplicationConfig = {
       httpInterceptor: {
         allowedList: [
           {
-            uri: environment.baseUrl + '/api/*',
+            uri: environment.baseUrl + 'api/*',
             tokenOptions: {
               authorizationParams: {
                 audience: environment.audience,

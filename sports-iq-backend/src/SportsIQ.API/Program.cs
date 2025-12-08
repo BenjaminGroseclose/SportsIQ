@@ -1,6 +1,8 @@
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using SportsIQ.Application;
+using SportsIQ.Application.Interfaces;
 using SportsIQ.Infrastructure;
 using SportsIQ.Infrastructure.Interfaces;
 using SportsIQ.Infrastructure.Repositories;
@@ -14,6 +16,7 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 // Services
+builder.Services.AddScoped<IAccountService, AccountService>();
 
 // Auth
 var domain = builder.Configuration["Auth0:Domain"];
@@ -27,7 +30,7 @@ builder.Services.AddAuthentication(options =>
 .AddJwtBearer(options =>
 {
     // The "Authority" is who issued the token (Auth0)
-    options.Authority = domain; 
+    options.Authority = domain;
     options.Audience = audience;
 
     // OPTIONAL: If you get "Issuer" validation errors in development

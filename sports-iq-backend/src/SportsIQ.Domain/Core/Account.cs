@@ -10,4 +10,9 @@ public class Account : BaseModel
     public DateTimeOffset LastLogin { get; set; }
     public bool IsActive { get; set; }
     public override int ID { get => AccountID; }
+
+    /// <summary>
+    /// The unique identifier for the user from the authentication provider (e.g., Auth0)
+    /// </summary>
+    public string UserID { get; set; }
 }
