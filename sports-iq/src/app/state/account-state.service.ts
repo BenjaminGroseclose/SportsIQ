@@ -21,7 +21,7 @@ const initialUserState: UserState = {
 @Injectable({
   providedIn: 'root',
 })
-export class UserStateService extends StateBase<UserState> {
+export class AccountStateService extends StateBase<UserState> {
   private readonly authService = inject(AuthService);
   private readonly accountService = inject(AccountService);
   private readonly snackbarService = inject(SnackbarService);
@@ -30,6 +30,8 @@ export class UserStateService extends StateBase<UserState> {
   public profilePictureUrl = computed<string | null>(
     () => this.account()?.profilePictureUrl || null,
   );
+
+  public hasAccount = computed<boolean>(() => this.state().account !== null);
 
   constructor() {
     super(initialUserState);
@@ -61,7 +63,7 @@ export class UserStateService extends StateBase<UserState> {
       });
   }
 
-  createAccount(): void {
+  private createAccount(): void {
     this.authService.user$
       .pipe(
         take(1),

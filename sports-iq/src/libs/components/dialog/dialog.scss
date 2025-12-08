@@ -1,0 +1,31 @@
+:host {
+    .header {
+        display: flex;
+        gap: 16px;
+
+        mat-icon {
+
+            font-size: 32px;
+        }
+    }
+
+    .info {
+        background-color: var(--siq-info-cyan-container);
+        color: var(--siq-info-cyan-text)
+    }
+
+    .warning {
+        background-color: var(--siq-warning-amber-container);
+        color: var(--siq-warning-amber-text)
+    }
+
+    .error {
+        background-color: var(--siq-error-red-container);
+        color: var(--siq-error-red-text)
+    }
+
+    .success {
+        background-color: var(--siq-success-green-container);
+        color: var(--siq-success-green-text)
+    }
+}

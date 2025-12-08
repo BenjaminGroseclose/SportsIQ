@@ -69,8 +69,16 @@
       background-color: var(--siq-surface-1);
       color: var(--siq-text-primary);
 
+      mat-card-header {
+        padding: 8px;
+
+        mat-icon {
+          margin: auto;
+          text-align: center;
+        }
+      }
       mat-card-content {
-        height: 250px;
+        height: 225px;
       }
 
       mat-card-actions {

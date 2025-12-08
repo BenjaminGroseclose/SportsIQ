@@ -16,6 +16,16 @@
   }
 
   <siq-spacer></siq-spacer>
+  @if (isAuthenticated() && hasAccount()) {
+    <div class="user-profile">
+      <img [src]="profilePictureUrl()" height="40px" width="40px" />
+
+      @if (isExpanded() ) {
+        <span animate.enter="text-enter" animate-leave="text-leave" class="username">{{ username() }}</span>
+      }
+    </div>
+  }
+
   @for (items of bottomNavItems(); track $index) {
     <siq-nav-item
       [icon]="items.icon"

@@ -8,7 +8,7 @@ import { NavItem } from '@sports-iq/libs/components/nav-item/nav-item';
 import { INavItem } from '@sports-iq/libs/models/nav-item.type';
 import { Router } from '@angular/router';
 import { AuthService } from '@auth0/auth0-angular';
-import { UserStateService } from '@sports-iq/app/state/user-state.service';
+import { AccountStateService } from '@sports-iq/app/state/account-state.service';
 
 @Component({
   selector: 'siq-sidenav',
@@ -19,11 +19,13 @@ import { UserStateService } from '@sports-iq/app/state/user-state.service';
 export class Sidenav {
   private readonly authenticationService = inject(AuthService);
   private readonly router = inject(Router);
-  private readonly userStateService = inject(UserStateService);
+  private readonly userStateService = inject(AccountStateService);
 
   isExpanded = signal<boolean>(false);
 
   isAuthenticated = computed<boolean>(() => this.userStateService.state().isAuthenticated);
+  hasAccount = computed<boolean>(() => this.userStateService.hasAccount());
+  profilePictureUrl = computed<string | undefined>(() => this.userStateService.profilePictureUrl() || undefined);
   username = computed<string>(() => this.userStateService.state().account?.username || 'Guest');
 
   topNavItems = computed<INavItem[]>(() => {
@@ -33,6 +35,28 @@ export class Sidenav {
       icon: 'home',
       title: 'Home',
       action: () => this.navigate('/'),
+    }, {
+      icon: 'science',
+      title: 'Analytics',
+      action: () => this.navigate('/analytics'),
+    }, {
+      icon: 'emoji_events',
+      title: 'Fantasy',
+      action: () => this.navigate('/fantasy'),
+    }, {
+      icon: 'business_center',
+      title: 'Armchair GM',
+      action: () => this.navigate('/armchair-gm'),
+    },
+    {
+      icon: 'how_to_vote',
+      title: 'Rankings',
+      action: () => this.navigate('/rankings'),
+    },
+    {
+      icon: 'preview',
+      title: 'Matchups',
+      action: () => this.navigate('/matchups'),
     });
 
     return items;

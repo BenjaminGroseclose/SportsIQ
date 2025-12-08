@@ -94,7 +94,40 @@ A clean, pre-game intelligence hub that gives users everything they need to watc
 
 ## ---
 
-**5\. Technical & Design Requirements**
+**5\. Core Feature: Community Player Rankings**
+
+A dynamic, crowdsourced ranking system where the sports community votes on player tiers, allowing real-time consensus to challenge traditional rankings and create engagement through gamification.
+
+### **Key Components**
+
+- **Interactive Tier Lists:** Visual card-based ranking interface organized by position and season. Players are displayed as draggable cards that users can reorder within a customizable tier system (S-Tier, A-Tier, B-Tier, etc.).
+- **Voting System:** One-click thumbs up/down voting on individual player rankings. Users can also vote on alternate player placements to challenge the current consensus ranking.
+- **Consensus Leaderboard:** A live leaderboard showing the top-voted players overall, by position, by season, and by custom filters (e.g., "Best rookies," "Most overrated," "Biggest risers/fallers").
+- **Voting Streaks & Achievements:** Gamification elements including badges for accurate predictions (users who voted on future breakout stars), voting consistency, and "expert" status for users with high voting accuracy.
+- **Player Comparison via Voting:** Users can vote on head-to-head matchups (e.g., "Player A vs. Player B for the 2024 MVP") to generate instant consensus metrics displayed as split voting percentages and momentum charts.
+- **Historical Ranking Snapshots:** Archive of past voting results to track how perception of players evolves over seasons and allow users to see which communities voted accurately.
+
+### **Data Scope**
+
+- Cover all major sports (NFL, NBA, MLB, NCAA Football/Basketball).
+- Track rankings across multiple time periods: current season, historical seasons, and projected future performance.
+- Aggregate voting data by position, team, age, and custom user-defined categories.
+- Store voting history for each user to calculate prediction accuracy metrics.
+
+### **Monetization Strategy**
+
+| Tier                  | Access Level                                                                                                                                                                                                                                   |
+| :-------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Free**              | View community rankings, vote once per player per season, access consensus leaderboards, basic achievement tracking.                                                                                                                           |
+| **Premium (Paywall)** | Unlimited voting with weight multiplier (votes worth more), private custom tier lists, voting predictions premium analytics, export rankings to images/PDF, early access to new sport rankings, and voting notifications for favorite players. |
+
+**Tagline:** _"Your vote shapes the rankings."_
+
+---
+
+## ---
+
+**6\. Technical & Design Requirements**
 
 To ensure these data-heavy features perform well, the website architecture must prioritize speed and clarity.
 
