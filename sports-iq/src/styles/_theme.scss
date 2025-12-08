@@ -287,4 +287,20 @@ $font-mono: 'Roboto Mono', monospace;
   ::-webkit-scrollbar-thumb:hover {
     background: var(--siq-surface-3);
   }
+
+  // 14. Snackbar Styles
+  .snackbar-success {
+    background-color: var(--siq-success-green-container);
+    color: var(--siq-success-green-text);
+  }
+
+  .snackbar-info {
+    background-color: var(--siq-info-cyan-container);
+    color: var(--siq-info-cyan-text);
+  }
+
+  .snackbar-error {
+    background-color: var(--siq-error-red-container);
+    color: var(--siq-error-red-text);
+  }
 }

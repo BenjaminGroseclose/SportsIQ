@@ -5,7 +5,6 @@ using SportsIQ.Domain.Core;
 
 namespace SportsIQ.API.Controllers;
 
-[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class AccountController : ControllerBase
@@ -17,6 +16,11 @@ public class AccountController : ControllerBase
         _accountService = accountService;
     }
 
+    /// <summary>
+    /// Get account by username/email
+    /// Requires authentication
+    /// </summary>
+    [Authorize]
     [HttpGet("{username}")]
     public IActionResult Get(string username)
     {
@@ -29,6 +33,11 @@ public class AccountController : ControllerBase
         return Ok(account);
     }
 
+    /// <summary>
+    /// Create a new account
+    /// Requires authentication (only authenticated users from Auth0 can create)
+    /// </summary>
+    [Authorize]
     [HttpPost]
     public IActionResult Create([FromBody] Account account)
     {

@@ -1,4 +1,5 @@
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using SportsIQ.Infrastructure;
 using SportsIQ.Infrastructure.Interfaces;
@@ -15,10 +16,26 @@ builder.Services.AddOpenApi();
 // Services
 
 // Auth
-builder.Services.AddAuth(options =>
+var domain = builder.Configuration["Auth0:Domain"];
+var audience = builder.Configuration["Auth0:Audience"];
+
+builder.Services.AddAuthentication(options =>
 {
-    options.Domain = builder.Configuration["Auth0:Domain"]!;
-    options.Audience = builder.Configuration["Auth0:Audience"]!;
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    // The "Authority" is who issued the token (Auth0)
+    options.Authority = domain; 
+    options.Audience = audience;
+
+    // OPTIONAL: If you get "Issuer" validation errors in development
+    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+    {
+        ValidateAudience = true,
+        ValidateIssuerSigningKey = true
+    };
 });
 
 // Database
@@ -33,9 +50,11 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigins", policy =>
     {
-        policy.WithOrigins("http://localhost:4200")
-        .AllowAnyHeader()
-        .AllowAnyMethod();
+        policy
+            .WithOrigins("http://localhost:4200")
+            .AllowAnyHeader()  // Allows Authorization header
+            .AllowAnyMethod()  // Allows all HTTP methods
+            .AllowCredentials(); // Allows credentials in CORS requests
     });
 });
 
@@ -52,7 +71,7 @@ app.UseHttpsRedirection();
 app.UseCors("AllowSpecificOrigins");
 
 app.UseAuthentication();
-// app.UseAuthorization();
+app.UseAuthorization();
 
 app.MapControllers();
 
