@@ -12,8 +12,8 @@ export class AccountService extends HttpBase {
     super(httpClient, 'account');
   }
 
-  getUser(username: string): Observable<IAccount> {
-    return this.get<IAccount>(username);
+  getUser(): Observable<IAccount> {
+    return this.get<IAccount>();
   }
 
   createAccount(account: IAccount): Observable<IAccount> {

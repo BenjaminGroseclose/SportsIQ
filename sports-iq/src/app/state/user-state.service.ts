@@ -2,7 +2,7 @@ import { computed, inject, Injectable } from '@angular/core';
 import { AuthService, User } from '@auth0/auth0-angular';
 import { IAccount } from '../models';
 import { BaseState, SnackbarService, StateBase } from '@sports-iq/libs';
-import { distinctUntilChanged, filter, map, switchMap, take, tap, withLatestFrom } from 'rxjs';
+import { distinctUntilChanged, map, switchMap, take, tap } from 'rxjs';
 import { AccountService } from '../services/account.service';
 
 type UserState = BaseState & {
@@ -34,19 +34,17 @@ export class UserStateService extends StateBase<UserState> {
   constructor() {
     super(initialUserState);
 
-    this.authService.user$
+    this.authService.isAuthenticated$
       .pipe(
         distinctUntilChanged(),
-        tap((user) => this.patchState({ isAuthenticated: user != null })),
-        filter((user) => user != null && user.email != null),
-        tap(() => this.patchState({ loading: true, error: null, loaded: false })),
-        switchMap((user) => this.accountService.getUser(user?.email!)),
+        tap((isAuthenticated) => this.patchState({ isAuthenticated, loading: true, error: null, loaded: false })),
+        switchMap(() => this.accountService.getUser()),
       )
       .subscribe({
         next: (account) => {
           console.log('Fetched account:', account);
           if (account) {
-            // this.patchState({ account, loading: false, loaded: true, error: null });
+            this.patchState({ account, loading: false, loaded: true, error: null });
           }
         },
         error: (error) => {

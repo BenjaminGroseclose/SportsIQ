@@ -12,7 +12,7 @@ export class HttpBase {
     this.baseUrl = `${environment.baseUrl}api/${controller}`;
   }
 
-  get<T>(url: string | null): Observable<T> {
+  get<T>(url: string | null = null): Observable<T> {
     let fullUrl = url == null ? this.baseUrl : `${this.baseUrl}/${url}`;
 
     return this.http.get<T>(fullUrl).pipe(map((response: T) => response));
