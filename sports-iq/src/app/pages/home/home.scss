@@ -1,0 +1,93 @@
+:host {
+  height: 100vh;
+  overflow-y: auto;
+  flex: 1;
+
+  .hero {
+    background-color: var(--siq-surface-2);
+    align-items: center;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+
+    .hero-tile {
+      font-size: 3.5rem;
+      font-weight: 700;
+      display: block;
+      color: var(--siq-brand-gold);
+    }
+
+    .hero-subtitle {
+      font-size: 1.5rem;
+      font-weight: 500;
+      display: block;
+      color: var(--siq-text-secondary);
+    }
+
+    .hero-description {
+      margin-top: 12px;
+      font-size: 1rem;
+      font-weight: 400;
+      display: block;
+      color: var(--siq-text-primary);
+    }
+
+    button {
+      margin-top: 8px;
+      font-weight: 600;
+    }
+  }
+
+  .feature-title {
+    margin-top: 32px;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--siq-text-primary);
+    text-align: center;
+  }
+
+  .feature-subtitle {
+    margin-top: 8px;
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--siq-text-secondary);
+    text-align: center;
+  }
+
+  .feature-card {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    mat-card {
+      width: 350px;
+      margin: 16px;
+      padding: 16px;
+      background-color: var(--siq-surface-1);
+      color: var(--siq-text-primary);
+
+      mat-card-content {
+        height: 250px;
+      }
+
+      mat-card-actions {
+        justify-content: flex-end;
+      }
+
+      .highlights {
+        margin-top: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+
+        span {
+          font-size: 0.9rem;
+          color: var(--siq-text-secondary);
+        }
+      }
+    }
+  }
+}

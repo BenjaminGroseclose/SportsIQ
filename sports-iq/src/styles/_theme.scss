@@ -9,8 +9,8 @@
 // -----------------------------------------------------------------------------
 
 // 1. Typography (modern, data-centric)
-$font-brand: 'Manrope', sans-serif;
-$font-plain: 'Manrope', sans-serif;
+$font-brand: 'Inter', sans-serif;
+$font-plain: 'Inter', sans-serif;
 $font-mono: 'Roboto Mono', monospace;
 
 @mixin sports-iq-theme() {
@@ -38,7 +38,13 @@ $font-mono: 'Roboto Mono', monospace;
   // Apply the theme
   @include mat.all-component-themes($theme);
 
-  // 3. Custom CSS Variables from _colors.scss
+  // 3. Apply typography globally to all elements
+  html, body, * {
+    font-family: $font-plain;
+    font-weight: 400;
+  }
+
+  // 4. Custom CSS Variables from _colors.scss
   html {
     // Surface & background system
     --siq-surface-0: #{$surface-0};

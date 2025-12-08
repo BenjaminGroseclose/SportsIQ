@@ -6,6 +6,7 @@ export interface IAccount {
   profilePictureUrl: string;
   lastLogin: Date;
   isActive: boolean;
+  userID: string; // AuthO user ID
   createDate: Date;
   lastModified: Date | null;
 }

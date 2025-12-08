@@ -37,7 +37,9 @@ export class UserStateService extends StateBase<UserState> {
     this.authService.isAuthenticated$
       .pipe(
         distinctUntilChanged(),
-        tap((isAuthenticated) => this.patchState({ isAuthenticated, loading: true, error: null, loaded: false })),
+        tap((isAuthenticated) =>
+          this.patchState({ isAuthenticated, loading: true, error: null, loaded: false }),
+        ),
         switchMap(() => this.accountService.getUser()),
       )
       .subscribe({
@@ -68,17 +70,24 @@ export class UserStateService extends StateBase<UserState> {
             throw new Error('User email is undefined');
           }
 
+          if (user.sub === undefined) {
+            throw new Error('User ID is undefined');
+          }
+
           const account: IAccount = {
             accountID: 0,
             username: user.email,
             displayName: user.name ?? user.email,
             email: user.email,
+            userID: user.sub,
             profilePictureUrl: user.picture ?? '',
             lastLogin: new Date(),
             isActive: true,
             createDate: new Date(),
             lastModified: null,
           };
+
+          console.log('Creating account with data:', account);
 
           return account;
         }),
