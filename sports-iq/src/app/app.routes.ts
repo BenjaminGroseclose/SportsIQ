@@ -10,7 +10,10 @@ import { ArmchairGM } from './pages/armchair-gm/armchair-gm';
 
 export const routes: Routes = [
   {
-    path: '',
+    path: '', redirectTo: 'home', pathMatch: 'full'
+  },
+  {
+    path: 'home',
     component: Home,
   },
   {

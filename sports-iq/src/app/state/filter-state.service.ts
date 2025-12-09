@@ -1,24 +1,20 @@
 import { Injectable } from "@angular/core";
 import { BaseState, StateBase } from "@sports-iq/libs";
 
+export interface IFilter {
+    key: string;
+    label: string;
+    options: { value: number; label: string }[];
+    selectedOptions: number[];
+    isMultiple: boolean;
+}
 
 type FilterState = BaseState & {
-    selectedSeason: number | null;
-    selectedSport: number | null;
-    selectedLeague: number | null;
-
-    seasonOptions: number[];
-    sportOptions: number[];
-    leagueOptions: number[];
+   filters: IFilter[]; 
 }
 
 const initialFilterState: FilterState = {
-    selectedSeason: null,
-    selectedSport: null,
-    selectedLeague: null,
-    seasonOptions: [],
-    sportOptions: [],
-    leagueOptions: [],
+    filters: [],
     loading: false,
     loaded: false,
     error: null,
@@ -28,13 +24,19 @@ const initialFilterState: FilterState = {
     providedIn: 'root',
 })
 export class FilterStateService extends StateBase<FilterState> {
+
+
+
     constructor() {
         super(initialFilterState);
     }
 
-    
-
     clearSelections() {
-        this.patchState({ selectedLeague: null, selectedSeason: null, selectedSport: null });
+        const newFilters = this.state().filters.map(filter => ({
+            ...filter,
+            selectedOptions: [],
+        }));
+
+        this.patchState({ filters: newFilters });
     }
 }
