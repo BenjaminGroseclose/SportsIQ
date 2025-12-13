@@ -1,0 +1,9 @@
+CREATE TABLE [Player].[PlayerStatuses]
+(
+	[PlayerStatusID] INT NOT NULL PRIMARY KEY  IDENTITY(1,1),
+	[Name] NVARCHAR(100) NOT NULL,
+	[Description] NVARCHAR(500) NULL,
+	[InjuredListEligible] BIT NOT NULL,	
+	[CreateDate] DATETIMEOFFSET NOT NULL DEFAULT SYSDATETIMEOFFSET(),
+	[LastModified] DATETIMEOFFSET,
+)

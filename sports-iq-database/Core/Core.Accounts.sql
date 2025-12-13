@@ -7,6 +7,7 @@ CREATE TABLE [Core].[Accounts]
 	[Username] VARCHAR(100) NOT NULL,
 	[DisplayName] VARCHAR(500) NOT NULL,
 	[Email] VARCHAR(255) NULL,
+	[UserID] VARCHAR(1000) NOT NULL,
 	[ProfilePictureUrl] VARCHAR(1000) NULL,
 	[LastLogin] DATETIMEOFFSET NULL,
 	[IsActive] BIT NOT NULL DEFAULT 1,

@@ -1,0 +1,14 @@
+:host {
+  .header {
+    display: flex;
+    align-items: center;
+    height: 65px;
+    padding: 0 16px;
+
+    .page-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--siq-on-surface);
+    }
+  }
+}

@@ -1,0 +1,16 @@
+<div class="top-filters">
+  @for (filter of topFilters(); track filter.key) {
+    <mat-form-field appearance="outline">
+      <mat-label>{{ filter.label }}</mat-label>
+      <mat-select
+        [multiple]="filter.isMultiple"
+        [value]="filter.isMultiple ? filter.selectedOptions : filter.selectedOptions[0] || null"
+        (selectionChange)="onFilterChange(filter.key, $event.value, filter.isMultiple)"
+      >
+        @for (option of filter.options; track option.value) {
+          <mat-option [value]="option.value">{{ option.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  }
+</div>

@@ -4,33 +4,23 @@ import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { environment } from '../environments/environment';
-import { authHttpInterceptorFn, provideAuth0 } from '@auth0/auth0-angular';
+import { AuthInterceptor } from '@sports-iq/libs/auth/auth-interceptor';
+import { provideOAuthClient } from 'angular-oauth2-oidc';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
     provideBrowserGlobalErrorListeners(),
-    provideHttpClient(withInterceptors([authHttpInterceptorFn])),
+    provideHttpClient(withInterceptors([AuthInterceptor])),
     provideClientHydration(withEventReplay()),
-    provideAuth0({
-      domain: environment.issuer,
-      clientId: environment.clientId,
-      authorizationParams: {
-        redirect_uri: window.location.origin,
-        audience: environment.audience,
+    provideOAuthClient(),
+    {
+      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+      useValue: {
+        subscriptSizing: 'dynamic',
+        appearance: 'outline',
       },
-      httpInterceptor: {
-        allowedList: [
-          {
-            uri: environment.baseUrl + 'api/*',
-            tokenOptions: {
-              authorizationParams: {
-                audience: environment.audience,
-              },
-            },
-          },
-        ],
-      },
-    }),
+    },
   ],
 };

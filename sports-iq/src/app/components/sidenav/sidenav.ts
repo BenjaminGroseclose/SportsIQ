@@ -7,8 +7,8 @@ import { MatListModule } from '@angular/material/list';
 import { NavItem } from '@sports-iq/libs/components/nav-item/nav-item';
 import { INavItem } from '@sports-iq/libs/models/nav-item.type';
 import { Router } from '@angular/router';
-import { AuthService } from '@auth0/auth0-angular';
 import { AccountStateService } from '@sports-iq/app/state/account-state.service';
+import { AuthenticationService } from '@sports-iq/libs/auth/authentication.service';
 
 @Component({
   selector: 'siq-sidenav',
@@ -17,7 +17,7 @@ import { AccountStateService } from '@sports-iq/app/state/account-state.service'
   styleUrl: './sidenav.scss',
 })
 export class Sidenav {
-  private readonly authenticationService = inject(AuthService);
+  private readonly authenticationService = inject(AuthenticationService);
   private readonly router = inject(Router);
   private readonly userStateService = inject(AccountStateService);
 
@@ -25,39 +25,46 @@ export class Sidenav {
 
   isAuthenticated = computed<boolean>(() => this.userStateService.state().isAuthenticated);
   hasAccount = computed<boolean>(() => this.userStateService.hasAccount());
-  profilePictureUrl = computed<string | undefined>(() => this.userStateService.profilePictureUrl() || undefined);
+  profilePictureUrl = computed<string | undefined>(
+    () => this.userStateService.profilePictureUrl() || undefined,
+  );
   username = computed<string>(() => this.userStateService.state().account?.username || 'Guest');
 
   topNavItems = computed<INavItem[]>(() => {
     const items: INavItem[] = [];
 
-    items.push({
-      icon: 'home',
-      title: 'Home',
-      action: () => this.navigate('/'),
-    }, {
-      icon: 'science',
-      title: 'Analytics',
-      action: () => this.navigate('/analytics'),
-    }, {
-      icon: 'emoji_events',
-      title: 'Fantasy',
-      action: () => this.navigate('/fantasy'),
-    }, {
-      icon: 'business_center',
-      title: 'Armchair GM',
-      action: () => this.navigate('/armchair-gm'),
-    },
-    {
-      icon: 'how_to_vote',
-      title: 'Rankings',
-      action: () => this.navigate('/rankings'),
-    },
-    {
-      icon: 'preview',
-      title: 'Matchups',
-      action: () => this.navigate('/matchups'),
-    });
+    items.push(
+      {
+        icon: 'home',
+        title: 'Home',
+        action: () => this.navigate('/'),
+      },
+      {
+        icon: 'science',
+        title: 'Analytics',
+        action: () => this.navigate('/analytics'),
+      },
+      {
+        icon: 'emoji_events',
+        title: 'Fantasy',
+        action: () => this.navigate('/fantasy'),
+      },
+      {
+        icon: 'business_center',
+        title: 'Armchair GM',
+        action: () => this.navigate('/armchair-gm'),
+      },
+      {
+        icon: 'how_to_vote',
+        title: 'Rankings',
+        action: () => this.navigate('/rankings'),
+      },
+      {
+        icon: 'preview',
+        title: 'Matchups',
+        action: () => this.navigate('/matchups'),
+      },
+    );
 
     return items;
   });
@@ -94,7 +101,7 @@ export class Sidenav {
   });
 
   login(): void {
-    this.authenticationService.loginWithRedirect();
+    this.authenticationService.login();
   }
 
   navigate(path: string): void {

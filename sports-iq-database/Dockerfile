@@ -1,7 +1,8 @@
-FROM mcr.microsoft.com/mssql/server:2022-latest
+FROM mcr.microsoft.com/mssql/server:2025-latest
 
 ENV ACCEPT_EULA=Y
 ENV MSSQL_PID=Developer
+ENV SA_PASSWORD=P@ssw0rd123
 
 # Create a directory for the dacpac
 WORKDIR /var/opt/mssql/deploy
@@ -28,4 +29,4 @@ USER mssql
 EXPOSE 1433
 
 # Start SQL Server and deploy dacpac
-CMD  sleep 20 && ./deploy-dacpac.sh & /opt/mssql/bin/sqlservr
+CMD  sleep 30 && ./deploy-dacpac.sh & /opt/mssql/bin/sqlservr

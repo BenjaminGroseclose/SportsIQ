@@ -7,4 +7,13 @@
     <ModelCollation>1033, CI</ModelCollation>
     <ProjectGuid>{00000000-0000-0000-0000-000000000000}</ProjectGuid>
   </PropertyGroup>
+  <ItemGroup>
+    <PostDeploy Include="Seed.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Player" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Remove="Temp.sql" />
+  </ItemGroup>
 </Project>

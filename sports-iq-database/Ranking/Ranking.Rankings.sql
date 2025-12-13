@@ -1,0 +1,10 @@
+CREATE TABLE [Ranking].[Rankings]
+(
+	[RankingID] INT NOT NULL PRIMARY KEY  IDENTITY(1,1),
+	[PlayerID]	INT NOT NULL,
+	[Rating] FLOAT NOT NULL,
+	[CreateDate] DATETIMEOFFSET NOT NULL DEFAULT SYSDATETIMEOFFSET(),
+	[LastModified] DATETIMEOFFSET,	
+
+	CONSTRAINT [FK_Rankings_Players] FOREIGN KEY (PlayerID) REFERENCES [Player].[Players](PlayerID)
+)

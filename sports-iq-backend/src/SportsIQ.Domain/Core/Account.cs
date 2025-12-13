@@ -1,6 +1,10 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace SportsIQ.Domain.Core;
 
-public class Account : BaseModel
+
+[Table("Accounts", Schema = "Core")]
+public class Account : BaseEntity
 {
     public int AccountID { get; set; }
     public string Username { get; set; }

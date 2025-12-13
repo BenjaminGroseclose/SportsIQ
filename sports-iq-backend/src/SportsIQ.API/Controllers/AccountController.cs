@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SportsIQ.Application.Interfaces;
@@ -23,7 +24,7 @@ public class AccountController : ControllerBase
     /// </summary>
     [Authorize]
     [HttpGet]
-    public IActionResult Get(string username)
+    public async Task<IActionResult> Get()
     {
         var userID = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
@@ -32,9 +33,7 @@ public class AccountController : ControllerBase
             return Unauthorized();
         }
 
-        Console.WriteLine($"Authenticated user ID: {userID}");
-
-        var account = _accountService.GetAccountByUserID(username);
+        var account = await _accountService.GetAccountByUserID(userID);
         if (account == null)
         {
             return NotFound();

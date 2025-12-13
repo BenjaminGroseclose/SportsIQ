@@ -4,7 +4,7 @@ using SportsIQ.Infrastructure.Interfaces;
 
 namespace SportsIQ.Infrastructure;
 
-public class BaseRepository<T> : IBaseRepository<T> where T : BaseModel
+public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
 {
     protected readonly SportsIQContext _context;
     protected readonly DbSet<T> _dbSet;

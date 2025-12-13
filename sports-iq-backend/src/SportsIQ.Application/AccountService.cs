@@ -8,9 +8,9 @@ namespace SportsIQ.Application;
 public class AccountService : IAccountService
 {
     private readonly ILogger<AccountService> _logger;
-    private readonly IAccountRepository _accountRepository;
+    private readonly IBaseRepository<Account> _accountRepository;
 
-    public AccountService(ILogger<AccountService> logger, IAccountRepository accountRepository)
+    public AccountService(ILogger<AccountService> logger, IBaseRepository<Account> accountRepository)
     {
         _logger = logger;
         _accountRepository = accountRepository;

@@ -39,7 +39,9 @@ $font-mono: 'Roboto Mono', monospace;
   @include mat.all-component-themes($theme);
 
   // 3. Apply typography globally to all elements
-  html, body, * {
+  html,
+  body,
+  * {
     font-family: $font-plain;
     font-weight: 400;
   }
@@ -137,6 +139,8 @@ $font-mono: 'Roboto Mono', monospace;
       outlined-container-color: var(--siq-surface-2),
     )
   );
+
+  @include mat.form-field-density(-5);
 
   // 5. Data Semantics
   .trend-up,

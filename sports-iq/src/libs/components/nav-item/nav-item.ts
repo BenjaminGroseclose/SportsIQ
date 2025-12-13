@@ -2,10 +2,11 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, input, output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'siq-nav-item',
-  imports: [CommonModule, MatIconModule, MatButtonModule],
+  imports: [CommonModule, MatIconModule, MatButtonModule, MatTooltipModule],
   templateUrl: './nav-item.html',
   styleUrl: './nav-item.scss',
 })

@@ -1,9 +1,9 @@
 #!/bin/bash
 /opt/sqlpackage/sqlpackage \
   /Action:Publish \
-  /SourceFile:/var/opt/mssql/deploy/FantasyForge.Database.dacpac \
+  /SourceFile:/var/opt/mssql/deploy/SportsIQ.Database.dacpac \
   /TargetServerName:localhost \
-  /TargetDatabaseName:FantasyForge \
+  /TargetDatabaseName:SportsIQ \
   /TargetTrustServerCertificate:true \
   /TargetUser:sa \
   /TargetPassword:$SA_PASSWORD

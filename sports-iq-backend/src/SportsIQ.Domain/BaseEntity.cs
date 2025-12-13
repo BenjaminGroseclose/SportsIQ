@@ -1,6 +1,6 @@
 namespace SportsIQ.Domain;
 
-public class BaseModel
+public class BaseEntity
 {
     virtual public int ID { get; }
     public DateTimeOffset CreateDate { get; set; }

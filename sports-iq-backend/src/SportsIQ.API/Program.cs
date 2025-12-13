@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using SportsIQ.Application;
 using SportsIQ.Application.Interfaces;
+using SportsIQ.Domain.Core;
+using SportsIQ.Domain.PlayerRanking;
+using SportsIQ.Domain.SportPlayer;
 using SportsIQ.Infrastructure;
 using SportsIQ.Infrastructure.Interfaces;
-using SportsIQ.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +19,7 @@ builder.Services.AddOpenApi();
 
 // Services
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<ICoreService, CoreService>();
 
 // Auth
 var domain = builder.Configuration["Auth0:Domain"];
@@ -47,7 +50,13 @@ builder.Services.AddDbContext<SportsIQContext>(
 );
 
 // Repositories
-builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<IBaseRepository<Account>, BaseRepository<Account>>();
+builder.Services.AddScoped<IBaseRepository<Sport>, BaseRepository<Sport>>();
+builder.Services.AddScoped<IBaseRepository<Team>, BaseRepository<Team>>();
+builder.Services.AddScoped<IBaseRepository<Season>, BaseRepository<Season>>();
+builder.Services.AddScoped<IBaseRepository<Ranking>, BaseRepository<Ranking>>();
+builder.Services.AddScoped<IBaseRepository<PlayerComparisons>, BaseRepository<PlayerComparisons>>();
+builder.Services.AddScoped<IBaseRepository<Player>, BaseRepository<Player>>();
 
 builder.Services.AddCors(options =>
 {
