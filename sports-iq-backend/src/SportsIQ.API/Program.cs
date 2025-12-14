@@ -54,8 +54,8 @@ builder.Services.AddScoped<IBaseRepository<Account>, BaseRepository<Account>>();
 builder.Services.AddScoped<IBaseRepository<Sport>, BaseRepository<Sport>>();
 builder.Services.AddScoped<IBaseRepository<Team>, BaseRepository<Team>>();
 builder.Services.AddScoped<IBaseRepository<Season>, BaseRepository<Season>>();
-builder.Services.AddScoped<IBaseRepository<Ranking>, BaseRepository<Ranking>>();
-builder.Services.AddScoped<IBaseRepository<PlayerComparisons>, BaseRepository<PlayerComparisons>>();
+builder.Services.AddScoped<IBaseRepository<PlayerRanking>, BaseRepository<PlayerRanking>>();
+builder.Services.AddScoped<IBaseRepository<PlayerComparison>, BaseRepository<PlayerComparison>>();
 builder.Services.AddScoped<IBaseRepository<Player>, BaseRepository<Player>>();
 
 builder.Services.AddCors(options =>

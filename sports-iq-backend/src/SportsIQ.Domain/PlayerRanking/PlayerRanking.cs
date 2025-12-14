@@ -3,8 +3,8 @@ using SportsIQ.Domain.SportPlayer;
 
 namespace SportsIQ.Domain.PlayerRanking;
 
-[Table("Rankings", Schema = "Ranking")]
-public class Ranking : BaseEntity
+[Table("PlayerRankings", Schema = "Ranking")]
+public class PlayerRanking : BaseEntity
 {
     public int RankingID { get; set; }
     public int PlayerID { get; set; }

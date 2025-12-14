@@ -21,10 +21,10 @@ public class SportsIQContext : DbContext
     // Player
     public DbSet<Player> Players { get; set; }
     public DbSet<PlayerStatus> PlayerStatuses { get; set; }
-    
+
     // Ranking
-    public DbSet<Ranking> Rankings { get; set; }
-    public DbSet<PlayerComparisons> PlayerComparisons { get; set; }
+    public DbSet<PlayerRanking> Rankings { get; set; }
+    public DbSet<PlayerComparison> PlayerComparisons { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
