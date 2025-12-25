@@ -30,6 +30,23 @@ public class SportsIQContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
+        // Auto-include common Player navigations to avoid repetitive Includes
+        modelBuilder.Entity<Player>()
+            .Navigation(p => p.Team)
+            .AutoInclude();
+
+        modelBuilder.Entity<Player>()
+            .Navigation(p => p.Position)
+            .AutoInclude();
+
+        modelBuilder.Entity<Player>()
+            .Navigation(p => p.Sport)
+            .AutoInclude();
+
+        modelBuilder.Entity<Player>()
+            .Navigation(p => p.Status)
+            .AutoInclude();
+
         modelBuilder.Entity<Team>()
             .HasOne(t => t.Sport)
             .WithMany()
@@ -39,5 +56,10 @@ public class SportsIQContext : DbContext
             .HasOne(s => s.Sport)
             .WithMany()
             .HasForeignKey(s => s.SportID);
+
+        modelBuilder.Entity<PlayerRanking>()
+            .HasOne(pr => pr.Player)
+            .WithMany()
+            .HasForeignKey(pr => pr.PlayerID);
     }
 }

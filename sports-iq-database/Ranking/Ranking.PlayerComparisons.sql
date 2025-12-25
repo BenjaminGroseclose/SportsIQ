@@ -2,7 +2,7 @@ CREATE SCHEMA [Ranking];
 GO
 
 CREATE TABLE [Ranking].[PlayerComparisons] (
-    [ComparisonID] INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+    [PlayerComparisonID] INT NOT NULL PRIMARY KEY IDENTITY(1,1),
     [AccountID] INT NULL,
     [PlayerAID] INT NOT NULL,
     [PlayerBID] INT NOT NULL,

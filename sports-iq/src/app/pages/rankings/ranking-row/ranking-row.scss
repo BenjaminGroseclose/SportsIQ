@@ -1,0 +1,10 @@
+:host {
+  .row {
+    display: flex;
+    border-radius: 8px;
+    border: 1px solid var(--siq-border-color);
+    gap: 8px;
+    align-items: center;
+    padding: 4px 8px;
+  }
+}

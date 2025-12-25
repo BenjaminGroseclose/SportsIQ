@@ -20,6 +20,7 @@ builder.Services.AddOpenApi();
 // Services
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ICoreService, CoreService>();
+builder.Services.AddScoped<IPlayerRankingService, PlayerRankingService>();
 
 // Auth
 var domain = builder.Configuration["Auth0:Domain"];

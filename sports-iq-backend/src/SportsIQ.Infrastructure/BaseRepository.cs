@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using SportsIQ.Domain;
 using SportsIQ.Infrastructure.Interfaces;
+using System.Linq.Expressions;
 
 namespace SportsIQ.Infrastructure;
 
@@ -28,14 +29,34 @@ public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
         _context.SaveChanges();
     }
 
-    public async Task<IEnumerable<T>> GetAllAsync()
+    public async Task<IEnumerable<T>> GetAllAsync(params Expression<Func<T, object>>[] includes)
     {
-        return await _dbSet.ToListAsync();
+        IQueryable<T> query = _dbSet.AsQueryable();
+
+        if (includes != null)
+        {
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+        }
+
+        return await query.ToListAsync();
     }
 
-    public async Task<T> GetByIdAsync(int id)
+    public async Task<T> GetByIdAsync(int id, params Expression<Func<T, object>>[] includes)
     {
-        var entity = await _dbSet.FindAsync(id);
+        IQueryable<T> query = _dbSet.AsQueryable();
+
+        if (includes != null)
+        {
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+        }
+
+        var entity = await query.FirstOrDefaultAsync(e => e.ID == id);
 
         if (entity == null)
         {

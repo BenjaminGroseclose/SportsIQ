@@ -1,0 +1,5 @@
+@if (showUnknown()) {
+  <img [class]="size()" src="assets/unknown-team-logo.png" alt="Free Agent" />
+} @else {
+  <img [class]="size()" [src]="team()?.logo" [alt]="team()?.name + ' logo'" />
+}

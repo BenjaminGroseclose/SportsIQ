@@ -1,19 +1,25 @@
 {
-  "version": "2.0.0",
-  "tasks": [
-    {
-      "label": "build SportsIQ.API",
-      "type": "shell",
-      "command": "dotnet build ${workspaceFolder}/sports-iq-backend/src/SportsIQ.API/SportsIQ.API.csproj",
-      "group": "build",
-      "problemMatcher": "$msCompile"
-    },
-    {
-      "label": "restore",
-      "type": "shell",
-      "command": "dotnet restore ${workspaceFolder}/sports-iq-backend/SportsIQ.Backend.sln",
-      "group": "build",
-      "problemMatcher": "$msCompile"
-    }
-  ]
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "build SportsIQ.API",
+			"type": "shell",
+			"command": "dotnet build ${workspaceFolder}/sports-iq-backend/src/SportsIQ.API/SportsIQ.API.csproj",
+			"group": "build",
+			"problemMatcher": "$msCompile"
+		},
+		{
+			"label": "restore",
+			"type": "shell",
+			"command": "dotnet restore ${workspaceFolder}/sports-iq-backend/SportsIQ.Backend.sln",
+			"group": "build",
+			"problemMatcher": "$msCompile"
+		},
+		{
+			"label": "build SportsIQ.API",
+			"type": "shell",
+			"command": "dotnet build ${workspaceFolder}/sports-iq-backend/src/SportsIQ.API/SportsIQ.API.csproj",
+			"group": "build"
+		}
+	]
 }

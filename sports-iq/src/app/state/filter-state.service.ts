@@ -100,10 +100,17 @@ export class FilterStateService extends StateBase<FilterState> {
     this.patchState({ filters: newFilters });
   }
 
-  getSelectedOptions(key: string): Signal<IFilterOption[]> {
-    return computed<IFilterOption[]>(() => {
+  getSelectedOptions(key: string): Signal<number[]> {
+    return computed<number[]>(() => {
       const filter = this.state().filters.find((f) => f.key === key);
-      return filter ? filter.options.filter((o) => o.isSelected) : [];
+      return filter ? filter.options.filter((o) => o.isSelected).map((o) => o.value) : [];
+    });
+  }
+
+  getSelectedOption(key: string): Signal<number | null> {
+    return computed<number | null>(() => {
+      const filter = this.state().filters.find((f) => f.key === key);
+      return filter?.options.find((o) => o.isSelected)?.value ?? null;
     });
   }
 

@@ -1,0 +1,5 @@
+@use '@angular/material' as mat;
+
+:host {
+  @include mat.chips-density(-3); // try -1, -2, or -3
+}

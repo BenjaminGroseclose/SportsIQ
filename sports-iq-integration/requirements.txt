@@ -1,6 +1,11 @@
-numpy>=2.0.0
-pandas>=2.2.0
+numpy
+pandas
 requests
-nfl_data_py
+nflreadpy
 pylint
 pyodbc
+ipykernel
+cfbd
+scikit-learn
+xgboost
+pyarrow

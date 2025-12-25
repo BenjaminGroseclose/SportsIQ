@@ -1,139 +1,107 @@
-<!-- filepath: d:\Programming\SportsIQ\docs\SPORTS_IQ.md -->
+# SportsIQ: Strategic Business Plan
 
-# **Sports IQ: Website Feature Specifications**
-
-## **1\. Core Feature: The Analytics Lab**
-
-The "Analytics Lab" serves as the research engine of the platform, designed to compete with tools like Stathead and PFF Ultimate. It democratizes data science, allowing users to query historical databases without writing code.
-
-### **Key Components**
-
-- **Natural Language Query Builder:** Instead of SQL, users can type or select drop-downs for queries like _"Most 3-pointers by a rookie in the 4th quarter since 2015"_.
-- **Interactive Data Visualization:** Integration of libraries like D3.js or Recharts to instantly convert query results into scatter plots, heatmaps (e.g., shot charts), and momentum graphs.
-- **Comparison Engine:** A "Head-to-Head" mode that allows users to stack two players or teams against each other with radar charts comparing efficiency, volume, and clutch performance.
-
-### **Monetization Strategy**
-
-| Tier                  | Access Level                                                                                                              |
-| :-------------------- | :------------------------------------------------------------------------------------------------------------------------ |
-| **Free**              | Basic season stats, leaderboards, and simple queries (e.g., "Top scorers 2024"). Ad-supported.                            |
-| **Premium (Paywall)** | Complex query combinations (e.g., filtering by quarter/down/distance), exporting data to CSV/Excel, and ad-free browsing. |
-
-## ---
-
-**2\. Core Feature: Fantasy Sports Center**
-
-This hub acts as the user's "Assistant General Manager," utilizing AI to remove emotion from roster decisions.
-
-### **Key Components**
-
-- **Draft Simulator:** A high-speed mock draft tool that syncs with standard league settings (Snake, Auction, Dynasty). It uses ADP (Average Draft Position) data to simulate realistic opponent behavior.
-- **AI Trade Analyzer:**
-  - **The "Why" Engine:** Unlike basic calculators that just give a number, this uses Generative AI to explain _why_ a trade is good or bad (e.g., "Player A has an easy playoff schedule, while Player B faces top-5 defenses").
-  - **Mutually Beneficial Finder:** An algorithm that scans the user's league to find trade partners whose needs match the user's surplus.
-- **Start/Sit Recommendation:** A probability-based engine that suggests lineups based on matchup difficulty, weather, and injury risk, rather than just projected points.
-
-### **Monetization Strategy**
-
-| Tier                  | Access Level                                                                                                                             |
-| :-------------------- | :--------------------------------------------------------------------------------------------------------------------------------------- |
-| **Free**              | Basic Mock Drafts, simple 1-for-1 Trade Calculator (no explanations), general Start/Sit rankings.                                        |
-| **Premium (Paywall)** | "League Sync" (imports user's specific league rosters), AI Trade Explanations, Multi-team trade analysis, and Dynasty value projections. |
-
-## ---
-
-**3\. Core Feature: Armchair GM Simulator**
-
-This is the flagship "immersive" feature, allowing users to step into the role of a General Manager and compete against a trained AI in contract negotiations and roster construction.
-
-### **Key Components**
-
-- **The "Capology" Engine:** A rigorously accurate simulation of league salary caps, luxury taxes, and exceptions (e.g., Mid-Level Exception in NBA, Franchise Tags in NFL).
-- **AI Negotiation Bot:** Users enter a chat interface to negotiate contracts with AI agents. The AI has "personality traits" (e.g., "Greedy," "Loyal," "Ring Chaser") and will react to low-ball offers by walking away or demanding trade clauses.
-- **Trade Machine 2.0:** Validates trades against real financial rules and provides a grade on the long-term impact of the move (e.g., "Win Probability added over 3 years").
-
-### **Monetization Strategy**
-
-| Tier                  | Access Level                                                                                                                     |
-| :-------------------- | :------------------------------------------------------------------------------------------------------------------------------- |
-| **Free**              | "Sandbox Mode" (Experiment with trades and caps without saving), limited to current season only.                                 |
-| **Premium (Paywall)** | Multi-season franchise mode, AI Negotiation Chatbot, saving/exporting scenarios, and "Era" capability (simulating past seasons). |
-
-## ---
-
-**4\. Core Feature: Matchup Preview Center**
-
-A clean, pre-game intelligence hub that gives users everything they need to watch games like an analyst—without the complexity of the Analytics Lab.
-
-### **Key Components**
-
-- **Game Cards:** Visual panels for upcoming games showing:
-  - Key stat comparisons (offensive/defensive rankings, pace, recent form)
-  - Injury report with impact ratings ("High" for stars, "Low" for bench players)
-  - Head-to-head history (last 5 meetings, trends)
-  - Weather conditions (for outdoor sports)
-- **"X-Factors" Spotlight:** Auto-identifies 2-3 players/matchups that will likely decide the game (e.g., "Elite pass rush vs. backup offensive line" or "Star PG returning from injury").
-- **Betting Context (Optional):** Display Vegas lines and over/under with historical cover rates—no predictions, just context.
-- **Watch Guide:** Links to where the game is streaming/airing, plus optimal viewing times (e.g., "Game starts at 8pm, but tipoff historically happens 8:12pm").
-- **Playoff Machine** User select matches and see our predictions of making the playoffs.
-
-### **Data Scope**
-
-- Pull from public APIs (ESPN, The Odds API for lines).
-- Start with **one league** and ~10 core stats.
-- Daily cron job generates cards 24 hours before games.
-
-### **Monetization Strategy**
-
-| Tier                  | Access Level                                                                                            |
-| :-------------------- | :------------------------------------------------------------------------------------------------------ |
-| **Free**              | Today's games only, top 3 X-factors, basic stat comparisons.                                            |
-| **Premium (Paywall)** | Full week schedule, deeper historical matchups, customizable card layouts, export to calendar, ad-free. |
-
-**Tagline:** _"Never watch a game unprepared."_
-
-## ---
-
-**5\. Core Feature: Community Player Rankings**
-
-A dynamic, crowdsourced ranking system where the sports community votes on player tiers, allowing real-time consensus to challenge traditional rankings and create engagement through gamification.
-
-### **Key Components**
-
-- **Interactive Tier Lists:** Visual card-based ranking interface organized by position and season. Players are displayed as draggable cards that users can reorder within a customizable tier system (S-Tier, A-Tier, B-Tier, etc.).
-- **Voting System:** One-click thumbs up/down voting on individual player rankings. Users can also vote on alternate player placements to challenge the current consensus ranking.
-- **Consensus Leaderboard:** A live leaderboard showing the top-voted players overall, by position, by season, and by custom filters (e.g., "Best rookies," "Most overrated," "Biggest risers/fallers").
-- **Voting Streaks & Achievements:** Gamification elements including badges for accurate predictions (users who voted on future breakout stars), voting consistency, and "expert" status for users with high voting accuracy.
-- **Player Comparison via Voting:** Users can vote on head-to-head matchups (e.g., "Player A vs. Player B for the 2024 MVP") to generate instant consensus metrics displayed as split voting percentages and momentum charts.
-- **Historical Ranking Snapshots:** Archive of past voting results to track how perception of players evolves over seasons and allow users to see which communities voted accurately.
-
-### **Data Scope**
-
-- Cover all major sports (NFL, NBA, MLB, NCAA Football/Basketball).
-- Track rankings across multiple time periods: current season, historical seasons, and projected future performance.
-- Aggregate voting data by position, team, age, and custom user-defined categories.
-- Store voting history for each user to calculate prediction accuracy metrics.
-
-### **Monetization Strategy**
-
-| Tier                  | Access Level                                                                                                                                                                                                                                   |
-| :-------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Free**              | View community rankings, vote once per player per season, access consensus leaderboards, basic achievement tracking.                                                                                                                           |
-| **Premium (Paywall)** | Unlimited voting with weight multiplier (votes worth more), private custom tier lists, voting predictions premium analytics, export rankings to images/PDF, early access to new sport rankings, and voting notifications for favorite players. |
-
-**Tagline:** _"Your vote shapes the rankings."_
+**Version:** 2.0 (The "Data-Light" Pivot)
+**Date:** December 2025
 
 ---
 
-## ---
+## **1. Executive Summary**
 
-**6\. Technical & Design Requirements**
+**SportsIQ** is a sports intelligence platform designed for the "highly engaged" fan—fantasy commissioners, armchair GMs, and aspiring scouts. Unlike competitors that commoditize expensive live stats, SportsIQ focuses on **proprietary predictive modeling**, **GM simulation tools**, and **community-sourced scouting**.
 
-To ensure these data-heavy features perform well, the website architecture must prioritize speed and clarity.
+**The Core Value Proposition:**
+We do not sell the box score; we sell the _interpretation_ of the box score. By leveraging historical data to feed internal "Black Box" algorithms, we generate unique insights (predictions, trade values, scout grades) that are defensible, high-margin, and free from restrictive real-time data licensing costs.
 
-- **Skeleton Loading:** Because the Analytics Lab processes large datasets, the UI must use "Skeleton Screens" (gray pulsing placeholders) rather than spinners to reduce perceived wait times and improve user retention.
-- **Dark Mode UI:** Given the density of data in tables and charts, a high-contrast Dark Mode should be the default to reduce eye strain for power users.
-- **Technology Stack:**
-  - **Frontend:** Angular for the interactive dashboards.
-  - **Visualization:** D3.js or Nivo for the custom charts in the Analytics Lab.
-  - **Data Updates:** WebSockets for real-time draft updates in the Fantasy Center, ensuring zero latency.
+---
+
+## **2. The "Data-Light" Strategy**
+
+_Solving the licensing bottleneck by changing the nature of the data we serve._
+
+### **A. Proprietary "Black Box" Metrics (The Oracle)**
+
+Instead of displaying raw licensed stats (e.g., "300 Passing Yards"), we display proprietary derivative metrics.
+
+- **Method:** We ingest data "behind the scenes" (using accessible historical data and public post-game reports) to train internal Machine Learning models.
+- **The Output:**
+  - **SIQ Win Probability:** A live-updated confidence score for every matchup.
+  - **Player Value Rating (PVR):** A 0-100 score representing a player's trade value, independent of their current fantasy points.
+  - **Bust Probability:** The likelihood of a player underperforming their projection.
+
+### **B. Community "Scout Vision" (The Moat)**
+
+We turn the user base into the data source.
+
+- **Concept:** Verified users "grade" players on subjective traits that do not exist in box scores (e.g., "Route Running," "Arm Strength," "Pass Protection").
+- **Value:** Over time, SportsIQ builds a unique, crowdsourced dataset of subjective player grades that no competitor possesses.
+
+### **C. "Bring Your Own Data" (The Sandbox)**
+
+- **Concept:** Users upload their own datasets (CSVs from nflverse, Kaggle, etc.) into our visualization engine.
+- **Value:** We provide the _tools_ (regression testing, graphing), users provide the _data_. This removes our liability for data licensing while empowering power users.
+
+---
+
+## **3. Core Feature Roadmap**
+
+### **Phase 1: The General Manager Suite (Flagship)**
+
+_Leveraging public contract/salary cap rules which are not tied to expensive live game feeds._
+
+- **Trade Machine 2.0:**
+  - **The Hook:** Users simulate multi-team trades.
+  - **The AI Judge:** An internal bot accepts/rejects trades based on our proprietary **PVR (Player Value Rating)** and real-time Salary Cap rules.
+  - **Differentiation:** Competitors check if the money works; SportsIQ checks if the _value_ works.
+- **Cap Manager:** Visual tools to restructure contracts and manage dead cap space.
+
+### **Phase 2: The Prediction Center**
+
+_Showcasing Machine Learning prowess to build trust._
+
+- **Weekly Forecasts:** Display predicted scores and winners for every game based on the SportsIQ internal model.
+- **Accuracy Tracker:** A transparent dashboard showing our model's Mean Squared Error (MSE) vs. Vegas lines.
+- **"Beat the Bot":** Gamification where users enter predictions to compete against the SportsIQ AI.
+
+### **Phase 3: The Analytics Lab (Restricted)**
+
+- **The Sandbox:** A no-code environment for users to upload CSVs and run correlation analysis (e.g., "Does Height correlate with Red Zone Targets?").
+- **Proprietary Dashboards:** Visualizations powered _only_ by SportsIQ metrics (e.g., a graph showing a player's "Trade Value" volatility over a season).
+
+---
+
+## **4. Technology Stack**
+
+| Component     | Tech               | Purpose                                                                                         |
+| :------------ | :----------------- | :---------------------------------------------------------------------------------------------- |
+| **Frontend**  | **Angular**        | Responsive SPA for complex dashboards and interactive Trade Machine UI.                         |
+| **Backend**   | **C# / .NET Core** | Robust calculation engine for salary cap math and trade logic.                                  |
+| **ML Engine** | **Python**         | Microservice running Random Forest/Regression models. Ingests raw data -> Outputs JSON ratings. |
+| **Database**  | **PostgreSQL**     | Relational data for user profiles, leagues, and historical stats.                               |
+| **Hosting**   | **Azure/AWS**      | Scalable cloud infrastructure.                                                                  |
+
+---
+
+## **5. Growth & Monetization**
+
+### **The "Free Wall" Strategy**
+
+- **Approach:** All features are currently **Free**, but require a **Verified Login**.
+- **Rationale:** Without high data costs, our overhead is low. We prioritize aggressively building a database of "highly engaged" users (fantasy commissioners, influencers).
+- **Asset:** The user list _is_ the value. A database of 50,000 active fantasy commissioners is highly monetizable later.
+
+### **Future Monetization (Post-Scale)**
+
+1.  **API Licensing:** Selling our "Crowdsourced Scout Grades" to other apps.
+2.  **Premium Leagues:** Hosting Dynasty Leagues that integrate directly with our Trade Machine.
+3.  **Sponsored Content:** Targeted ads for "Mock Draft" tools during the off-season.
+
+---
+
+## **6. Immediate Action Items**
+
+1.  **Algorithm Development (Python):**
+    - Draft the logic for the **Player Value Rating (PVR)**. (e.g., `(Past_Performance * 0.6) + (Age_Factor * 0.2) + (Contract_Value * 0.2)`).
+2.  **Data Pipeline:**
+    - Build scrapers/importers for **Salary Cap Data** (Spotrac/OverTheCap public data).
+3.  **MVP Frontend (Angular):**
+    - Build the "Trade Machine" interface. This is the first verifiable product to show users.

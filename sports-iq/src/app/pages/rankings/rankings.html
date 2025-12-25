@@ -1,1 +1,8 @@
-<p>rankings works!</p>
+<div class="filter-row"></div>
+<div class="table">
+  @for (player of playerRankings(); track player.playerRankingID) {
+    <siq-ranking-row [playerRanking]="player"></siq-ranking-row>
+  } @empty {
+    <span>Please select a sport to view rankings.</span>
+  }
+</div>

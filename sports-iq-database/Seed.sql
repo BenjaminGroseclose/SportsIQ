@@ -13,6 +13,20 @@ VALUES
     ('College Football', 'NCAAF', SYSDATETIMEOFFSET()),
     ('College Basketball', 'NCAAMB', SYSDATETIMEOFFSET());
 
+-- Seed data for Player.PlayerStatus
+INSERT INTO [SportsIQ].[Player].[PlayerStatuses] ([Name], [Description], [InjuredListEligible]) 
+VALUES
+    ('Active', 'Player is currently active and eligible to play.', 0),
+	('Pratice Squad', 'Player is on the practice squad and not eligible to play.', 0),
+	('Reserve', 'Player is on reserve list and not eligible to play.', 0),
+    ('Retired', 'Player has retired from professional play.', 0),
+	('Cut', 'Player has been cut from the team and is a free agent.', 0),
+    ('Inactive', 'Player is not currently active for other reasons.', 0),
+    ('Suspended', 'Player is suspended due to disciplinary reasons.', 0),
+	('Physically Unable to Perform', 'Player is on PUP list and not eligible to play.', 1),
+	('Unknown', 'Player status is unknown.', 0);
+
+
 
 INSERT INTO [SportsIQ].[Core].[Seasons] ([Year], SportID, IsCurrent)
 VALUES

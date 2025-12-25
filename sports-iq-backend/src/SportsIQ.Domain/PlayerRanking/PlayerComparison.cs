@@ -8,7 +8,7 @@ namespace SportsIQ.Domain.PlayerRanking;
 [Table("PlayerComparisons", Schema = "Ranking")]
 public class PlayerComparison : BaseEntity
 {
-    public int ComparisonID { get; set; }
+    public int PlayerComparisonID { get; set; }
     public int PlayerAID { get; set; }
     public Player PlayerA { get; set; }
     public int PlayerBID { get; set; }
@@ -18,5 +18,5 @@ public class PlayerComparison : BaseEntity
     public double RatingAdjustment { get; set; }
     public DateTimeOffset ComparisonDate { get; set; }
 
-    public override int ID => ComparisonID;
+    public override int ID => PlayerComparisonID;
 }

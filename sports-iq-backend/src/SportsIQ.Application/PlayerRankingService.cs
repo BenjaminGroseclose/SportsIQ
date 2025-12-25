@@ -1,14 +1,15 @@
 using SportsIQ.Application.Interfaces;
+using SportsIQ.Domain.Core;
 using SportsIQ.Domain.PlayerRanking;
 using SportsIQ.Infrastructure.Interfaces;
 
 namespace SportsIQ.Application;
 
-public class RankingService : IRankingService
+public class PlayerRankingService : IPlayerRankingService
 {
     private IBaseRepository<PlayerRanking> _playerRankingRepository;
     private IBaseRepository<PlayerComparison> _playerComparisonRepository;
-    public RankingService(IBaseRepository<PlayerRanking> playerRankingRepository, IBaseRepository<PlayerComparison> playerComparisonRepository)
+    public PlayerRankingService(IBaseRepository<PlayerRanking> playerRankingRepository, IBaseRepository<PlayerComparison> playerComparisonRepository)
     {
         _playerRankingRepository = playerRankingRepository;
         _playerComparisonRepository = playerComparisonRepository;
@@ -41,8 +42,13 @@ public class RankingService : IRankingService
 
     public async Task<IEnumerable<PlayerRanking>> GetPlayerRankings(int sport)
     {
-        var rankings = await _playerRankingRepository.GetAllAsync();
-        return rankings.Where(r => r.Player.SportID == sport).OrderBy(x => x.Rating);
+        var rankings = await _playerRankingRepository.GetAllAsync(r => r.Player);
+
+        return rankings.Where(r => r.Player.SportID == sport).OrderByDescending(x => x.Rating).ThenBy(r => r.Player.LastName).Select((r, index) =>
+        {
+            r.Ranking = index + 1;
+            return r;
+        });
     }
 
     public Task<IEnumerable<PlayerRanking>> SavePlayerComparison(PlayerComparison comparison)
