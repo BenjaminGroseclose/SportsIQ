@@ -4,6 +4,7 @@ CREATE TABLE [Core].[Positions]
     [SportID] INT NOT NULL,
     [PositionName] VARCHAR(50) NOT NULL,
     [DisplayOrder] INT NOT NULL,
+    [IsFantasyRelevant] BIT NOT NULL DEFAULT 0,
     [CreateDate] DATETIMEOFFSET NOT NULL DEFAULT SYSDATETIMEOFFSET(),
     [LastModified] DATETIMEOFFSET,
 

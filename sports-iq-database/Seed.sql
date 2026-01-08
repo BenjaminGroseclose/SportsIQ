@@ -26,7 +26,37 @@ VALUES
 	('Physically Unable to Perform', 'Player is on PUP list and not eligible to play.', 1),
 	('Unknown', 'Player status is unknown.', 0);
 
-
+-- Seed data for NFL Positions (SportID = 5)
+INSERT INTO [SportsIQ].[Core].[Positions] ([SportID], [PositionName], [DisplayOrder], [IsFantasyRelevant])
+VALUES
+    -- Offense
+    (5, 'QB', 1, 1),
+    (5, 'RB', 2, 1),
+    (5, 'FB', 3, 0),
+    (5, 'WR', 4, 1),
+    (5, 'TE', 5, 1),
+    (5, 'OT', 6, 0),
+    (5, 'OG', 7, 0),
+    (5, 'C', 8, 0),
+    (5, 'OL', 9, 0),
+    -- Defense
+    (5, 'DE', 10, 0),
+    (5, 'DT', 11, 0),
+    (5, 'NT', 12, 0),
+    (5, 'DL', 13, 0),
+    (5, 'LB', 14, 0),
+    (5, 'ILB', 15, 0),
+    (5, 'OLB', 16, 0),
+    (5, 'MLB', 17, 0),
+    (5, 'CB', 18, 0),
+    (5, 'S', 19, 0),
+    (5, 'FS', 20, 0),
+    (5, 'SS', 21, 0),
+    (5, 'DB', 22, 0),
+    -- Special Teams
+    (5, 'K', 23, 1),
+    (5, 'P', 24, 0),
+    (5, 'LS', 25, 0);
 
 INSERT INTO [SportsIQ].[Core].[Seasons] ([Year], SportID, IsCurrent)
 VALUES
@@ -69,3 +99,12 @@ VALUES
     ('Tampa Bay', 'Buccaneers', 5, 'TB', '#D50A0A', '#FF7900', 'https://a.espncdn.com/i/teamlogos/nfl/500-dark/scoreboard/tb.png'),
     ('Tennessee', 'Titans', 5, 'TEN', '#0C2340', '#4B92DB', 'https://a.espncdn.com/i/teamlogos/nfl/500-dark/scoreboard/ten.png'),
     ('Washington', 'Commanders', 5, 'WAS', '#5A1414', '#FFB612', 'https://a.espncdn.com/i/teamlogos/nfl/500-dark/scoreboard/wsh.png')
+
+
+
+
+-- Indexes
+
+CREATE INDEX [IX_Contracts_PlayerID] ON [Player].[Contracts] ([PlayerID]);
+CREATE INDEX [IX_Contracts_YearSigned] ON [Player].[Contracts] ([YearSigned]);
+CREATE INDEX [IX_Contracts_IsActive] ON [Player].[Contracts] ([IsActive]);

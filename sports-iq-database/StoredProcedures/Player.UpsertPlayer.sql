@@ -11,15 +11,18 @@ CREATE PROCEDURE [Player].[UpsertPlayer]
 	@Weight INT = NULL,
 	@ExternalPlayerID NVARCHAR(100) = NULL,
 	@Status NVARCHAR(250) = NULL,
-	@Jersey INT = NULL
+	@Jersey INT = NULL,
+	@RookieYear INT = NULL
 AS
 BEGIN
 
 	DECLARE @TeamID INT = NULL;
 	DECLARE @StatusID INT = 5; -- Inactive
+	DECLARE @PositionID INT = NULL;
 
 	SELECT @TeamID = TeamID FROM Core.Teams WHERE Abbreviation = @Team;
 	SELECT @StatusID = ps.PlayerStatusID FROM Player.PlayerStatuses ps WHERE ps.Name = @Status;
+	SELECT @PositionID = PositionID FROM Core.Positions WHERE PositionName = @Position;
 
 	-- Upsert: Update if ExternalPlayerID exists, otherwise insert
 	IF EXISTS (SELECT 1 FROM [Player].[Players] WHERE ExternalPlayerID = @ExternalPlayerID)
@@ -30,7 +33,7 @@ BEGIN
 			LastName = COALESCE(@LastName, p.LastName),
 			PlayerName = COALESCE(@PlayerName, p.PlayerName),
 			SportID = COALESCE(@SportID, p.SportID),
-			Position = COALESCE(@Position, p.Position),
+			PositionID = COALESCE(@PositionID, p.PositionID),
 			BirthDate = COALESCE(@BirthDate, p.BirthDate),
 			College = COALESCE(@College, p.College),
 			TeamID = COALESCE(@TeamID, p.TeamID),
@@ -38,20 +41,21 @@ BEGIN
 			[Weight] = COALESCE(@Weight, p.[Weight]),
 			StatusID = COALESCE(@StatusID, p.StatusID),
 			JerseyNumber = COALESCE(@Jersey, p.JerseyNumber),
+			RookieYear = COALESCE(@RookieYear, p.RookieYear),
 			LastModified = SYSDATETIMEOFFSET()
 		FROM [Player].[Players] p
 		WHERE p.ExternalPlayerID = @ExternalPlayerID;
 	END
 	ELSE
 	BEGIN
-		INSERT INTO [Player].[Players] (FirstName, LastName, PlayerName, SportID, Position, BirthDate, College, TeamID, Height, [Weight], ExternalPlayerID, StatusID, JerseyNumber)
+		INSERT INTO [Player].[Players] (FirstName, LastName, PlayerName, SportID, PositionID, BirthDate, College, TeamID, Height, [Weight], ExternalPlayerID, StatusID, JerseyNumber, RookieYear)
 		VALUES 
 		(
 			@FirstName,
 			@LastName,
 			@PlayerName,
 			@SportID,
-			@Position,
+			@PositionID,
 			@BirthDate,
 			@College,
 			@TeamID,
@@ -59,7 +63,8 @@ BEGIN
 			@Weight,
 			@ExternalPlayerID,
 			@StatusID,
-			@Jersey
+			@Jersey,
+			@RookieYear
 		);
 	END
 END

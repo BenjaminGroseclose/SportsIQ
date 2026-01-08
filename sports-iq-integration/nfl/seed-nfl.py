@@ -6,12 +6,16 @@ import pyodbc
 # Load roster data
 df = nfl.load_rosters([2025])
 
-# Remove where ExternalPlayerID is null/empty
-df = df[df['player_id'].notnull() & (df['player_id'] != '')]
-df = df[df['birth_date'].notnull() & (df['birth_date'] != '')]
+print(df.columns)
+
+# Remove where ExternalPlayerID and BirthDate is null/empty
+df = df.filter(~df['gsis_id'].is_null() & ~df['birth_date'].is_null())
 
 # Remove TRC and TRD players
-df = df[~df['status'].isin(['TRC', 'TRD'])]
+df = df.filter(~df['status'].is_in(['TRC', 'TRD']))
+
+# Convert Polars DataFrame to pandas for compatibility with downstream operations
+df = df.to_pandas()
 
 def status_mapping(status):
     status_map = {
@@ -70,7 +74,7 @@ clean_weight = pd.to_numeric(df['weight'], errors='coerce')
 clean_jersey = pd.to_numeric(df['jersey_number'], errors='coerce')
 
 payload = pd.DataFrame({
-    'ExternalPlayerID': df['player_id'],
+    'ExternalPlayerID': df['gsis_id'],
     'FirstName': df['first_name'],
     'LastName': df['last_name'],
     'SportID': 5, # NFL SportID
@@ -82,7 +86,8 @@ payload = pd.DataFrame({
     'Weight': clean_weight,
     'StatusName': df['status'],
     'Jersey': clean_jersey,
-    'FullName': df['player_name']
+    'FullName': df['full_name'],
+    'RookieYear': df['rookie_year'],
 })
 
 # Replace NaN (numpy/pandas) with None for pyodbc
@@ -99,11 +104,17 @@ conn = pyodbc.connect(
 cursor = conn.cursor()
 cursor.fast_executemany = True
 
+# Get current season ID for 2025
+cursor.execute("SELECT SeasonID FROM Core.Seasons WHERE Year = 2025 AND SportID = 5")
+season_result = cursor.fetchone()
+current_season_id = season_result[0] if season_result else None
+
 # Prepare rows as tuples in TVP order
 rows = list(payload.itertuples(index=False, name=None))
 
 # Call stored procedure per row with scalar params matching signature
-for (external_id, first_name, last_name, sport_id, position, birth_date, college, team_abbr, height_txt, weight, status_name, jersey, full_name) in rows:
+print(f"Inserting {len(rows)} players...")
+for idx, (external_id, first_name, last_name, sport_id, position, birth_date, college, team_abbr, height_txt, weight, status_name, jersey, full_name, rookie_year) in enumerate(rows):
 
     # Ensure INTs
     weight_int = safe_int(weight)
@@ -125,7 +136,8 @@ for (external_id, first_name, last_name, sport_id, position, birth_date, college
             @Weight = ?,
             @ExternalPlayerID = ?,
             @Status = ?,
-            @Jersey = ?;
+            @Jersey = ?,
+            @RookieYear = ?;
         """,
         (
             first_name,
@@ -139,11 +151,73 @@ for (external_id, first_name, last_name, sport_id, position, birth_date, college
             height_txt,
             weight_int,
             external_id,
-            status_name,
+            status_mapped,
             jersey_int,
+            rookie_year
         ),
     )
+    
+    if (idx + 1) % 100 == 0:
+        print(f"  Processed {idx + 1}/{len(rows)} players...")
+
 conn.commit()
+print(f"Successfully inserted/updated {len(rows)} players!")
+
+# Load contract data from nflreadpy
+print("\n--- Seeding Contract Data ---")
+
+nfl_contracts = nfl.load_contracts().to_pandas()
+
+print(nfl_contracts.columns)
+# Remove contracts without gsis_id, player, or years
+nfl_contracts = nfl_contracts.dropna(subset=['gsis_id', 'player', 'years'])
+
+print(f"Loading {len(nfl_contracts)} contracts...")
+
+for idx, row in nfl_contracts.iterrows():
+    # Map nflreadpy contract columns to stored procedure parameters
+
+    cursor.execute(
+        """
+        EXEC [Player].[UpsertContract]
+            @ExternalPlayerID = ?,
+            @PlayerName = ?,
+            @YearSigned = ?,
+            @Years = ?,
+            @TotalValue = ?,
+            @AverageSalary = ?,
+            @GuaranteedMoney = ?,
+            @InflatedValue = ?,
+            @InflatedAPY = ?,
+            @InflatedGuaranteed = ?,
+            @IsActive = ?,
+            @SourceURL = ?;
+        """,
+        (
+            row['gsis_id'],
+            row['player'],
+            safe_int(row['year_signed']),
+            safe_int(row['years']),
+            float(row['value']) if pd.notna(row['value']) else None,
+            float(row['apy']) if pd.notna(row['apy']) else None,
+            float(row['guaranteed']) if pd.notna(row['guaranteed']) else None,
+            float(row['inflated_value']) if pd.notna(row['inflated_value']) else None,
+            float(row['inflated_apy']) if pd.notna(row['inflated_apy']) else None,
+            float(row['inflated_guaranteed']) if pd.notna(row['inflated_guaranteed']) else None,
+            int(row['is_active']) if pd.notna(row['is_active']) else None,
+            row['player_page']
+        )
+    )
+    
+    if (idx + 1) % 1000 == 0:
+        print(f"  Processed {idx + 1}/{len(nfl_contracts)} contracts...")
+
+conn.commit()
+print(f"Successfully inserted/updated {len(nfl_contracts)} contracts!")
+
+# Seed Player Rankings 
+# TODO: pull from external source or calculate based on performance metrics
+print("\n--- Seeding Player Rankings ---")
 
 base_elo = 1000
 increment = 12  # Each rank higher gets +12 ELO

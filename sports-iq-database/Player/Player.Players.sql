@@ -17,7 +17,7 @@ CREATE TABLE [Player].[Players]
 	[Weight] INT NULL,
 	[StatusID] INT NOT NULL,
 	[JerseyNumber] INT NULL,
-	[RookieYear] INT NOT NULL,
+	[RookieYear] INT NULL,
 
 	[ExternalPlayerID] VARCHAR(100) NULL,
 
@@ -26,6 +26,6 @@ CREATE TABLE [Player].[Players]
 
 	CONSTRAINT [FK_Players_Sport] FOREIGN KEY (SportID) REFERENCES [Core].[Sports](SportID),
 	CONSTRAINT [FK_Players_Team] FOREIGN KEY (TeamID) REFERENCES [Core].[Teams](TeamID),
-	CONSTRAINT [FK_Players_Status] FOREIGN KEY (StatusID) REFERENCES [Player].[PlayerStatuses](PlayerStatusID)
+	CONSTRAINT [FK_Players_Status] FOREIGN KEY (StatusID) REFERENCES [Player].[PlayerStatuses](PlayerStatusID),
 	CONSTRAINT [FK_Players_Position] FOREIGN KEY (PositionID) REFERENCES [Core].[Positions](PositionID)
 )

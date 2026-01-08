@@ -15,5 +15,6 @@
   </ItemGroup>
   <ItemGroup>
     <Build Remove="Temp.sql" />
+    <Build Remove="Player\Player.PlayerPositions.sql" />
   </ItemGroup>
 </Project>
