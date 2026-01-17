@@ -9,3 +9,4 @@ cfbd
 scikit-learn
 xgboost
 pyarrow
+nba_api
