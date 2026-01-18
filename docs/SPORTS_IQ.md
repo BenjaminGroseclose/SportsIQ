@@ -91,7 +91,7 @@ _Showcasing Machine Learning prowess to build trust._
 
 ### **Future Monetization (Post-Scale)**
 
-1.  **API Licensing:** Selling our "Crowdsourced Scout Grades" to other apps.
+1.  **API Licensinserg:** Selling our "Crowdsourced Scout Grades" to other apps.
 2.  **Premium Leagues:** Hosting Dynasty Leagues that integrate directly with our Trade Machine.
 3.  **Sponsored Content:** Targeted ads for "Mock Draft" tools during the off-season.
 
