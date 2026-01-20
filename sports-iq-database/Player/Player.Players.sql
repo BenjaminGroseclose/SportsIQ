@@ -11,7 +11,6 @@ CREATE TABLE [Player].[Players]
 	[PositionID] INT NOT NULL,
 	[BirthDate] DATE NULL,
 	[College] NVARCHAR(255) NULL,
-	[TeamID] INT NULL,
 
 	[Height] NVARCHAR(50) NULL,
 	[Weight] INT NULL,

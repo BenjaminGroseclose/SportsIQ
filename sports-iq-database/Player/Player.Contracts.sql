@@ -3,6 +3,7 @@ CREATE TABLE [Player].[Contracts]
 (
 	[ContractID] INT NOT NULL PRIMARY KEY IDENTITY(1,1),
 	[PlayerID] INT NOT NULL,
+	[TeamID] INT NOT NULL,
 	
 	-- Contract Overview
 	[YearSigned] INT NOT NULL,
