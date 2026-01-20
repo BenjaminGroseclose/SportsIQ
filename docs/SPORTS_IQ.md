@@ -76,7 +76,7 @@ _Showcasing Machine Learning prowess to build trust._
 | **Frontend**  | **Angular**        | Responsive SPA for complex dashboards and interactive Trade Machine UI.                         |
 | **Backend**   | **C# / .NET Core** | Robust calculation engine for salary cap math and trade logic.                                  |
 | **ML Engine** | **Python**         | Microservice running Random Forest/Regression models. Ingests raw data -> Outputs JSON ratings. |
-| **Database**  | **PostgreSQL**     | Relational data for user profiles, leagues, and historical stats.                               |
+| **Database**  | **SQL**            | Relational data for user profiles, leagues, and historical stats.                               |
 | **Hosting**   | **Azure/AWS**      | Scalable cloud infrastructure.                                                                  |
 
 ---
