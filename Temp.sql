@@ -1,17 +1,14 @@
 
--- SELECT * FROM Core.Sports;
--- SELECT * FROM Core.Teams;
--- SELECT * FROM Core.Seasons;
-SELECT * FROM Player.Players;
-SELECT * FROM Player.Contracts;
 
-SELECT * FROM Player.Players
-WHERE PlayerID = 1
-
-SELECT * FROM Player.Contracts
-WHERE PlayerID = 1
-ORDER BY YearSigned
+SELECT * FROM Player.Players WHERE LastName = 'Rodgers'
 
 
-SELECT * FROM Ranking.PlayerRankings;
-
+SELECT * FROM Player.Contracts WHERE PlayerID = 2
+SELECT * FROM Player.ContractYears WHERE ContractID IN (55
+,56
+,57
+,58
+,59
+,60
+,61)
+ORDER BY Year ASC

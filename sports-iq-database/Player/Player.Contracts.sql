@@ -3,7 +3,6 @@ CREATE TABLE [Player].[Contracts]
 (
 	[ContractID] INT NOT NULL PRIMARY KEY IDENTITY(1,1),
 	[PlayerID] INT NOT NULL,
-	[TeamID] INT NOT NULL,
 	
 	-- Contract Overview
 	[YearSigned] INT NOT NULL,
@@ -11,14 +10,6 @@ CREATE TABLE [Player].[Contracts]
 	[TotalValue] DECIMAL(18,2) NOT NULL,
 	[AverageSalary] DECIMAL(18,2) NOT NULL, -- APY (Average Per Year)
 	[GuaranteedMoney] DECIMAL(18,2) NULL,
-	
-	-- Inflation-Adjusted Values
-	[InflatedValue] DECIMAL(18,2) NULL,
-	[InflatedAPY] DECIMAL(18,2) NULL,
-	[InflatedGuaranteed] DECIMAL(18,2) NULL,
-	
-	-- Cap Context (at time of signing)
-	[APYCapPercent] DECIMAL(10,2) NULL, -- APY as % of cap at signing
 	
 	-- Status
 	[IsActive] BIT NOT NULL DEFAULT 1,

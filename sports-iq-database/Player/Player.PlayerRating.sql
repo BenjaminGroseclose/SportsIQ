@@ -6,6 +6,7 @@ CREATE TABLE [Player].[PlayerRatings]
     [SportsIQRating] FLOAT NOT NULL,
     [RawScore] FLOAT NOT NULL,
     [ConfidenceScore] FLOAT NOT NULL,
+
     [CreateDate] DATETIMEOFFSET NOT NULL DEFAULT SYSDATETIMEOFFSET(),
     [LastModified] DATETIMEOFFSET,
 

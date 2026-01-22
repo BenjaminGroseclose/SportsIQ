@@ -8,7 +8,7 @@ CREATE TABLE [Player].[Players]
 	[LastName] NVARCHAR(100) NOT NULL,
 	[PlayerName] NVARCHAR(200) NOT NULL,
 	[SportID] INT NOT NULL,
-	[PositionID] INT NOT NULL,
+	[Position] NVARCHAR(50) NULL,
 	[BirthDate] DATE NULL,
 	[College] NVARCHAR(255) NULL,
 
@@ -24,7 +24,5 @@ CREATE TABLE [Player].[Players]
 	[LastModified] DATETIMEOFFSET,
 
 	CONSTRAINT [FK_Players_Sport] FOREIGN KEY (SportID) REFERENCES [Core].[Sports](SportID),
-	CONSTRAINT [FK_Players_Team] FOREIGN KEY (TeamID) REFERENCES [Core].[Teams](TeamID),
 	CONSTRAINT [FK_Players_Status] FOREIGN KEY (StatusID) REFERENCES [Player].[PlayerStatuses](PlayerStatusID),
-	CONSTRAINT [FK_Players_Position] FOREIGN KEY (PositionID) REFERENCES [Core].[Positions](PositionID)
 )

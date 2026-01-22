@@ -6,7 +6,6 @@ CREATE PROCEDURE [Player].[UpsertPlayer]
 	@Position VARCHAR(50) = NULL,
 	@BirthDate DATE = NULL,
 	@College NVARCHAR(100) = NULL,
-	@Team NVARCHAR(100) = NULL,
 	@Height NVARCHAR(50) = NULL,
 	@Weight INT = NULL,
 	@ExternalPlayerID NVARCHAR(100) = NULL,
@@ -16,11 +15,8 @@ CREATE PROCEDURE [Player].[UpsertPlayer]
 AS
 BEGIN
 
-	DECLARE @TeamID INT = NULL;
 	DECLARE @StatusID INT = 5; -- Inactive
 	DECLARE @PlayerID INT = NULL;
-
-	SELECT @TeamID = TeamID FROM Core.Teams WHERE Abbreviation = @Team;
 	SELECT @StatusID = ps.PlayerStatusID FROM Player.PlayerStatuses ps WHERE ps.Name = @Status;
 
 	-- Upsert: Update if ExternalPlayerID exists, otherwise insert
@@ -34,7 +30,7 @@ BEGIN
 			SportID = COALESCE(@SportID, p.SportID),
 			BirthDate = COALESCE(@BirthDate, p.BirthDate),
 			College = COALESCE(@College, p.College),
-			TeamID = COALESCE(@TeamID, p.TeamID),
+			Position = COALESCE(@Position, p.Position),
 			Height = COALESCE(@Height, p.Height),
 			[Weight] = COALESCE(@Weight, p.[Weight]),
 			StatusID = COALESCE(@StatusID, p.StatusID),
@@ -48,16 +44,16 @@ BEGIN
 	END
 	ELSE
 	BEGIN
-		INSERT INTO [Player].[Players] (FirstName, LastName, PlayerName, SportID, BirthDate, College, TeamID, Height, [Weight], ExternalPlayerID, StatusID, JerseyNumber, RookieYear)
+		INSERT INTO [Player].[Players] (FirstName, LastName, PlayerName, SportID, Position, BirthDate, College, Height, [Weight], ExternalPlayerID, StatusID, JerseyNumber, RookieYear)
 		VALUES 
 		(
 			@FirstName,
 			@LastName,
 			@PlayerName,
 			@SportID,
+			@Position,
 			@BirthDate,
 			@College,
-			@TeamID,
 			@Height,
 			@Weight,
 			@ExternalPlayerID,

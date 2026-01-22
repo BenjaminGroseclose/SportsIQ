@@ -6,10 +6,6 @@ CREATE PROCEDURE [Player].[UpsertContract]
 	@TotalValue DECIMAL(18,2),
 	@AverageSalary DECIMAL(18,2),
 	@GuaranteedMoney DECIMAL(18,2) = NULL,
-	@InflatedValue DECIMAL(18,2) = NULL,
-	@InflatedAPY DECIMAL(18,2) = NULL,
-	@InflatedGuaranteed DECIMAL(18,2) = NULL,
-	@APYCapPercent DECIMAL(5,2) = NULL,
 	@IsActive BIT = 1,
 	@SourceURL NVARCHAR(500) = NULL
 AS
@@ -38,6 +34,7 @@ BEGIN
 	-- If still not found, return without action or error
 	IF @ResolvedPlayerID IS NULL
 	BEGIN
+		SELECT NULL AS ContractID;
 		RETURN;
 	END
 
@@ -54,10 +51,6 @@ BEGIN
 			TotalValue = @TotalValue,
 			AverageSalary = @AverageSalary,
 			GuaranteedMoney = @GuaranteedMoney,
-			InflatedValue = @InflatedValue,
-			InflatedAPY = @InflatedAPY,
-			InflatedGuaranteed = @InflatedGuaranteed,
-			APYCapPercent = @APYCapPercent,
 			IsActive = @IsActive,
 			SourceURL = @SourceURL,
 			LastModified = SYSDATETIMEOFFSET()
@@ -68,13 +61,16 @@ BEGIN
 		-- Insert new contract
 		INSERT INTO [Player].[Contracts] (
 			PlayerID, YearSigned, Years, TotalValue, AverageSalary, GuaranteedMoney,
-			InflatedValue, InflatedAPY, InflatedGuaranteed,
-			APYCapPercent, IsActive, SourceURL
+			IsActive, SourceURL
 		)
 		VALUES (
 			@ResolvedPlayerID, @YearSigned, @Years, @TotalValue, @AverageSalary, @GuaranteedMoney,
-			@InflatedValue, @InflatedAPY, @InflatedGuaranteed,
-			@APYCapPercent, @IsActive, @SourceURL
+			@IsActive, @SourceURL
 		);
 	END
+
+	-- Return the upserted ContractID
+	SELECT ContractID 
+	FROM [Player].[Contracts] 
+	WHERE PlayerID = @ResolvedPlayerID AND YearSigned = @YearSigned;
 END

@@ -121,41 +121,43 @@ for idx, (external_id, first_name, last_name, sport_id, position, birth_date, co
     jersey_int = safe_int(jersey)
     status_mapped = status_mapping(status_name)
 
-    cursor.execute(
-        """
-        EXEC [Player].[UpsertPlayer]
-            @FirstName = ?,
-            @LastName = ?,
-            @PlayerName = ?,
-            @SportID = ?,
-            @Position = ?,
-            @BirthDate = ?,
-            @College = ?,
-            @Team = ?,
-            @Height = ?,
-            @Weight = ?,
-            @ExternalPlayerID = ?,
-            @Status = ?,
-            @Jersey = ?,
-            @RookieYear = ?;
-        """,
-        (
-            first_name,
-            last_name,
-            full_name,
-            sport_id,
-            position,
-            birth_date,
-            college,
-            team_abbr,
-            height_txt,
-            weight_int,
-            external_id,
-            status_mapped,
-            jersey_int,
-            rookie_year
-        ),
-    )
+    try:
+        cursor.execute(
+            """
+            EXEC [Player].[UpsertPlayer]
+                @FirstName = ?,
+                @LastName = ?,
+                @PlayerName = ?,
+                @SportID = ?,
+                @Position = ?,
+                @BirthDate = ?,
+                @College = ?,
+                @Height = ?,
+                @Weight = ?,
+                @ExternalPlayerID = ?,
+                @Status = ?,
+                @Jersey = ?,
+                @RookieYear = ?;
+            """,
+            (
+                first_name,
+                last_name,
+                full_name,
+                sport_id,
+                position,
+                birth_date,
+                college,
+                height_txt,
+                weight_int,
+                external_id,
+                status_mapped,
+                jersey_int,
+                rookie_year
+            ),
+        )
+    except Exception as e:
+        print(f"Error inserting player row {idx}: {rows[idx]}")
+        print(f"Error: {e}")
     
     if (idx + 1) % 100 == 0:
         print(f"  Processed {idx + 1}/{len(rows)} players...")
@@ -168,14 +170,23 @@ print("\n--- Seeding Contract Data ---")
 
 nfl_contracts = nfl.load_contracts().to_pandas()
 
-print(nfl_contracts.columns)
 # Remove contracts without gsis_id, player, or years
 nfl_contracts = nfl_contracts.dropna(subset=['gsis_id', 'player', 'years'])
 
 print(f"Loading {len(nfl_contracts)} contracts...")
 
+# TODO: After initial insert only need to concern with new/updated contracts
+
+# Order by player then by year_signed desc 2025 to oldest
+nfl_contracts = nfl_contracts.sort_values(by=['player', 'year_signed'], ascending=[True, False])
 for idx, row in nfl_contracts.iterrows():
     # Map nflreadpy contract columns to stored procedure parameters
+
+    cols_data = row['cols']
+
+    if (cols_data is None):
+        print(f"  Warning: Contract 'cols' data is invalid for player {row['player']} with ExternalPlayerID {row['gsis_id']}. Skipping.")
+        continue
 
     cursor.execute(
         """
@@ -187,9 +198,6 @@ for idx, row in nfl_contracts.iterrows():
             @TotalValue = ?,
             @AverageSalary = ?,
             @GuaranteedMoney = ?,
-            @InflatedValue = ?,
-            @InflatedAPY = ?,
-            @InflatedGuaranteed = ?,
             @IsActive = ?,
             @SourceURL = ?;
         """,
@@ -201,43 +209,91 @@ for idx, row in nfl_contracts.iterrows():
             float(row['value']) if pd.notna(row['value']) else None,
             float(row['apy']) if pd.notna(row['apy']) else None,
             float(row['guaranteed']) if pd.notna(row['guaranteed']) else None,
-            float(row['inflated_value']) if pd.notna(row['inflated_value']) else None,
-            float(row['inflated_apy']) if pd.notna(row['inflated_apy']) else None,
-            float(row['inflated_guaranteed']) if pd.notna(row['inflated_guaranteed']) else None,
             int(row['is_active']) if pd.notna(row['is_active']) else None,
             row['player_page']
         )
     )
+    
+    # Fetch result from stored procedure (ContractID)
+    result = cursor.fetchone()
+    contract_id = result[0] if result else None
+
+    if (contract_id is None):
+        print(f"  Warning: Could not upsert contract for player {row['player']} with ExternalPlayerID {row['gsis_id']}. Skipping contract years insertion.")
+        continue
+
+    cursor.execute(
+        """
+        DELETE FROM [Player].[ContractYears]
+        WHERE ContractID = ?;
+        """,
+        (contract_id,)
+    )
+
+    # Insert Contract Years
+
+    # TODO: Bug: I am not handling extension well and I am associating some years to two different contracts
+
+    # Remove "Total" year from cols_data if present
+    cols_data = [col for col in cols_data if not (isinstance(col, dict) and col.get('year', '').lower() == 'total')]
+
+    year_signed = safe_int(row['year_signed'])
+    years = safe_int(row['years'])
+
+    # Remove years this contract is not responsible for (beyond Years length)
+    cols_data = [col for col in cols_data if safe_int(col.get('year')) is not None and safe_int(col.get('year')) >= year_signed and safe_int(col.get('year')) < year_signed + years]
+
+    for contract_years in cols_data:
+        team = contract_years.get('team')
+        year = safe_int(contract_years.get('year'))
+        base_salary = float(contract_years.get('base_salary')) if contract_years.get('base_salary') is not None else None
+        prorated_bonus = float(contract_years.get('prorated_bonus')) if contract_years.get('prorated_bonus') is not None else None
+        roster_bonus = float(contract_years.get('roster_bonus')) if contract_years.get('roster_bonus') is not None else None
+        guaranteed_salary = float(contract_years.get('guaranteed_salary')) if contract_years.get('guaranteed_salary') is not None else None
+        cap_number = float(contract_years.get('cap_number')) if contract_years.get('cap_number') is not None else None
+        cash_paid = float(contract_years.get('cash_paid')) if contract_years.get('cash_paid') is not None else None
+        cap_percent = float(contract_years.get('cap_percent')) if contract_years.get('cap_percent') is not None else None
+
+        # The Redskins -> Washington Commanders mapping could be handled here if needed
+        if team == 'Redskins':
+            team = 'Washington'
+
+        try:
+            cursor.execute(
+                """
+                DECLARE @TeamID INT;
+
+                SELECT TOP 1 @TeamID = TeamID FROM Core.Teams WHERE (Name = ? OR City = ?) AND SportID = 5;
+
+                INSERT INTO [Player].[ContractYears]
+                (ContractID, Year, TeamID, BaseSalary, CapNumber, CapPercent, GuaranteedMoney, ProratedSigningBonus, RosterBonus, CashPaid)
+                VALUES (?, ?, @TeamID, ?, ?, ?, ?, ?, ?, ?);
+                """,
+                (
+                    team,
+                    team,
+                    contract_id,
+                    year,
+                    base_salary,
+                    cap_number,
+                    cap_percent,
+                    guaranteed_salary,
+                    prorated_bonus,
+                    roster_bonus,
+                    cash_paid,
+                )
+            )
+        except Exception as e:
+            print(f"Error inserting contract year for player {row['player']} year {year}: {contract_years}")
+            print(f"Error: {e}")
+            raise e
+
     
     if (idx + 1) % 1000 == 0:
         print(f"  Processed {idx + 1}/{len(nfl_contracts)} contracts...")
 
 conn.commit()
 print(f"Successfully inserted/updated {len(nfl_contracts)} contracts!")
-
-# Seed Player Rankings 
-# TODO: pull from external source or calculate based on performance metrics
-print("\n--- Seeding Player Rankings ---")
-
-base_elo = 1000
-increment = 12  # Each rank higher gets +12 ELO
-
-df = pd.read_csv('nfl_ranking.csv')
-for index, row in df.iterrows():
-    player_elo = base_elo + (299 - row['Rank']) * increment
-
-    # TODO: Add Year later
-    cursor.execute(
-        """
-        DECLARE @PlayerID INT; SET @PlayerID = (SELECT TOP 1 PlayerID FROM [Player].[Players] WHERE [PlayerName] = ?);
-        DECLARE @PlayerELO INT = ?;
-        INSERT INTO [Ranking].[PlayerRankings] ([PlayerID], [Rating])
-        VALUES (@PlayerID, @PlayerELO);
-        """,
-        (row['Player'], player_elo)
-    )
-
-conn.commit()
 
 cursor.close()
 conn.close()

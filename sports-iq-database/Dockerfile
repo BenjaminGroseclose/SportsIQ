@@ -17,7 +17,7 @@ COPY deploy-dacpac.sh ./deploy-dacpac.sh
 USER root
 RUN apt-get update
 RUN apt-get install -y wget unzip
-RUN wget -O sqlpackage.zip "https://aka.ms/sqlpackage-linux"
+RUN wget --no-check-certificate -O sqlpackage.zip "https://aka.ms/sqlpackage-linux"
 RUN unzip sqlpackage.zip -d /opt/sqlpackage
 RUN chmod +x /opt/sqlpackage/sqlpackage
 RUN mkdir -p /opt/mssql-tools/bin
