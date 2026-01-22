@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using SportsIQ.Domain.Core;
+using SportsIQ.Domain.Ranking;
 
 namespace SportsIQ.Domain.SportPlayer;
 
@@ -13,7 +14,7 @@ public class Player : BaseEntity
 	public int SportID { get; set; }
 	public Sport Sport { get; set; }
 	public int PositionID { get; set; }
-	public Position Position { get; set; }
+	public string Position { get; set; }
 	public DateTime? BirthDate { get; set; }
 	public string? College { get; set; }
 	public string? Height { get; set; }
@@ -26,6 +27,10 @@ public class Player : BaseEntity
 	public int? RookieYear { get; set; }
 	public int? ExperienceYears { get { return RookieYear.HasValue ? DateTime.Now.Year - RookieYear.Value : (int?)null; } }
 	public string ExternalPlayerID { get; set; }
+
+	public IEnumerable<Contract> Contracts { get; set; }
+	public IEnumerable<PlayerRanking> Rankings { get; set; }
+
 	public override int ID => PlayerID;
 }
 

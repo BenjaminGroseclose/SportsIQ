@@ -1,7 +1,9 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using SportsIQ.Domain.Core;
 
 namespace SportsIQ.Domain.SportPlayer;
 
+[Table("Contracts", Schema = "Player")]
 public class Contract
 {
 	public int ContractID { get; set; }
