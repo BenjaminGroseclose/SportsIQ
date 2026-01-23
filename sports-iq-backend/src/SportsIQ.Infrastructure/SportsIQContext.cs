@@ -7,9 +7,7 @@ namespace SportsIQ.Infrastructure;
 
 public class SportsIQContext : DbContext
 {
-	public SportsIQContext(DbContextOptions<SportsIQContext> options) : base(options)
-	{
-	}
+	public SportsIQContext(DbContextOptions<SportsIQContext> options) : base(options) { }
 
 	// Core
 	public DbSet<Account> Accounts { get; set; }
@@ -22,6 +20,7 @@ public class SportsIQContext : DbContext
 	public DbSet<Player> Players { get; set; }
 	public DbSet<PlayerStatus> PlayerStatuses { get; set; }
 	public DbSet<Contract> Contracts { get; set; }
+	public DbSet<ContractYear> ContractYears { get; set; }
 
 	// Ranking
 	public DbSet<PlayerRanking> Rankings { get; set; }
@@ -41,6 +40,11 @@ public class SportsIQContext : DbContext
 			.HasMany(p => p.Rankings)
 			.WithOne(pr => pr.Player)
 			.HasForeignKey(pr => pr.PlayerID);
+
+		modelBuilder.Entity<Contract>()
+			.HasMany(c => c.ContractYears)
+			.WithOne(cy => cy.Contract)
+			.HasForeignKey(cy => cy.ContractID);
 
 		modelBuilder.Entity<Player>()
 			.Navigation(p => p.Sport)

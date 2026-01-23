@@ -13,7 +13,7 @@ CREATE TABLE [Player].[ContractYears]
     [CashPaid] DECIMAL(18,2) NULL,
 
     [CreateDate] DATETIMEOFFSET NOT NULL DEFAULT SYSDATETIMEOFFSET(),   
-	[LastModified] DATETIMEOFFSET,
+		[LastModified] DATETIMEOFFSET,
 
     CONSTRAINT [FK_ContractYears_Contracts] FOREIGN KEY (ContractID) REFERENCES [Player].[Contracts](ContractID),
     CONSTRAINT [FK_ContractYears_Teams] FOREIGN KEY (TeamID) REFERENCES [Core].[Teams](TeamID)

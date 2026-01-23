@@ -3,6 +3,8 @@ import pandas as pd
 import numpy as np
 import pyodbc
 
+from collections import defaultdict
+
 # Load roster data
 df = nfl.load_rosters([2025])
 
@@ -105,7 +107,7 @@ cursor = conn.cursor()
 cursor.fast_executemany = True
 
 # Get current season ID for 2025
-cursor.execute("SELECT SeasonID FROM Core.Seasons WHERE Year = 2025 AND SportID = 5")
+cursor.execute("SELECT SeasonID FROM Core.Seasons WHERE IsCurrent = 1m AND SportID = 5")
 season_result = cursor.fetchone()
 current_season_id = season_result[0] if season_result else None
 
@@ -175,18 +177,19 @@ nfl_contracts = nfl_contracts.dropna(subset=['gsis_id', 'player', 'years'])
 
 print(f"Loading {len(nfl_contracts)} contracts...")
 
-# TODO: After initial insert only need to concern with new/updated contracts
+# Track which (player, year) combos are already assigned to a newer contract
+claimed_contract_years = defaultdict(set)  # key: gsis_id, value: set of years
 
 # Order by player then by year_signed desc 2025 to oldest
 nfl_contracts = nfl_contracts.sort_values(by=['player', 'year_signed'], ascending=[True, False])
 for idx, row in nfl_contracts.iterrows():
-    # Map nflreadpy contract columns to stored procedure parameters
-
     cols_data = row['cols']
 
-    if (cols_data is None):
+    if cols_data is None:
         print(f"  Warning: Contract 'cols' data is invalid for player {row['player']} with ExternalPlayerID {row['gsis_id']}. Skipping.")
         continue
+
+    external_player_id = row['gsis_id']
 
     cursor.execute(
         """
@@ -202,7 +205,7 @@ for idx, row in nfl_contracts.iterrows():
             @SourceURL = ?;
         """,
         (
-            row['gsis_id'],
+            external_player_id,
             row['player'],
             safe_int(row['year_signed']),
             safe_int(row['years']),
@@ -213,13 +216,12 @@ for idx, row in nfl_contracts.iterrows():
             row['player_page']
         )
     )
-    
-    # Fetch result from stored procedure (ContractID)
+
     result = cursor.fetchone()
     contract_id = result[0] if result else None
 
-    if (contract_id is None):
-        print(f"  Warning: Could not upsert contract for player {row['player']} with ExternalPlayerID {row['gsis_id']}. Skipping contract years insertion.")
+    if contract_id is None:
+        print(f"  Warning: Could not upsert contract for player {row['player']} with ExternalPlayerID {external_player_id}. Skipping contract years insertion.")
         continue
 
     cursor.execute(
@@ -230,22 +232,34 @@ for idx, row in nfl_contracts.iterrows():
         (contract_id,)
     )
 
-    # Insert Contract Years
-
-    # TODO: Bug: I am not handling extension well and I am associating some years to two different contracts
-
-    # Remove "Total" year from cols_data if present
-    cols_data = [col for col in cols_data if not (isinstance(col, dict) and col.get('year', '').lower() == 'total')]
+    # Remove "Total" row
+    cols_data = [
+        col for col in cols_data
+        if not (isinstance(col, dict) and str(col.get('year', '')).lower() == 'total')
+    ]
 
     year_signed = safe_int(row['year_signed'])
     years = safe_int(row['years'])
 
-    # Remove years this contract is not responsible for (beyond Years length)
-    cols_data = [col for col in cols_data if safe_int(col.get('year')) is not None and safe_int(col.get('year')) >= year_signed and safe_int(col.get('year')) < year_signed + years]
+    # Only years within this contract's window
+    cols_data = [
+        col for col in cols_data
+        if safe_int(col.get('year')) is not None
+        and safe_int(col.get('year')) >= year_signed
+        and safe_int(col.get('year')) < year_signed + years
+    ]
+
+    # Skip years already claimed by a newer contract for this player
+    claimed_years = claimed_contract_years[external_player_id]
+    cols_data = [
+        col for col in cols_data
+        if safe_int(col.get('year')) not in claimed_years
+    ]
 
     for contract_years in cols_data:
         team = contract_years.get('team')
         year = safe_int(contract_years.get('year'))
+
         base_salary = float(contract_years.get('base_salary')) if contract_years.get('base_salary') is not None else None
         prorated_bonus = float(contract_years.get('prorated_bonus')) if contract_years.get('prorated_bonus') is not None else None
         roster_bonus = float(contract_years.get('roster_bonus')) if contract_years.get('roster_bonus') is not None else None
@@ -254,7 +268,6 @@ for idx, row in nfl_contracts.iterrows():
         cash_paid = float(contract_years.get('cash_paid')) if contract_years.get('cash_paid') is not None else None
         cap_percent = float(contract_years.get('cap_percent')) if contract_years.get('cap_percent') is not None else None
 
-        # The Redskins -> Washington Commanders mapping could be handled here if needed
         if team == 'Redskins':
             team = 'Washington'
 
@@ -263,7 +276,9 @@ for idx, row in nfl_contracts.iterrows():
                 """
                 DECLARE @TeamID INT;
 
-                SELECT TOP 1 @TeamID = TeamID FROM Core.Teams WHERE (Name = ? OR City = ?) AND SportID = 5;
+                SELECT TOP 1 @TeamID = TeamID
+                FROM Core.Teams
+                WHERE (Name = ? OR City = ?) AND SportID = 5;
 
                 INSERT INTO [Player].[ContractYears]
                 (ContractID, Year, TeamID, BaseSalary, CapNumber, CapPercent, GuaranteedMoney, ProratedSigningBonus, RosterBonus, CashPaid)
@@ -283,11 +298,12 @@ for idx, row in nfl_contracts.iterrows():
                     cash_paid,
                 )
             )
+            # Mark this (player, year) as owned by this (newest so far) contract
+            claimed_years.add(year)
         except Exception as e:
             print(f"Error inserting contract year for player {row['player']} year {year}: {contract_years}")
             print(f"Error: {e}")
             raise e
-
     
     if (idx + 1) % 1000 == 0:
         print(f"  Processed {idx + 1}/{len(nfl_contracts)} contracts...")
