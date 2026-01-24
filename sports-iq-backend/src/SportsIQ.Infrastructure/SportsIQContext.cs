@@ -23,7 +23,7 @@ public class SportsIQContext : DbContext
 	public DbSet<ContractYear> ContractYears { get; set; }
 
 	// Ranking
-	public DbSet<PlayerRanking> Rankings { get; set; }
+	public DbSet<PlayerRating> PlayerRatings { get; set; }
 	public DbSet<PlayerComparison> PlayerComparisons { get; set; }
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -37,7 +37,7 @@ public class SportsIQContext : DbContext
 			.HasForeignKey(c => c.PlayerID);
 
 		modelBuilder.Entity<Player>()
-			.HasMany(p => p.Rankings)
+			.HasMany(p => p.Ratings)
 			.WithOne(pr => pr.Player)
 			.HasForeignKey(pr => pr.PlayerID);
 
@@ -45,6 +45,11 @@ public class SportsIQContext : DbContext
 			.HasMany(c => c.ContractYears)
 			.WithOne(cy => cy.Contract)
 			.HasForeignKey(cy => cy.ContractID);
+
+		// Auto Includes
+		modelBuilder.Entity<Contract>()
+			.Navigation(c => c.ContractYears)
+			.AutoInclude();
 
 		modelBuilder.Entity<Player>()
 			.Navigation(p => p.Sport)

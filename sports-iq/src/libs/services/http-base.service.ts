@@ -15,7 +15,6 @@ export class HttpBase {
   get<T>(url: string | null = null): Observable<T> {
     let fullUrl = url == null ? this.baseUrl : `${this.baseUrl}/${url}`;
 
-    console.log(fullUrl);
     return this.http.get<T>(fullUrl).pipe(map((response: T) => response));
   }
 
@@ -34,6 +33,6 @@ export class HttpBase {
   delete<T>(url: string | null): Observable<T> {
     let fullUrl = url == null ? this.baseUrl : `${this.baseUrl}/${url}`;
 
-    return this.http.delete<T>(`${this.baseUrl}/${url}`).pipe(map((response: T) => response));
+    return this.http.delete<T>(fullUrl).pipe(map((response: T) => response));
   }
 }

@@ -1,4 +1,4 @@
-using SportsIQ.Domain.PlayerRanking;
+using SportsIQ.Domain.Ranking;
 
 namespace SportsIQ.Application.Interfaces;
 

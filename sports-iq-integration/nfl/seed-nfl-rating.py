@@ -19,7 +19,7 @@ for season in seasons:
     for position in positions:
         print(f"Seeding SportsID for {season} {position.upper()} players...")
 
-        df_players = pd.read_csv(f'nfl_p_{position}_sportsiq_{season}.csv')
+        df_players = pd.read_csv(f'nfl_{position}_sportsiq_{season}.csv')
 
         for index, row in df_players.iterrows():
             try:
@@ -30,7 +30,7 @@ for season in seasons:
                         @Season = ?,
                         @SportsIQRating = ?,
                         @RawScore = ?,
-                        @ConfidenceScore = ?,
+                        @ConfidenceScore = ?
                     """,
                     (
                         row['gsis_id'],

@@ -107,7 +107,7 @@ cursor = conn.cursor()
 cursor.fast_executemany = True
 
 # Get current season ID for 2025
-cursor.execute("SELECT SeasonID FROM Core.Seasons WHERE IsCurrent = 1m AND SportID = 5")
+cursor.execute("SELECT SeasonID FROM Core.Seasons WHERE IsCurrent = 1 AND SportID = 5")
 season_result = cursor.fetchone()
 current_season_id = season_result[0] if season_result else None
 

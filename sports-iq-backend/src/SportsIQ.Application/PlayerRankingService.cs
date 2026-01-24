@@ -1,6 +1,5 @@
 using SportsIQ.Application.Interfaces;
-using SportsIQ.Domain.Core;
-using SportsIQ.Domain.PlayerRanking;
+using SportsIQ.Domain.Ranking;
 using SportsIQ.Infrastructure.Interfaces;
 
 namespace SportsIQ.Application;

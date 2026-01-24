@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using SportsIQ.Application;
 using SportsIQ.Application.Interfaces;
 using SportsIQ.Domain.Core;
-using SportsIQ.Domain.PlayerRanking;
+using SportsIQ.Domain.Ranking;
 using SportsIQ.Domain.SportPlayer;
 using SportsIQ.Infrastructure;
 using SportsIQ.Infrastructure.Interfaces;
@@ -12,7 +12,11 @@ using SportsIQ.Infrastructure.Interfaces;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add controller services
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+    });
 
 // Add OpenAPI/Swagger documentation
 builder.Services.AddOpenApi();
@@ -21,6 +25,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ICoreService, CoreService>();
 builder.Services.AddScoped<IPlayerRankingService, PlayerRankingService>();
+builder.Services.AddScoped<IPlayerService, PlayerService>();
 
 // Auth
 var domain = builder.Configuration["Auth0:Domain"];

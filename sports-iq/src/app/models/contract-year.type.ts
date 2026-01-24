@@ -1,11 +1,4 @@
-using System.ComponentModel.DataAnnotations.Schema;
-using SportsIQ.Domain.Core;
-
-namespace SportsIQ.Domain.SportPlayer;
-
-[Table("ContractYears", Schema = "Player")]
-public class ContractYear : BaseEntity
-{
+/*
 	public int ContractYearID { get; set; }
 	public int ContractID { get; set; }
 	public Contract Contract { get; set; }
@@ -51,5 +44,21 @@ public class ContractYear : BaseEntity
 	/// </summary>
 	public decimal? CashPaid { get; set; }
 
-	public override int ID => ContractYearID;
+*/
+
+export interface IContractYear {
+  contractYearID: number;
+  contractID: number;
+  year: number;
+  teamID: number;
+  baseSalary: number;
+  capNumber?: number;
+  capPercent?: number;
+  guaranteedMoney?: number;
+  proratedSigningBonus?: number;
+  rosterBonus?: number;
+  cashPaid?: number;
+
+  createDate: Date;
+  lastModified: Date | null;
 }
