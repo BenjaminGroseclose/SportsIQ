@@ -175,6 +175,9 @@ nfl_contracts = nfl.load_contracts().to_pandas()
 # Remove contracts without gsis_id, player, or years
 nfl_contracts = nfl_contracts.dropna(subset=['gsis_id', 'player', 'years'])
 
+# Remove contracts with an total value less than 1 (1 million) these are likely practice squad or invalid
+nfl_contracts = nfl_contracts[nfl_contracts['value'] >= 1]
+
 print(f"Loading {len(nfl_contracts)} contracts...")
 
 # Track which (player, year) combos are already assigned to a newer contract
@@ -307,6 +310,22 @@ for idx, row in nfl_contracts.iterrows():
     
     if (idx + 1) % 1000 == 0:
         print(f"  Processed {idx + 1}/{len(nfl_contracts)} contracts...")
+
+# Clean up orphaned contracts without any years
+cursor.execute(
+    """
+DELETE c
+FROM
+    Player.Contracts c 
+    JOIN player.Players p ON c.PlayerID = p.PlayerID
+WHERE
+    NOT EXISTS (
+        SELECT 1
+        FROM Player.ContractYears cy
+        WHERE cy.ContractID = c.ContractID
+    );
+    """
+)
 
 conn.commit()
 print(f"Successfully inserted/updated {len(nfl_contracts)} contracts!")

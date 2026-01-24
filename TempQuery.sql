@@ -2,7 +2,7 @@
 
 SELECT * FROM Player.Players WHERE LastName = 'Rodgers'
 
-SELECT * FROM Player.Contracts WHERE PlayerID = 2
+SELECT * FROM Player.Contracts WHERE PlayerID = 1
 
 SELECT 
     cy.* 
@@ -29,17 +29,18 @@ WHERE
 ORDER BY
     pr.SportsIQRating DESC;
 
-
-SELECT
-    c.ContractID
-    ,p.PlayerID
-    ,p.PlayerName
+DELETE c
 FROM
     Player.Contracts c 
     JOIN player.Players p ON c.PlayerID = p.PlayerID
 WHERE
-    EXISTS (
+    NOT EXISTS (
         SELECT 1
         FROM Player.ContractYears cy
         WHERE cy.ContractID = c.ContractID
     );
+
+
+SELECT * FROM Player.ContractYears JOIN Player.Contracts ON Player.ContractYears.ContractID = Player.Contracts.ContractID WHERE Player.Contracts.PlayerID = 3 ORDER BY Player.ContractYears.[Year] ASC;
+
+SELECT * FROM Player.Contracts WHERE PlayerID = 3
