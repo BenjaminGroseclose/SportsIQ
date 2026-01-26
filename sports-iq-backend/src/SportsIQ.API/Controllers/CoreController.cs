@@ -20,9 +20,21 @@ public class CoreController : ControllerBase
         return Ok("SportsIQ API is running.");
     }
 
-    [HttpGet("filters")]
-    public async Task<IActionResult> GetFilters()
+    [HttpGet("sports")]
+    public async Task<IActionResult> GetSports()
     {
-        return Ok(await this.coreService.GetFilters());
+        return Ok(await this.coreService.GetSports());
+    }
+
+    [HttpGet("seasons/{sportID}")]
+    public async Task<IActionResult> GetSeasons(int sportID)
+    {
+        return Ok(await this.coreService.GetSeasons(sportID));
+    }
+
+    [HttpGet("seasons/all")]
+    public async Task<IActionResult> GetAllSeasons()
+    {
+        return Ok(await this.coreService.GetSeasons());
     }
 }

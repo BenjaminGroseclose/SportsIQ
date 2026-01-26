@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { HttpBase } from '@sports-iq/libs/services/http-base.service';
 import { Observable } from 'rxjs';
-import { IFilter } from '../models';
+import { ISeason, ISport } from '../models';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +12,15 @@ export class CoreService extends HttpBase {
     super(httpClient, 'core');
   }
 
-  getFilters(): Observable<IFilter[]> {
-    return this.get<IFilter[]>('filters');
+  getSports(): Observable<ISport[]> {
+    return this.get<ISport[]>('sports');
+  }
+
+  getAllSeasons(): Observable<ISeason[]> {
+    return this.get<ISeason[]>('seasons/all');
+  }
+
+  getSeasons(sportId: number): Observable<ISeason[]> {
+    return this.get<ISeason[]>(`seasons/${sportId}`);
   }
 }

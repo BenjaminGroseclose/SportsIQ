@@ -1,5 +1,5 @@
 import { computed, inject, Injectable } from '@angular/core';
-import { BaseState, StateBase } from '@sports-iq/libs/services/state-base.service';
+import { BaseState, StateServiceBase } from '@sports-iq/libs/services/state-base.service';
 import { PlayerService } from '../services';
 import { IPlayer } from '../models';
 
@@ -17,7 +17,7 @@ const initialPlayerState: PlayerState = {
 @Injectable({
   providedIn: 'root',
 })
-export class PlayerStateService extends StateBase<PlayerState> {
+export class PlayerStateService extends StateServiceBase<PlayerState> {
   private readonly playerService = inject(PlayerService);
 
   players = computed(() => this.state().players);

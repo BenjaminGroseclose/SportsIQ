@@ -6,7 +6,7 @@ export type BaseState = {
   error: string | null;
 };
 
-export class StateBase<T extends BaseState> {
+export class StateServiceBase<T extends BaseState> {
   private readonly _state: WritableSignal<T>;
   private readonly _initialState: T;
 

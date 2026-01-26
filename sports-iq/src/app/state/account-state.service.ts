@@ -1,6 +1,6 @@
 import { computed, inject, Injectable } from '@angular/core';
 import { IAccount } from '../models';
-import { BaseState, SnackbarService, StateBase } from '@sports-iq/libs';
+import { BaseState, SnackbarService, StateServiceBase } from '@sports-iq/libs';
 import { AccountService } from '../services/account.service';
 
 type UserState = BaseState & {
@@ -19,7 +19,7 @@ const initialUserState: UserState = {
 @Injectable({
   providedIn: 'root',
 })
-export class AccountStateService extends StateBase<UserState> {
+export class AccountStateService extends StateServiceBase<UserState> {
   private readonly accountService = inject(AccountService);
   private readonly snackbarService = inject(SnackbarService);
 

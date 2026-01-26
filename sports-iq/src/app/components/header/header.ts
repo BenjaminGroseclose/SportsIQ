@@ -1,13 +1,12 @@
 import { Component, inject } from '@angular/core';
 import { Spacer } from '@sports-iq/libs';
-import { TopFilters } from '@sports-iq/app/filters/top-filters/top-filters';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, startWith } from 'rxjs/operators';
 
 @Component({
   selector: 'siq-header',
-  imports: [Spacer, TopFilters],
+  imports: [Spacer],
   templateUrl: './header.html',
   styleUrl: './header.scss',
 })

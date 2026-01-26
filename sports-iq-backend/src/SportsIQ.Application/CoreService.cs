@@ -38,4 +38,19 @@ public class CoreService : ICoreService
 
         return new List<Filter> { teamFilter, sportFilter, seasonFilter };
     }
+
+    public async Task<IEnumerable<Season>> GetSeasons()
+    {
+        return await _seasonRepository.GetAllAsync();
+    }
+
+    public async Task<IEnumerable<Season>> GetSeasons(int sportID)
+    {
+        return await _seasonRepository.GetAllAsync();
+    }
+
+    public Task<IEnumerable<Sport>> GetSports()
+    {
+        return _sportRepository.GetAllAsync();
+    }
 }

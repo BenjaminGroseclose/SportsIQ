@@ -6,6 +6,7 @@ import { Rankings } from './pages/rankings/rankings';
 import { Matchups } from './pages/matchups/matchups';
 import { FantasyCenter } from './pages/fantasy-center/fantasy-center';
 import { ArmchairGM } from './pages/armchair-gm/armchair-gm';
+import { SportHome } from './pages/sport-home/sport-home';
 
 export const routes: Routes = [
   {
@@ -25,28 +26,34 @@ export const routes: Routes = [
     data: { title: 'Account' },
   },
   {
-    path: 'analytics',
-    component: Analytics,
-    data: { title: 'Analytics Lab' },
-  },
-  {
-    path: 'fantasy',
-    component: FantasyCenter,
-    data: { title: 'Fantasy Center' },
-  },
-  {
-    path: 'armchair-gm',
-    component: ArmchairGM,
-    data: { title: 'Armchair GM' },
-  },
-  {
-    path: 'rankings',
-    component: Rankings,
-    data: { title: 'Rankings' },
-  },
-  {
-    path: 'matchups',
-    component: Matchups,
-    data: { title: 'Matchups' },
+    path: ':sport',
+    component: SportHome,
+    children: [
+      {
+        path: 'analytics',
+        component: Analytics,
+        data: { title: 'Analytics Lab' },
+      },
+      {
+        path: 'fantasy',
+        component: FantasyCenter,
+        data: { title: 'Fantasy Center' },
+      },
+      {
+        path: 'armchair-gm',
+        component: ArmchairGM,
+        data: { title: 'Armchair GM' },
+      },
+      {
+        path: 'rankings',
+        component: Rankings,
+        data: { title: 'Rankings' },
+      },
+      {
+        path: 'matchups',
+        component: Matchups,
+        data: { title: 'Matchups' },
+      },
+    ],
   },
 ];

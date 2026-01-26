@@ -23,7 +23,7 @@ export class AuthenticationService {
 
   constructor() {}
 
-  public init(): void {
+  public initialize(): void {
     if (!this.storageService.hasKey(SESSION_KEY)) {
       this.configure();
     } else {

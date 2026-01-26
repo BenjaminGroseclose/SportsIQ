@@ -4,16 +4,18 @@ import { Sidenav } from './components/sidenav/sidenav';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthenticationService } from '@sports-iq/libs/auth/authentication.service';
 import { Header } from './components/header/header';
+import { CoreStateService } from './state/core-state.service';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Sidenav, Header],
+  imports: [RouterOutlet, Sidenav],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
 export class App implements OnInit {
   private readonly router = inject(Router);
   private readonly authenticationService = inject(AuthenticationService);
+  private readonly coreStateService = inject(CoreStateService);
 
   private readonly currentRoute = signal<string | null>(null);
 
@@ -26,6 +28,7 @@ export class App implements OnInit {
   }
 
   ngOnInit(): void {
-    this.authenticationService.init();
+    this.authenticationService.initialize();
+    this.coreStateService.initialize();
   }
 }

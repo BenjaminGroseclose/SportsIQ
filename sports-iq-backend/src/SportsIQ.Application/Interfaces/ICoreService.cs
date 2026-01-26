@@ -4,5 +4,7 @@ namespace SportsIQ.Application.Interfaces;
 
 public interface ICoreService
 {
-    Task<IEnumerable<Filter>> GetFilters();
+    Task<IEnumerable<Sport>> GetSports();
+    Task<IEnumerable<Season>> GetSeasons();
+    Task<IEnumerable<Season>> GetSeasons(int sportId);  
 }
