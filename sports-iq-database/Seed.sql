@@ -3,15 +3,28 @@ DELETE FROM [SportsIQ].[Core].[Teams];
 DELETE FROM [SportsIQ].[Core].[Seasons];
 DELETE FROM [SportsIQ].[Core].[Sports];
 
-INSERT INTO [SportsIQ].[Core].[Sports] ([SportName], [Abbreviation], [CreateDate])
+INSERT INTO [SportsIQ].[Core].[Sports] ([SportName], [League], [LeagueLogo], [CreateDate])
 VALUES
-    ('Soccer', 'MLS', SYSDATETIMEOFFSET()),
-    ('Basketball', 'NBA', SYSDATETIMEOFFSET()),
-    ('Baseball', 'MLB', SYSDATETIMEOFFSET()),
-    ('Hockey', 'NHL', SYSDATETIMEOFFSET()),
-    ('Football', 'NFL', SYSDATETIMEOFFSET()),
-    ('College Football', 'NCAAF', SYSDATETIMEOFFSET()),
-    ('College Basketball', 'NCAAMB', SYSDATETIMEOFFSET());
+    -- Soccer (Generic Ball)
+    ('Soccer', 'MLS', 'https://upload.wikimedia.org/wikipedia/commons/d/d3/Soccerball.svg', SYSDATETIMEOFFSET()),
+    
+    -- Basketball (Generic Orange Ball)
+    ('Basketball', 'NBA', 'https://upload.wikimedia.org/wikipedia/commons/7/7a/Basketball.svg', SYSDATETIMEOFFSET()),
+    
+    -- Baseball (Generic Ball)
+    ('Baseball', 'MLB', 'https://upload.wikimedia.org/wikipedia/commons/9/92/Baseball.svg', SYSDATETIMEOFFSET()),
+    
+    -- Hockey (Generic Puck and Sticks)
+    ('Hockey', 'NHL', 'https://upload.wikimedia.org/wikipedia/commons/2/29/Ice_hockey_puck.svg', SYSDATETIMEOFFSET()),
+    
+    -- Football (Generic Brown Ball)
+    ('Football', 'NFL', 'https://upload.wikimedia.org/wikipedia/commons/1/1b/American_football_icon_simple.svg', SYSDATETIMEOFFSET()),
+    
+    -- College Football (Generic Helmet to differentiate from NFL)
+    ('College Football', 'NCAAF', 'https://upload.wikimedia.org/wikipedia/commons/4/45/American_Football_Helmet.svg', SYSDATETIMEOFFSET()),
+    
+    -- College Basketball (Generic Court/Hoop to differentiate from NBA)
+    ('College Basketball', 'NCAAMB', 'https://upload.wikimedia.org/wikipedia/commons/9/90/Basketball_Hoop.svg', SYSDATETIMEOFFSET());
 
 -- Seed data for Player.PlayerStatus
 INSERT INTO [SportsIQ].[Player].[PlayerStatuses] ([Name], [Description], [InjuredListEligible]) 

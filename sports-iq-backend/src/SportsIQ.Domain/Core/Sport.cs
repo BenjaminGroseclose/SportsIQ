@@ -5,8 +5,9 @@ namespace SportsIQ.Domain.Core;
 [Table("Sports", Schema = "Core")]
 public class Sport : BaseEntity
 {
-    public int SportID { get; set; }
-    public string SportName { get; set; }
-    public string Abbreviation { get; set; }
-    public override int ID => SportID;
+	public int SportID { get; set; }
+	public string SportName { get; set; }
+	public string League { get; set; }
+	public string LeagueLogo { get; set; }
+	public override int ID => SportID;
 }

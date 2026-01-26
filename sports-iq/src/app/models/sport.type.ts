@@ -1,5 +1,6 @@
 export interface ISport {
   sportID: number;
   sportName: string;
-  abbreviation: string;
+  league: string;
+  leagueLogo: string;
 }

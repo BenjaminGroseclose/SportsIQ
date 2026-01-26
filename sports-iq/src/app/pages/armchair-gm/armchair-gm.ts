@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { PlayerStateService } from '@sports-iq/app/state/player-state.service';
 
 @Component({
@@ -7,12 +7,8 @@ import { PlayerStateService } from '@sports-iq/app/state/player-state.service';
   templateUrl: './armchair-gm.html',
   styleUrl: './armchair-gm.scss',
 })
-export class ArmchairGM implements OnInit {
-  private readonly stateService = inject(PlayerStateService);
+export class ArmchairGM {
+  private readonly playerStateService = inject(PlayerStateService);
 
-  constructor() {}
-
-  ngOnInit(): void {
-    this.stateService.initialize(5);
-  }
+  players = this.playerStateService.players;
 }
