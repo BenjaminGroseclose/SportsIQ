@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { PlayerStateService } from '@sports-iq/app/state';
 
 @Component({
   selector: 'siq-analytics',
@@ -7,5 +8,5 @@ import { Component } from '@angular/core';
   styleUrl: './analytics.scss',
 })
 export class Analytics {
-
+  private readonly playerStateService = inject(PlayerStateService);
 }

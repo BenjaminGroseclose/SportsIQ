@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IPlayer } from '../models';
+import { IPagedResponse, IPlayer } from '../models';
 import { Observable } from 'rxjs/internal/Observable';
 import { HttpClient } from '@angular/common/http';
 import { HttpBase } from '@sports-iq/libs/services/http-base.service';
@@ -12,21 +12,26 @@ export class PlayerService extends HttpBase {
     super(httpClient, 'player');
   }
 
-  getPlayersBySport(sportId: number, includeRatings: boolean = false): Observable<IPlayer[]> {
-    let url = `sport/${sportId}`;
-
-    if (includeRatings) {
-      url += '?includeRatings=true';
-    }
-    return this.get<IPlayer[]>(url);
-  }
-
-  getPlayersByTeam(teamId: number, includeRatings: boolean = false): Observable<IPlayer[]> {
-    let url = `team/${teamId}`;
-
-    if (includeRatings) {
-      url += '?includeRatings=true';
-    }
-    return this.get<IPlayer[]>(url);
+  getPlayers(filter: {
+    sportId?: number;
+    teamId?: number;
+    seasonId?: number;
+    includeRatings?: boolean;
+    page?: number;
+    pageSize?: number;
+    sortBy?: string;
+    sortDescending?: boolean;
+  }): Observable<IPagedResponse<IPlayer>> {
+    const qs = new URLSearchParams();
+    if (filter.sportId != null) qs.set('sportId', String(filter.sportId));
+    if (filter.teamId != null) qs.set('teamId', String(filter.teamId));
+    if (filter.seasonId != null) qs.set('seasonId', String(filter.seasonId));
+    if (filter.includeRatings) qs.set('includeRatings', 'true');
+    if (filter.pageSize != null) qs.set('pageSize', String(filter.pageSize));
+    if (filter.page != null) qs.set('page', String(filter.page));
+    if (filter.sortBy) qs.set('sortBy', filter.sortBy);
+    if (filter.sortDescending) qs.set('sortDescending', 'true');
+    const query = qs.toString();
+    return this.get<IPagedResponse<IPlayer>>(query ? `?${query}` : '');
   }
 }

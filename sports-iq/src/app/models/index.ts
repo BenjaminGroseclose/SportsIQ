@@ -8,3 +8,4 @@ export * from './player-ranking.type';
 export * from './season.type';
 export * from './contract.type';
 export * from './contract-year.type';
+export * from './paged-response.type';

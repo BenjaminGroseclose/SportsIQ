@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using SportsIQ.Application.Interfaces;
+using SportsIQ.Domain.FilterOptions;
 
 namespace SportsIQ.API.Controllers;
 
@@ -14,15 +15,9 @@ public class PlayerController : ControllerBase
         this.playerService = playerService;
     }
 
-    [HttpGet("sport/{sportID}")]
-    public async Task<IActionResult> GetPlayersBySport(int sportID, [FromQuery] bool includeRatings = false)
+    [HttpGet]
+    public async Task<IActionResult> GetPlayersBySport([FromQuery] PlayerFilterOptions filterOptions)
     {
-        return Ok(await this.playerService.GetPlayersBySport(sportID, includeRatings));
-    }
-
-    [HttpGet("team/{teamID}")]
-    public async Task<IActionResult> GetPlayersByTeam(int teamID, [FromQuery] bool includeRatings = false)
-    {
-        return Ok(await this.playerService.GetPlayersByTeam(teamID, includeRatings));
+        return Ok(await this.playerService.GetPlayers(filterOptions));
     }
 }

@@ -5,8 +5,8 @@ import { Analytics } from './pages/analytics/analytics';
 import { Rankings } from './pages/rankings/rankings';
 import { Matchups } from './pages/matchups/matchups';
 import { FantasyCenter } from './pages/fantasy-center/fantasy-center';
-import { ArmchairGM } from './pages/armchair-gm/armchair-gm';
 import { SportHome } from './pages/sport-home/sport-home';
+import { TradeMachine } from './pages/trade-machine/trade-machine';
 
 export const routes: Routes = [
   {
@@ -40,9 +40,9 @@ export const routes: Routes = [
         data: { title: 'Fantasy Center' },
       },
       {
-        path: 'armchair-gm',
-        component: ArmchairGM,
-        data: { title: 'Armchair GM' },
+        path: 'trade-machine',
+        component: TradeMachine,
+        data: { title: 'Trade Machine' },
       },
       {
         path: 'rankings',

@@ -47,6 +47,21 @@ public class Player : BaseEntity
 		}
 	}
 
+	public double SportsIQScore { get
+		{
+			if (Ratings == null || !Ratings.Any())
+			{
+				return 0;
+			}
+
+			// Average of the most recent up to 3 ratings
+			return Ratings
+				.OrderByDescending(r => r.Season)
+				.Take(3)
+				.Average(r => r.SportsIQRating);
+		}
+	 }
+
 	public override int ID => PlayerID;
 }
 

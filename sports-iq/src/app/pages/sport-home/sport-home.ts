@@ -14,21 +14,38 @@ import { map, distinctUntilChanged, filter } from 'rxjs/operators';
   standalone: true,
   imports: [RouterOutlet, Header],
 })
-export class SportHome implements OnInit {
+export class SportHome {
   private readonly route = inject(ActivatedRoute);
   private readonly appContextService = inject(AppContextService);
   private readonly coreStateService = inject(CoreStateService);
 
-  coreLoading = this.coreStateService.loading;
+  loaded = this.coreStateService.loaded;
+  sports = this.coreStateService.sports;
+  seasons = this.coreStateService.seasons;
 
-  ngOnInit(): void {
-    combineLatest([toObservable(this.coreStateService.loaded), this.route.paramMap])
+  constructor() {
+    combineLatest([toObservable(this.loaded), this.route.paramMap])
       .pipe(
         filter(([loaded]) => loaded),
         takeUntilDestroyed(),
         map(([_, params]) => params.get('sport')!),
         distinctUntilChanged(),
       )
-      .subscribe((sport) => {});
+      .subscribe((sport) => {
+        console.log('SportHome detected sport param change:', sport);
+
+        const selectedSport = this.sports().find(
+          (s) => s.league.toLowerCase() === sport.toLowerCase(),
+        );
+
+        if (selectedSport) {
+          const currentSeason = this.seasons().find(
+            (season) => season.sportID === selectedSport.sportID && season.isCurrent,
+          );
+
+          this.appContextService.setSport(selectedSport);
+          this.appContextService.setSeason(currentSeason ?? null);
+        }
+      });
   }
 }

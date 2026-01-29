@@ -3,6 +3,7 @@ import { Spacer } from '@sports-iq/libs';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, startWith } from 'rxjs/operators';
+import { AppContextService } from '@sports-iq/app/state';
 
 @Component({
   selector: 'siq-header',
@@ -13,16 +14,20 @@ import { filter, map, startWith } from 'rxjs/operators';
 export class Header {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private appContextService = inject(AppContextService);
+
+  sport = this.appContextService.sport;
 
   private title$ = this.router.events.pipe(
     filter((e): e is NavigationEnd => e instanceof NavigationEnd),
     startWith(null),
     map(() => {
-      let r = this.route;
-      while (r.firstChild) {
+      let r: ActivatedRoute | null = this.route;
+      while (r?.firstChild) {
         r = r.firstChild;
       }
-      const dataTitle = r.snapshot.data?.['title'] as string | undefined;
+      const snapshot = r?.snapshot;
+      const dataTitle = snapshot?.data?.['title'] as string | undefined;
       return dataTitle ?? this.fallbackTitle();
     }),
   );

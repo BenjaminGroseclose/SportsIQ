@@ -23,4 +23,8 @@ export class CoreService extends HttpBase {
   getSeasons(sportId: number): Observable<ISeason[]> {
     return this.get<ISeason[]>(`seasons/${sportId}`);
   }
+
+  getTeams(sportId: number): Observable<any> {
+    return this.get<any>(`teams/${sportId}`);
+  }
 }

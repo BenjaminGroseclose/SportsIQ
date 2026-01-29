@@ -1,9 +1,9 @@
 import { BaseState, StateServiceBase } from '@sports-iq/libs';
-import { ISeason, ISport } from '../models';
+import { ISeason, ISport, ITeam } from '../models';
 import { CoreService } from '../services';
 import { inject } from '@angular/core/primitives/di';
 import { forkJoin, take } from 'rxjs';
-import { Injectable } from '@angular/core';
+import { computed, Injectable } from '@angular/core';
 
 type CoreState = BaseState & {
   sports: ISport[];
@@ -15,6 +15,9 @@ type CoreState = BaseState & {
 })
 export class CoreStateService extends StateServiceBase<CoreState> {
   private readonly coreService = inject(CoreService);
+
+  sports = computed(() => this.state().sports);
+  seasons = computed(() => this.state().seasons);
 
   constructor() {
     super({

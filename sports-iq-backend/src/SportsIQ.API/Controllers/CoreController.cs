@@ -37,4 +37,10 @@ public class CoreController : ControllerBase
     {
         return Ok(await this.coreService.GetSeasons());
     }
+
+    [HttpGet("teams/{sportID}")]
+    public async Task<IActionResult> GetTeams(int sportID)
+    {
+        return Ok(await this.coreService.GetTeams(sportID));
+    }
 }

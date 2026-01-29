@@ -53,4 +53,10 @@ public class CoreService : ICoreService
     {
         return _sportRepository.GetAllAsync();
     }
+
+    public async Task<IEnumerable<Team>> GetTeams(int sportID)
+    {
+        var teams = await _teamRepository.GetAllAsync();
+        return teams.Where(t => t.SportID == sportID);
+    }
 }

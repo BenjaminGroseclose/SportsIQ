@@ -9,6 +9,7 @@ import { INavItem } from '@sports-iq/libs/models/nav-item.type';
 import { Router } from '@angular/router';
 import { AccountStateService } from '@sports-iq/app/state/account-state.service';
 import { AuthenticationService } from '@sports-iq/libs/auth/authentication.service';
+import { AppContextService } from '@sports-iq/app/state/app-context.service';
 
 @Component({
   selector: 'siq-sidenav',
@@ -20,9 +21,12 @@ export class Sidenav {
   private readonly authenticationService = inject(AuthenticationService);
   private readonly router = inject(Router);
   private readonly userStateService = inject(AccountStateService);
+  private readonly appContextService = inject(AppContextService);
 
   isExpanded = signal<boolean>(false);
 
+  // Default to NFL if no sport selected
+  sportRoute = computed<string>(() => this.appContextService.sport()?.league ?? 'nfl');
   isAuthenticated = computed<boolean>(() => this.userStateService.state().isAuthenticated);
   hasAccount = computed<boolean>(() => this.userStateService.hasAccount());
   profilePictureUrl = computed<string | undefined>(
@@ -32,6 +36,7 @@ export class Sidenav {
 
   topNavItems = computed<INavItem[]>(() => {
     const items: INavItem[] = [];
+    const sportRoute = this.sportRoute();
 
     items.push(
       {
@@ -42,27 +47,27 @@ export class Sidenav {
       {
         icon: 'science',
         title: 'Analytics',
-        action: () => this.navigate('/analytics'),
+        action: () => this.navigate(`/${sportRoute}/analytics`),
       },
       {
         icon: 'emoji_events',
         title: 'Fantasy',
-        action: () => this.navigate('/fantasy'),
+        action: () => this.navigate(`/${sportRoute}/fantasy`),
       },
       {
         icon: 'business_center',
-        title: 'Armchair GM',
-        action: () => this.navigate('/armchair-gm'),
+        title: 'Trade Machine',
+        action: () => this.navigate(`/${sportRoute}/trade-machine`),
       },
       {
         icon: 'how_to_vote',
         title: 'Rankings',
-        action: () => this.navigate('/rankings'),
+        action: () => this.navigate(`/${sportRoute}/rankings`),
       },
       {
         icon: 'preview',
         title: 'Matchups',
-        action: () => this.navigate('/matchups'),
+        action: () => this.navigate(`/${sportRoute}/matchups`),
       },
     );
 
