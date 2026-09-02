@@ -6,7 +6,7 @@
 
 // Note: Color palettes are generated from primary: #3b82f6, secondary: #14B8A6, tertiary: #8854FF, neutral: #A0AFBD, error: #FF3B30
 $_palettes: (
- primary: (
+  primary: (
     0: #000000,
     10: #1f1600,
     20: #342700,
@@ -18,7 +18,8 @@ $_palettes: (
     60: #a38400,
     70: #c29e00,
     80: #ffd740,
-    90: #ffe885,  // NEON GOLD (brand emphasis)
+    90: #ffe885,
+    // NEON GOLD (brand emphasis)
     95: #fff5c2,
     98: #fffae6,
     99: #fffae6,
@@ -50,10 +51,14 @@ $_palettes: (
     30: #00385f,
     35: #004472,
     40: #005086,
-    50: #005c99,  // transition toward neon
-    60: #0075c2,  // bright luminous core
-    70: #129cf0,  // NEON BLUE (brand emphasis)
-    80: #33a8ff,  // elevated container
+    50: #005c99,
+    // transition toward neon
+    60: #0075c2,
+    // bright luminous core
+    70: #129cf0,
+    // NEON BLUE (brand emphasis)
+    80: #33a8ff,
+    // elevated container
     90: #7bcaff,
     95: #c4e7ff,
     98: #e6f6ff,
@@ -129,7 +134,7 @@ $_palettes: (
 $_rest: (
   secondary: map.get($_palettes, secondary),
   neutral: map.get($_palettes, neutral),
-  neutral-variant: map.get($_palettes,  neutral-variant),
+  neutral-variant: map.get($_palettes, neutral-variant),
   error: map.get($_palettes, error),
 );
 

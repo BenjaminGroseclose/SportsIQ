@@ -1,0 +1,5 @@
+secrets.json
+data/
+output/
+models/
+__pycache__/
